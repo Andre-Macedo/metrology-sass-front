@@ -1,0 +1,590 @@
+{
+  "Index": {
+    "title": "Welcome to Metrology SaaS",
+    "login": "Login",
+    "dashboard": "Dashboard",
+    "meta_title": "MetroLab | Metrology SaaS Platform",
+    "meta_description": "Professional metrology management platform for instrument calibration, tracking, and compliance."
+  },
+  "Common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "actions": "Actions",
+    "copy_id": "Copy ID",
+    "view_details": "View Details",
+    "confirm_delete": "Are you sure you want to delete this item?",
+    "deleted_success": "Item deleted successfully",
+    "switch_language": "Switch Language",
+    "open_menu": "Open menu"
+  },
+  "Sidebar": {
+    "overview": "Overview",
+    "dashboard": "Dashboard",
+    "metrology": "Metrology",
+    "instruments": "Instruments",
+    "all_instruments": "All Instruments",
+    "calibrations": "Calibrations",
+    "certificates": "Certificates",
+    "standards": "Standards",
+    "all_standards": "All Standards",
+    "procedures": "Procedures",
+    "work_orders": "Work Orders",
+    "non_conformities": "Non-Conformities",
+    "access_logs": "Access Logs",
+    "audit_logs": "Global Audit Trail",
+    "settings": "Settings",
+    "system": "System",
+    "users": "Users",
+    "stations": "Stations",
+    "suppliers": "Suppliers",
+    "iot": "IoT Monitoring"
+  },
+  "Header": {
+    "toggle_menu": "Toggle menu",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "settings": "Settings",
+    "sign_out": "Sign out",
+    "signing_out": "Signing out..."
+  },
+  "Auth": {
+    "welcome_back": "Welcome back",
+    "sign_in_subtitle": "Sign in to your MetroLab account to continue",
+    "invalid_credentials": "Invalid credentials. Please try again.",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot password?",
+    "sign_in": "Sign in",
+    "no_account": "Don't have an account?",
+    "contact_sales": "Contact sales"
+  },
+  "Dashboard": {
+    "title": "Mission Control",
+    "description": "Overview of your metrology operations",
+    "total_instruments": "Total Instruments",
+    "registered_in_system": "Registered in the system",
+    "due_for_calibration": "Due for Calibration",
+    "within_next_30_days": "Within next 30 days",
+    "overdue": "Overdue",
+    "requires_attention": "Requires immediate attention",
+    "compliant": "Compliant",
+    "compliance_rate": "Current compliance rate",
+    "recent_calibrations": "Recent Calibrations",
+    "upcoming_due_dates": "Upcoming Due Dates",
+    "days": "days",
+    "status": {
+      "completed": "Completed",
+      "in-progress": "In Progress",
+      "pending": "Pending"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    }
+  },
+  "MetrologyDashboard": {
+    "title": "Metrology Dashboard",
+    "description": "Real-time overview of calibration status and laboratory operations.",
+    "total_instruments": "Total Instruments",
+    "registered_assets": "Registered assets",
+    "compliance_rate": "Compliance Rate",
+    "active_instruments": "Active instruments",
+    "overdue": "Overdue",
+    "requires_attention": "Requires immediate action",
+    "in_calibration": "In Calibration",
+    "currently_serviced": "Currently being serviced",
+    "upcoming_calibrations": "Upcoming Calibrations",
+    "due_in_30_days": "Instruments due in the next 30 days.",
+    "no_upcoming": "No upcoming calibrations.",
+    "due_soon": "Due Soon",
+    "recent_activity": "Recent Activity",
+    "latest_calibrations": "Latest completed calibrations.",
+    "no_recent_activity": "No recent activity."
+  },
+  "Instruments": {
+    "title": "Instruments",
+    "description": "Manage and track all calibrated instruments",
+    "add_instrument": "Add Instrument",
+    "edit_instrument": "Edit Instrument",
+    "search_placeholder": "Search instruments...",
+    "status": {
+      "all": "All Instruments",
+      "active": "Active",
+      "inactive": "Inactive",
+      "maintenance": "Maintenance",
+      "in_calibration": "In Calibration",
+      "rejected": "Rejected",
+      "lost": "Lost",
+      "expired": "Expired",
+      "scrapped": "Scrapped",
+      "due_soon": "Due Soon"
+    },
+    "table": {
+      "id": "ID",
+      "instrument": "Instrument",
+      "manufacturer": "Manufacturer",
+      "location": "Location",
+      "status": "Status",
+      "calibration_due": "Calibration Due"
+    },
+    "form": {
+      "name": "Instrument Name",
+      "name_placeholder": "e.g. Digital Caliper",
+      "type": "Instrument Type",
+      "type_placeholder": "Select type",
+      "type_description": "Sets standard frequency and decision rules.",
+      "decision_rule": "Decision Rule (ISO 17025)",
+      "decision_rule_placeholder": "Select rule",
+      "decision_rule_description": "Defines how the Pass/Fail result will be calculated automatically.",
+      "rules": {
+        "simple": "Simple Acceptance (Error <= MPE)",
+        "guard_band": "Guard Band (Error <= MPE - U)",
+        "uncertainty_accounted": "Uncertainty Accounted (Error + U <= MPE)"
+      },
+      "serial_number": "Serial Number",
+      "serial_placeholder": "e.g. SN-123456",
+      "manufacturer": "Manufacturer",
+      "manufacturer_placeholder": "e.g. Mitutoyo",
+      "model": "Model",
+      "model_placeholder": "e.g. CD-6 AX",
+      "status": "Status",
+      "status_placeholder": "Select a status",
+      "location": "Location",
+      "location_placeholder": "e.g. Lab A",
+      "last_calibration": "Last Calibration",
+      "next_calibration": "Next Calibration",
+      "next_calibration_description": "Auto-calculated based on Instrument Type frequency.",
+      "save": "Save Instrument",
+      "saving": "Saving...",
+      "description_add": "Add a new instrument to the registry",
+      "description_edit": "Update the instrument details"
+    },
+    "messages": {
+      "created_success": "Instrument created successfully",
+      "created_error": "Failed to create instrument",
+      "updated_success": "Instrument updated successfully",
+      "updated_error": "Failed to update instrument",
+      "not_found": "Instrument not found"
+    }
+  },
+  "Calibrations": {
+    "title": "Calibrations Center",
+    "description": "Global registry of certificates and approval workflow.",
+    "new_calibration": "New Calibration",
+    "tabs": {
+      "history": "All Certificates",
+      "review": "Review Queue",
+      "pending": "Pending"
+    },
+    "table": {
+      "id": "ID",
+      "date": "Date",
+      "instrument": "Instrument",
+      "result": "Result",
+      "status": "Status",
+      "actions": "Actions",
+      "technician": "Technician",
+      "review_actions": "Review Actions",
+      "search_placeholder": "Search certificate or instrument...",
+      "no_records": "No records found.",
+      "all_caught_up": "All caught up! No calibrations pending review.",
+      "view": "View",
+      "cert": "Cert"
+    },
+    "form": {
+      "instrument_id": "Instrument ID / Asset Tag",
+      "instrument_id_placeholder": "e.g. INS-001",
+      "instrument_name": "Instrument Name",
+      "instrument_name_placeholder": "e.g. Digital Caliper",
+      "date": "Calibration Date",
+      "technician": "Technician",
+      "technician_placeholder": "e.g. John Doe",
+      "result": "Result",
+      "result_placeholder": "Select result",
+      "next_due_date": "Next Due Date",
+      "save": "Save Calibration",
+      "saving": "Saving..."
+    },
+    "status": {
+      "published": "Published",
+      "rejected": "Rejected",
+      "in_review": "In Review",
+      "draft": "Draft"
+    },
+    "result": {
+      "pass": "Pass",
+      "fail": "Fail",
+      "conditional_pass": "Conditional Pass",
+      "conditional": "Conditional Pass (Guard Band)",
+      "approved": "Approved",
+      "approved_with_restrictions": "Approved with Restrictions",
+      "rejected": "Rejected",
+      "unknown": "Unknown"
+    },
+    "messages": {
+      "approved": "Calibration Approved & Published",
+      "rejected": "Calibration Returned for Correction"
+    },
+    "tooltips": {
+      "view_details": "View Details",
+      "approve": "Approve",
+      "reject": "Reject (Return to Draft)"
+    }
+  },
+  "Certificates": {
+    "title": "Certificates",
+    "description": "Issued calibration certificates repository",
+    "table": {
+      "cert_id": "Certificate ID",
+      "cal_id": "Calibration ID",
+      "instrument": "Instrument",
+      "issue_date": "Issue Date",
+      "hash": "Digital Hash",
+      "status": "Status",
+      "action": "Action",
+      "download": "Download",
+      "valid": "Valid",
+      "revoked": "Revoked"
+    }
+  },
+  "Standards": {
+    "title": "Reference Standards",
+    "description": "Manage measurement standards used for calibration",
+    "new_standard": "New Standard",
+    "edit_standard": "Edit Standard",
+    "search_placeholder": "Search standards...",
+    "all_types": "All Types",
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "serial_number": "Serial Number",
+      "type": "Type",
+      "nominal_value": "Nominal Value",
+      "actions": "Actions"
+    },
+    "form": {
+      "name": "Name",
+      "name_placeholder": "e.g. Gauge Block Set 0-100mm",
+      "serial_number": "Serial Number",
+      "serial_placeholder": "e.g. SN-12345",
+      "type": "Type",
+      "type_placeholder": "Select type",
+      "material": "Material (Thermal Correction)",
+      "material_placeholder": "Select material...",
+      "nominal_value": "Nominal Value (Optional)",
+      "nominal_placeholder": "e.g. 50.00",
+      "save": "Save Standard",
+      "saving": "Saving...",
+      "description_add": "Add a new standard to the registry",
+      "description_edit": "Update standard details"
+    },
+    "types": {
+      "gauge_block": "Gauge Block Set",
+      "caliper_checker": "Caliper Checker",
+      "micrometer_standard": "Micrometer Standard",
+      "other": "Other"
+    },
+    "messages": {
+      "created_success": "Standard created successfully",
+      "created_error": "Failed to create standard",
+      "updated_success": "Standard updated successfully",
+      "updated_error": "Failed to update standard",
+      "deleted_success": "Standard deleted successfully",
+      "deleted_error": "Failed to delete standard",
+      "not_found": "Standard not found",
+      "confirm_delete": "Are you sure you want to delete this item?",
+      "open_nc": "Open NC: {title}"
+      }
+      },
+      "Procedures": {
+      "title": "Calibration Procedures",
+      "description": "Standardized verification checklists for instruments",
+      "new_procedure": "New Procedure",
+      "edit_procedure": "Edit Procedure",
+      "search_placeholder": "Search procedures...",
+      "table": {
+      "code": "Code",
+      "name": "Procedure Name",
+      "steps": "Steps",
+      "checkpoints": "{count} Checkpoints",
+      "actions": "Actions"
+      },
+      "form": {
+      "details_title": "Procedure Details",
+      "name": "Procedure Name",
+      "name_placeholder": "e.g. Caliper 0-150mm (DIN 862)",
+      "instrument_type": "Instrument Type",
+      "instrument_type_placeholder": "Select type",
+      "instrument_type_description": "The type of instrument this procedure applies to.",
+      "checkpoints_title": "Checkpoints",
+      "add_numeric": "Add Numeric",
+      "add_boolean": "Add Boolean",
+      "step_description": "Description",
+      "step_description_boolean_placeholder": "e.g. Cleanliness Check",
+      "step_description_numeric_placeholder": "e.g. 50.00 mm",
+      "step_type": "Type",
+      "step_target": "Target",
+      "step_tolerance": "Tol (+/-)",
+      "step_qty": "Qty",
+      "boolean_helper": "Technician will select Pass/Fail.",
+      "text_helper": "Technician will enter text notes.",
+      "save": "Save Procedure",
+      "saving": "Saving...",
+      "description_add": "Create a new procedure template",
+      "description_edit": "Update procedure template"
+      },
+      "types": {
+      "numeric": "Numeric",
+      "boolean": "Pass/Fail",
+      "text": "Text Obs."
+      },
+      "messages": {
+      "created_success": "Procedure created successfully",
+      "created_error": "Failed to create procedure",
+      "updated_success": "Procedure updated successfully",
+      "updated_error": "Failed to update procedure",
+      "deleted_success": "Procedure deleted successfully",
+      "deleted_error": "Failed to delete procedure",
+      "not_found": "Procedure not found",
+      "confirm_delete": "Are you sure you want to delete this procedure?"
+      }
+      },
+      "Users": {
+      "title": "User Management",
+      "description": "Manage system users and their roles.",
+      "add_user": "Add User",
+      "edit_user": "Edit User",
+      "create_user": "Create User",
+      "search_placeholder": "Search users...",
+      "table": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "created_at": "Created At",
+      "no_role": "No Role"
+      },
+      "form": {
+      "name": "Name",
+      "name_placeholder": "e.g. John Doe",
+      "email": "Email",
+      "email_placeholder": "john@example.com",
+      "role": "Role",
+      "role_placeholder": "Select a role",
+      "password": "Password",
+      "password_helper": "(Leave empty to keep)",
+      "password_placeholder": "******",
+      "details": "User Details",
+      "update_description": "Update user account details.",
+      "create_description": "Add a new user to the system.",
+      "save_changes": "Save changes",
+      "password_required": "Password is required for new users"
+      },
+      "messages": {
+      "created_success": "User created successfully",
+      "updated_success": "User updated successfully",
+      "save_error": "Failed to save user"
+      },
+      "roles": {
+      "Admin": "Admin",
+      "Manager": "Manager",
+      "Metrologist": "Metrologist",
+      "Operator": "Operator"
+      }
+      },
+      "Stations": {
+      "title": "Workstations",
+      "description": "Manage physical stations and their digital identities.",
+      "add_station": "Add Station",
+      "edit_station": "Edit Station",
+      "new_station": "New Station",
+      "search_placeholder": "Search stations...",
+      "table": {
+      "name": "Name",
+      "type": "Type",
+      "status": "Status",
+      "location": "Location",
+      "hostname": "Hostname"
+      },
+      "form": {
+      "new_station": "New Workstation",
+      "name": "Station Name",
+      "name_placeholder": "e.g. Bench 01",
+      "type": "Type",
+      "status": "Status",
+      "location": "Location / Sector",
+      "location_placeholder": "e.g. Sector A",
+      "hostname": "Hostname (Machine Name)",
+      "hostname_placeholder": "e.g. PC-LAB-01",
+      "hostname_description": "Used for automatic log detection.",
+      "ip_address": "IP Address",
+      "ip_address_placeholder": "e.g. 192.168.1.50",
+      "manage_details": "Manage workstation details.",
+      "save": "Save Station"
+      },
+      "types": {
+      "Workstation": "Workstation",
+      "Laboratory": "Laboratory",
+      "Production": "Production",
+      "Mobile": "Mobile"
+      },
+      "status": {
+      "Active": "Active",
+      "Maintenance": "Maintenance",
+      "Inactive": "Inactive"
+      },
+      "messages": {
+      "created_success": "Station created",
+      "updated_success": "Station updated",
+      "deleted_success": "Station deleted",
+      "save_error": "Failed to save station",
+      "confirm_delete": "Are you sure?"
+      }
+      },
+      "Suppliers": {
+      "title": "Suppliers",
+      "description": "Manage external calibration and maintenance suppliers.",
+      "add_supplier": "Add Supplier",
+      "edit_supplier": "Edit Supplier",
+      "new_supplier": "New Supplier",
+      "search_placeholder": "Search suppliers...",
+      "table": {
+      "name": "Name / Corporate Name",
+      "contact": "Contact",
+      "email": "Email",
+      "phone": "Phone",
+      "status": "Status"
+      },
+      "form": {
+      "name": "Name / Corporate Name",
+      "name_placeholder": "e.g. XYZ Calibration Lab",
+      "tax_id": "Tax ID",
+      "tax_id_placeholder": "00.000.000/0000-00",
+      "contact_person": "Contact Person",
+      "contact_placeholder": "e.g. Jane Doe",
+      "email": "Email",
+      "email_placeholder": "contact@supplier.com",
+      "phone": "Phone",
+      "phone_placeholder": "(00) 0000-0000",
+      "address": "Address",
+      "status": "Status",
+      "save": "Save Supplier"
+      },
+      "status": {
+      "Active": "Active",
+      "Inactive": "Inactive",
+      "Suspended": "Suspended"
+      },
+      "messages": {
+        "created_success": "Supplier created",
+        "updated_success": "Supplier updated",
+        "deleted_success": "Supplier deleted",
+        "save_error": "Failed to save supplier"
+      }
+      },
+      "WorkOrders": {
+    "title": "Work Orders (OS)",
+    "description": "Manage receiving, queues, and dispatch of instruments.",
+    "check_in": "Check-in Instrument",
+    "table": {
+      "number": "OS Number",
+      "item": "Item",
+      "status": "Status",
+      "received_by": "Received By",
+      "date": "Date"
+    }
+  },
+  "Metrology": {
+      "uncertainty_budget": {
+        "title": "Uncertainty Budget (ISO GUM)",
+        "description": "Detailed contributions to Measurement Uncertainty.",
+        "table": {
+          "source": "Uncertainty Source",
+          "value": "Value",
+          "distribution": "Distribution",
+          "divisor": "Divisor",
+          "standard_uncertainty": "u (Standard)",
+          "combined_uncertainty": "Combined Uncertainty (uc)",
+          "expanded_uncertainty": "Expanded Uncertainty (U = uc × {k})"
+        },
+        "methodology": {
+          "title": "Methodology & Formulas (JCGM 100:2008)",
+          "u_title": "1. Standard Uncertainty (u)",
+          "u_formula": "u = Value / Divisor",
+          "u_desc": "Divisor depends on distribution:\n• Normal (k=1): 1\n• Rectangular: √3 ≈ 1.732\n• Triangular: √6 ≈ 2.449",
+          "uc_title": "2. Combined Uncertainty (uc)",
+          "uc_formula": "uc = √(u₁² + u₂² + ... + uₙ²)",
+          "uc_desc": "Root sum of squares of all standard uncertainties.",
+          "U_title": "3. Expanded Uncertainty (U)",
+          "U_formula": "U = uc × k",
+          "U_desc": "Where k is the coverage factor (typically 2 for 95.45% confidence)."
+        }
+      }
+      },
+      "Validations": {
+        "required": "This field is required.",
+        "min_characters": "Must be at least {count} characters.",
+        "invalid_email": "Invalid email.",
+        "select_option": "Please select an option."
+      },
+      "Settings": {
+    "title": "Metrology Settings",
+    "description": "Configure instrument types, standards, and master data.",
+    "instrument_types": "Instrument Types",
+    "standard_types": "Standard Types",
+    "materials": {
+      "tab_title": "Materials (Thermal Expansion)",
+      "add": "New Material",
+      "name": "Material Name",
+      "name_placeholder": "e.g. Carbon Steel",
+      "category": "Category",
+      "category_placeholder": "e.g. Metal",
+      "cte": "Coefficient (α) [10⁻⁶ / °C]",
+      "cte_description": "Linear thermal expansion coefficient used for dimensional calibration calculations."
+    }
+  },
+  "NonConformities": {
+        "title": "Non-Conformities (NC)",
+        "description": "Manage calibration failures, root cause analysis, and corrective actions (CAPA).",
+        "filter_status": "Filter by Status",
+        "status_all": "All Statuses",
+        "status_open": "Open",
+        "status_investigating": "Investigating",
+        "status_resolved": "Resolved (Pending Closure)",
+        "status_closed": "Closed",
+        "severity_low": "Low",
+        "severity_medium": "Medium",
+        "severity_high": "High",
+        "severity_critical": "Critical",
+        "table_id": "ID",
+        "table_date": "Date",
+        "table_item": "Item",
+        "table_issue": "Issue",
+        "table_severity": "Severity",
+        "table_status": "Status",
+        "no_records": "No non-conformities found.",
+        "manage": "Manage",
+        "not_found": "NC not found",
+        "save_draft": "Save Draft",
+        "close_nc": "Close NC",
+        "details_title": "Details",
+        "description_label": "Description",
+        "no_description": "No description provided.",
+        "update_status": "Update Status",
+        "capa_title": "Investigation & CAPA",
+        "capa_description": "Root cause analysis and corrective actions are mandatory for ISO 17025 compliance.",
+        "root_cause": "1. Root Cause Analysis (Why did it happen?)",
+        "root_cause_placeholder": "e.g. Instrument dropped, wear and tear, environmental conditions...",
+        "immediate_action": "2. Immediate Action (Containment)",
+        "immediate_action_placeholder": "e.g. Instrument removed from service, labeled as rejected.",
+        "corrective_action": "3. Corrective Action (Fix)",
+        "corrective_action_placeholder": "e.g. Sent for repair, adjusted.",
+        "preventive_action": "4. Preventive Action (Future)",
+        "preventive_action_placeholder": "e.g. Operator training, protective case purchased.",
+        "messages_updated_success": "Investigation updated successfully.",
+        "messages_close_requirements": "Root Cause and Corrective Action are required to close.",
+        "messages_closed_success": "Non-Conformity Closed Successfully!"
+      }
+      }
