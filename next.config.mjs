@@ -1,15 +1,9 @@
-import createNextIntlPlugin from 'next-intl/plugin';
-
-const withNextIntl = createNextIntlPlugin();
+﻿import { env } from 'process';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
-  },
-}
+  output: 'standalone',
+  // ... rest of config
+};
 
-export default withNextIntl(nextConfig);
+export default nextConfig;
