@@ -1,0 +1,600 @@
+{
+  "Index": {
+    "title": "Bem-vindo ao Metrology SaaS",
+    "login": "Entrar",
+    "dashboard": "Painel",
+    "meta_title": "MetroLab | Plataforma SaaS de Metrologia",
+    "meta_description": "Plataforma profissional de gestão de metrologia para calibração de instrumentos, rastreamento e conformidade."
+  },
+  "Common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "actions": "Ações",
+    "copy_id": "Copiar ID",
+    "view_details": "Ver Detalhes",
+    "confirm_delete": "Tem certeza que deseja excluir este item?",
+    "deleted_success": "Item excluído com sucesso",
+    "switch_language": "Mudar Idioma",
+    "open_menu": "Abrir menu"
+  },
+  "Sidebar": {
+    "overview": "Visão Geral",
+    "dashboard": "Painel",
+    "metrology": "Metrologia",
+    "instruments": "Instrumentos",
+    "all_instruments": "Todos os Instrumentos",
+    "calibrations": "Calibrações",
+    "certificates": "Certificados",
+    "standards": "Padrões",
+    "all_standards": "Todos os Padrões",
+    "procedures": "Procedimentos",
+    "work_orders": "Ordens de Serviço",
+    "non_conformities": "Não-Conformidades",
+    "access_logs": "Logs de Acesso",
+    "audit_logs": "Trilha de Auditoria Global",
+    "settings": "Configurações",
+    "system": "Sistema",
+    "users": "Usuários",
+    "stations": "Estações",
+    "suppliers": "Fornecedores",
+    "iot": "Monitoramento IoT"
+  },
+  "Header": {
+    "toggle_menu": "Alternar menu",
+    "notifications": "Notificações",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "sign_out": "Sair",
+    "signing_out": "Saindo..."
+  },
+  "Auth": {
+    "welcome_back": "Bem-vindo de volta",
+    "sign_in_subtitle": "Entre na sua conta MetroLab para continuar",
+    "invalid_credentials": "Credenciais inválidas. Tente novamente.",
+    "email": "E-mail",
+    "password": "Senha",
+    "forgot_password": "Esqueceu a senha?",
+    "sign_in": "Entrar",
+    "no_account": "Não tem uma conta?",
+    "contact_sales": "Fale com vendas"
+  },
+  "Dashboard": {
+    "title": "Controle de Missão",
+    "description": "Visão geral das suas operações de metrologia",
+    "total_instruments": "Total de Instrumentos",
+    "registered_in_system": "Registrados no sistema",
+    "due_for_calibration": "Vencendo Calibração",
+    "within_next_30_days": "Nos próximos 30 dias",
+    "overdue": "Vencidos",
+    "requires_attention": "Requer atenção imediata",
+    "compliant": "Conformes",
+    "compliance_rate": "Taxa de conformidade atual",
+    "recent_calibrations": "Calibrações Recentes",
+    "upcoming_due_dates": "Próximos Vencimentos",
+    "days": "dias",
+    "status": {
+      "completed": "Concluído",
+      "in-progress": "Em Andamento",
+      "pending": "Pendente"
+    },
+    "priority": {
+      "high": "Alta",
+      "medium": "Média",
+      "low": "Baixa"
+    }
+  },
+  "MetrologyDashboard": {
+    "title": "Painel de Metrologia",
+    "description": "Visão geral em tempo real do status de calibração e operações do laboratório.",
+    "total_instruments": "Total de Instrumentos",
+    "registered_assets": "Ativos registrados",
+    "compliance_rate": "Taxa de Conformidade",
+    "active_instruments": "Instrumentos ativos",
+    "overdue": "Vencidos",
+    "requires_attention": "Requer ação imediata",
+    "in_calibration": "Em Calibração",
+    "currently_serviced": "Sendo calibrados",
+    "upcoming_calibrations": "Próximas Calibrações",
+    "due_in_30_days": "Instrumentos vencendo nos próximos 30 dias.",
+    "no_upcoming": "Nenhuma calibração próxima.",
+    "due_soon": "Vence em breve",
+    "recent_activity": "Atividade Recente",
+    "latest_calibrations": "Últimas calibrações concluídas.",
+    "no_recent_activity": "Nenhuma atividade recente."
+  },
+  "Instruments": {
+    "title": "Instrumentos",
+    "description": "Gerencie e rastreie todos os instrumentos calibrados",
+    "add_instrument": "Adicionar Instrumento",
+    "edit_instrument": "Editar Instrumento",
+    "search_placeholder": "Buscar instrumentos...",
+    "status": {
+      "all": "Todos os Instrumentos",
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "maintenance": "Manutenção",
+      "in_calibration": "Em Calibração",
+      "rejected": "Rejeitado",
+      "lost": "Perdido",
+      "expired": "Vencido",
+      "scrapped": "Sucateado",
+      "due_soon": "Vence em Breve"
+    },
+    "table": {
+      "id": "ID",
+      "instrument": "Instrumento",
+      "manufacturer": "Fabricante",
+      "location": "Localização",
+      "status": "Status",
+      "calibration_due": "Vencimento Calibração"
+    },
+    "form": {
+      "name": "Nome do Instrumento",
+      "name_placeholder": "Ex: Paquímetro Digital",
+      "type": "Tipo de Instrumento",
+      "type_placeholder": "Selecione o tipo",
+      "type_description": "Define a frequência padrão e regras de decisão.",
+      "decision_rule": "Regra de Decisão (ISO 17025)",
+      "decision_rule_placeholder": "Selecione a regra",
+      "decision_rule_description": "Define como o resultado Aprovação/Reprovação será calculado automaticamente.",
+      "rules": {
+        "simple": "Aceitação Simples (Erro <= MPE)",
+        "guard_band": "Banda de Guarda (Erro <= MPE - U)",
+        "uncertainty_accounted": "Incerteza Somada (Erro + U <= MPE)"
+      },
+      "serial_number": "Número de Série",
+      "serial_placeholder": "Ex: NS-123456",
+      "manufacturer": "Fabricante",
+      "manufacturer_placeholder": "Ex: Mitutoyo",
+      "model": "Modelo",
+      "model_placeholder": "Ex: CD-6 AX",
+      "status": "Status",
+      "status_placeholder": "Selecione o status",
+      "location": "Localização",
+      "location_placeholder": "Ex: Lab A",
+      "last_calibration": "Última Calibração",
+      "next_calibration": "Próxima Calibração",
+      "next_calibration_description": "Calculado automaticamente com base na frequência do Tipo de Instrumento.",
+      "save": "Salvar Instrumento",
+      "saving": "Salvando...",
+      "description_add": "Adicione um novo instrumento ao registro",
+      "description_edit": "Atualize os detalhes do instrumento"
+    },
+    "messages": {
+      "created_success": "Instrumento criado com sucesso",
+      "created_error": "Falha ao criar instrumento",
+      "updated_success": "Instrumento atualizado com sucesso",
+      "updated_error": "Falha ao atualizar instrumento",
+      "not_found": "Instrumento não encontrado"
+    }
+  },
+  "Calibrations": {
+    "title": "Centro de Calibrações",
+    "description": "Registro global de certificados e fluxo de aprovação.",
+    "new_calibration": "Nova Calibração",
+    "tabs": {
+      "history": "Todos os Certificados",
+      "review": "Fila de Revisão",
+      "pending": "Pendente"
+    },
+    "table": {
+      "id": "ID",
+      "date": "Data",
+      "instrument": "Instrumento",
+      "result": "Resultado",
+      "status": "Status",
+      "actions": "Ações",
+      "technician": "Técnico",
+      "review_actions": "Ações de Revisão",
+      "search_placeholder": "Buscar certificado ou instrumento...",
+      "no_records": "Nenhum registro encontrado.",
+      "all_caught_up": "Tudo em dia! Nenhuma calibração pendente de revisão.",
+      "view": "Visualizar",
+      "cert": "Cert"
+    },
+    "form": {
+      "instrument_id": "ID do Instrumento / Tag do Ativo",
+      "instrument_id_placeholder": "Ex: INS-001",
+      "instrument_name": "Nome do Instrumento",
+      "instrument_name_placeholder": "Ex: Paquímetro Digital",
+      "date": "Data da Calibração",
+      "technician": "Técnico",
+      "technician_placeholder": "Ex: João Silva",
+      "result": "Resultado",
+      "result_placeholder": "Selecione o resultado",
+      "next_due_date": "Próximo Vencimento",
+      "save": "Salvar Calibração",
+      "saving": "Salvando..."
+    },
+    "status": {
+      "published": "Publicado",
+      "rejected": "Rejeitado",
+      "in_review": "Em Revisão",
+      "draft": "Rascunho"
+    },
+    "result": {
+      "pass": "Aprovado",
+      "fail": "Reprovado",
+      "conditional_pass": "Aprovação Condicional",
+      "conditional": "Aprovação Condicional (Banda de Guarda)",
+      "approved": "Aprovado",
+      "approved_with_restrictions": "Aprovado com Restrições",
+      "rejected": "Reprovado",
+      "unknown": "Desconhecido"
+    },
+    "messages": {
+      "approved": "Calibração Aprovada e Publicada",
+      "rejected": "Calibração Devolvida para Correção"
+    },
+    "tooltips": {
+      "view_details": "Ver Detalhes",
+      "approve": "Aprovar",
+      "reject": "Rejeitar (Voltar para Rascunho)"
+    }
+  },
+  "Certificates": {
+    "title": "Certificados",
+    "description": "Repositório de certificados de calibração emitidos",
+    "table": {
+      "cert_id": "ID do Certificado",
+      "cal_id": "ID da Calibração",
+      "instrument": "Instrumento",
+      "issue_date": "Data de Emissão",
+      "hash": "Hash Digital",
+      "status": "Status",
+      "action": "Ação",
+      "download": "Baixar",
+      "valid": "Válido",
+      "revoked": "Revogado"
+    }
+  },
+  "Standards": {
+    "title": "Padrões de Referência",
+    "description": "Gerencie os padrões de medição usados para calibração",
+    "new_standard": "Novo Padrão",
+    "edit_standard": "Editar Padrão",
+    "search_placeholder": "Buscar padrões...",
+    "all_types": "Todos os Tipos",
+    "table": {
+      "id": "ID",
+      "name": "Nome",
+      "serial_number": "Número de Série",
+      "type": "Tipo",
+      "nominal_value": "Valor Nominal",
+      "actions": "Ações"
+    },
+    "form": {
+      "name": "Nome",
+      "name_placeholder": "Ex: Jogo de Blocos Padrão 0-100mm",
+      "parent_kit": "Kit Pai (Opcional)",
+      "parent_kit_placeholder": "Vincular a um Kit",
+      "parent_kit_desc": "Se este item for parte de um conjunto (ex: um bloco do jogo), selecione o Kit pai.",
+      "no_parent": "Nenhum (Este é um item independente)",
+      "serial_number": "Número de Série",
+      "serial_placeholder": "Ex: NS-12345",
+      "stock_number": "Nº de Patrimônio (Opcional)",
+      "stock_placeholder": "Ex: PAT-001",
+      "type": "Tipo",
+      "type_placeholder": "Selecione o tipo",
+      "material": "Material (Correção Térmica)",
+      "material_placeholder": "Selecione o material...",
+      "nominal_value": "Valor Nominal (Opcional)",
+      "nominal_placeholder": "Ex: 50,00",
+      "actual_value": "Valor Real/Convencional (Opcional)",
+      "actual_placeholder": "Ex: 50,0002",
+      "unit": "Unidade de Medida",
+      "unit_placeholder": "Ex: mm",
+      "save": "Salvar Padrão",
+      "saving": "Salvando...",
+      "description_add": "Adicione um novo padrão ao registro",
+      "description_edit": "Atualize os detalhes do padrão"
+    },
+    "types": {
+      "gauge_block": "Jogo de Blocos Padrão",
+      "caliper_checker": "Bloco de Verificação de Paquímetro",
+      "micrometer_standard": "Padrão de Micrômetro",
+      "other": "Outro"
+    },
+    "messages": {
+      "created_success": "Padrão criado com sucesso",
+      "created_error": "Falha ao criar padrão",
+      "updated_success": "Padrão atualizado com sucesso",
+      "updated_error": "Falha ao atualizar padrão",
+      "deleted_success": "Padrão excluído com sucesso",
+      "deleted_error": "Falha ao excluir padrão",
+      "not_found": "Padrão não encontrado",
+      "confirm_delete": "Tem certeza que deseja excluir este padrão?",
+      "open_nc": "RNC Aberta: {title}"
+    }
+  },
+  "Procedures": {
+    "title": "Procedimentos de Calibração",
+    "description": "Listas de verificação padronizadas para instrumentos",
+    "new_procedure": "Novo Procedimento",
+    "edit_procedure": "Editar Procedimento",
+    "search_placeholder": "Buscar procedimentos...",
+    "table": {
+      "code": "Código",
+      "name": "Nome do Procedimento",
+      "steps": "Etapas",
+      "checkpoints": "{count} Pontos de Verificação",
+      "actions": "Ações"
+    },
+    "form": {
+      "details_title": "Detalhes do Procedimento",
+      "name": "Nome do Procedimento",
+      "name_placeholder": "Ex: Paquímetro 0-150mm (DIN 862)",
+      "instrument_type": "Tipo de Instrumento",
+      "instrument_type_placeholder": "Selecione o tipo",
+      "instrument_type_description": "O tipo de instrumento ao qual este procedimento se aplica.",
+      "checkpoints_title": "Pontos de Verificação",
+      "add_numeric": "Adicionar Numérico",
+      "add_boolean": "Adicionar Booleano",
+      "step_description": "Descrição",
+      "step_description_boolean_placeholder": "Ex: Limpeza",
+      "step_description_numeric_placeholder": "Ex: 50,00 mm",
+      "step_type": "Tipo",
+      "step_target": "Alvo",
+      "step_tolerance": "Tol (+/-)",
+      "step_qty": "Qtd",
+      "boolean_helper": "O técnico selecionará Aprova/Reprova.",
+      "text_helper": "O técnico inserirá observações em texto.",
+      "save": "Salvar Procedimento",
+      "saving": "Salvando...",
+      "description_add": "Crie um novo modelo de procedimento",
+      "description_edit": "Atualize o modelo de procedimento"
+    },
+    "types": {
+      "numeric": "Numérico",
+      "boolean": "Aprova/Reprova",
+      "text": "Obs. de Texto"
+    },
+    "messages": {
+      "created_success": "Procedimento criado com sucesso",
+      "created_error": "Falha ao criar procedimento",
+      "updated_success": "Procedimento atualizado com sucesso",
+      "updated_error": "Falha ao atualizar procedimento",
+      "deleted_success": "Procedimento excluído com sucesso",
+      "deleted_error": "Falha ao excluir procedimento",
+      "not_found": "Procedimento não encontrado",
+      "confirm_delete": "Tem certeza que deseja excluir este procedimento?"
+    }
+  },
+  "Users": {
+    "title": "Gestão de Usuários",
+    "description": "Gerencie os usuários do sistema e seus papéis.",
+    "add_user": "Adicionar Usuário",
+    "edit_user": "Editar Usuário",
+    "create_user": "Criar Usuário",
+    "search_placeholder": "Buscar usuários...",
+    "table": {
+      "name": "Nome",
+      "email": "E-mail",
+      "role": "Papel",
+      "created_at": "Criado em",
+      "no_role": "Sem Papel"
+    },
+    "form": {
+      "name": "Nome",
+      "name_placeholder": "Ex: João Silva",
+      "email": "E-mail",
+      "email_placeholder": "joao@exemplo.com",
+      "role": "Papel",
+      "role_placeholder": "Selecione um papel",
+      "password": "Senha",
+      "password_helper": "(Deixe vazio para manter)",
+      "password_placeholder": "******",
+      "details": "Detalhes do Usuário",
+      "update_description": "Atualize os detalhes da conta do usuário.",
+      "create_description": "Adicione um novo usuário ao sistema.",
+      "save_changes": "Salvar alterações",
+      "password_required": "Senha é obrigatória para novos usuários"
+    },
+    "messages": {
+      "created_success": "Usuário criado com sucesso",
+      "updated_success": "Usuário atualizado com sucesso",
+      "save_error": "Falha ao salvar usuário"
+    },
+    "roles": {
+      "Admin": "Administrador",
+      "Manager": "Gerente",
+      "Metrologist": "Metrologista",
+      "Operator": "Operador"
+    }
+  },
+  "Stations": {
+    "title": "Estações de Trabalho",
+    "description": "Gerencie as estações físicas e suas identidades digitais.",
+    "add_station": "Adicionar Estação",
+    "edit_station": "Editar Estação",
+    "new_station": "Nova Estação",
+    "search_placeholder": "Buscar estações...",
+    "table": {
+      "name": "Nome",
+      "type": "Tipo",
+      "status": "Status",
+      "location": "Localização",
+      "hostname": "Hostname"
+    },
+    "form": {
+      "new_station": "Nova Estação de Trabalho",
+      "name": "Nome da Estação",
+      "name_placeholder": "Ex: Bancada 01",
+      "type": "Tipo",
+      "status": "Status",
+      "location": "Localização / Setor",
+      "location_placeholder": "Ex: Setor A",
+      "hostname": "Hostname (Nome da Máquina)",
+      "hostname_placeholder": "Ex: PC-LAB-01",
+      "hostname_description": "Usado para detecção automática de logs.",
+      "ip_address": "Endereço IP",
+      "ip_address_placeholder": "Ex: 192.168.1.50",
+      "manage_details": "Gerenciar detalhes da estação.",
+      "save": "Salvar Estação"
+    },
+    "types": {
+      "Workstation": "Bancada de Trabalho",
+      "Laboratory": "Laboratório",
+      "Production": "Produção",
+      "Mobile": "Móvel"
+    },
+    "status": {
+      "Active": "Ativo",
+      "Maintenance": "Manutenção",
+      "Inactive": "Inativo"
+    },
+    "messages": {
+      "created_success": "Estação criada",
+      "updated_success": "Estação atualizada",
+      "deleted_success": "Estação excluída",
+      "save_error": "Falha ao salvar estação",
+      "confirm_delete": "Tem certeza?"
+    }
+  },
+  "Suppliers": {
+    "title": "Fornecedores",
+    "description": "Gerencie fornecedores externos de calibração e manutenção.",
+    "add_supplier": "Adicionar Fornecedor",
+    "edit_supplier": "Editar Fornecedor",
+    "new_supplier": "Novo Fornecedor",
+    "search_placeholder": "Buscar fornecedores...",
+    "table": {
+      "name": "Nome / Razão Social",
+      "contact": "Contato",
+      "email": "E-mail",
+      "phone": "Telefone",
+      "status": "Status"
+    },
+    "form": {
+      "name": "Nome / Razão Social",
+      "name_placeholder": "Ex: Laboratório de Calibração XYZ",
+      "tax_id": "CNPJ / CPF",
+      "tax_id_placeholder": "00.000.000/0000-00",
+      "contact_person": "Pessoa de Contato",
+      "contact_placeholder": "Ex: Maria Silva",
+      "email": "E-mail",
+      "email_placeholder": "contato@fornecedor.com",
+      "phone": "Telefone",
+      "phone_placeholder": "(00) 0000-0000",
+      "address": "Endereço",
+      "status": "Status",
+      "save": "Salvar Fornecedor"
+    },
+    "status": {
+      "Active": "Ativo",
+      "Inactive": "Inativo",
+      "Suspended": "Suspenso"
+    },
+    "messages": {
+      "created_success": "Fornecedor criado",
+      "updated_success": "Fornecedor atualizado",
+      "deleted_success": "Fornecedor excluído",
+      "save_error": "Falha ao salvar fornecedor"
+    }
+  },
+  "WorkOrders": {
+    "title": "Ordens de Serviço (OS)",
+    "description": "Gerencie o recebimento, fila e expedição de instrumentos.",
+    "check_in": "Receber Instrumento",
+    "table": {
+      "number": "Nº da OS",
+      "item": "Item",
+      "status": "Status",
+      "received_by": "Recebido Por",
+      "date": "Data"
+    }
+  },
+  "Metrology": {
+    "uncertainty_budget": {
+      "title": "Demonstrativo de Cálculo (ISO GUM)",
+      "description": "Detalhamento das contribuições para a Incerteza de Medição.",
+      "table": {
+        "source": "Fonte de Incerteza",
+        "value": "Valor",
+        "distribution": "Distribuição",
+        "divisor": "Divisor",
+        "standard_uncertainty": "u (Padrão)",
+        "combined_uncertainty": "Incerteza Combinada (uc)",
+        "expanded_uncertainty": "Incerteza Expandida (U = uc × {k})"
+      },
+      "methodology": {
+        "title": "Metodologia e Fórmulas (JCGM 100:2008)",
+        "u_title": "1. Incerteza Padrão (u)",
+        "u_formula": "u = Valor / Divisor",
+        "u_desc": "O divisor depende da distribuição:\n• Normal (k=1): 1\n• Retangular: √3 ≈ 1.732\n• Triangular: √6 ≈ 2.449",
+        "uc_title": "2. Incerteza Combinada (uc)",
+        "uc_formula": "uc = √(u₁² + u₂² + ... + uₙ²)",
+        "uc_desc": "Raiz da soma dos quadrados de todas as incertezas padrão.",
+        "U_title": "3. Incerteza Expandida (U)",
+        "U_formula": "U = uc × k",
+        "U_desc": "Onde k é o fator de abrangência (tipicamente 2 para 95,45% de confiança)."
+      }
+    }
+  },
+  "Validations": {
+    "required": "Este campo é obrigatório.",
+    "min_characters": "Deve ter pelo menos {count} caracteres.",
+    "invalid_email": "E-mail inválido.",
+    "select_option": "Por favor, selecione uma opção."
+  },
+  "Settings": {
+    "title": "Configurações de Metrologia",
+    "description": "Configure tipos de instrumentos, padrões e dados mestre.",
+    "instrument_types": "Tipos de Instrumentos",
+    "standard_types": "Tipos de Padrões",
+    "materials": {
+      "tab_title": "Materiais (Expansão Térmica)",
+      "add": "Novo Material",
+      "name": "Nome do Material",
+      "name_placeholder": "Ex: Aço Carbono",
+      "category": "Categoria",
+      "category_placeholder": "Ex: Metal",
+      "cte": "Coeficiente (α) [10⁻⁶ / °C]",
+      "cte_description": "Coeficiente de expansão térmica linear para cálculos em calibração dimensional."
+    }
+  },
+  "NonConformities": {
+    "title": "Não-Conformidades (RNC)",
+    "description": "Gerencie falhas de calibração, análise de causa raiz e ações corretivas (CAPA).",
+    "filter_status": "Filtrar por Status",
+    "status_all": "Todos os Status",
+    "status_open": "Aberta",
+    "status_investigating": "Em Investigação",
+    "status_resolved": "Resolvida (Pendente Fechamento)",
+    "status_closed": "Fechada",
+    "severity_low": "Baixa",
+    "severity_medium": "Média",
+    "severity_high": "Alta",
+    "severity_critical": "Crítica",
+    "table_id": "ID",
+    "table_date": "Data",
+    "table_item": "Item",
+    "table_issue": "Problema",
+    "table_severity": "Gravidade",
+    "table_status": "Status",
+    "no_records": "Nenhuma não-conformidade encontrada.",
+    "manage": "Gerenciar",
+    "not_found": "RNC não encontrada",
+    "save_draft": "Salvar Rascunho",
+    "close_nc": "Fechar RNC",
+    "details_title": "Detalhes",
+    "description_label": "Descrição",
+    "no_description": "Sem descrição.",
+    "update_status": "Atualizar Status",
+    "capa_title": "Investigação & CAPA",
+    "capa_description": "Análise de causa raiz e ações corretivas são obrigatórias para conformidade ISO 17025.",
+    "root_cause": "1. Análise de Causa Raiz (Por que aconteceu?)",
+    "root_cause_placeholder": "Ex: Instrumento sofreu queda, desgaste natural, condições ambientais...",
+    "immediate_action": "2. Ação Imediata (Contenção)",
+    "immediate_action_placeholder": "Ex: Instrumento recolhido, etiquetado como rejeitado.",
+    "corrective_action": "3. Ação Corretiva (Correção)",
+    "corrective_action_placeholder": "Ex: Enviado para manutenção externa, ajustado.",
+    "preventive_action": "4. Ação Preventiva (Futuro)",
+    "preventive_action_placeholder": "Ex: Treinamento de operadores, compra de estojo protetor.",
+    "messages_updated_success": "Investigação atualizada com sucesso.",
+    "messages_close_requirements": "Causa Raiz e Ação Corretiva são obrigatórias para fechar a RNC.",
+    "messages_closed_success": "Não-Conformidade Fechada com Sucesso!"
+  }
+}
