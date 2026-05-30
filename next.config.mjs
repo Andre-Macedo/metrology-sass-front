@@ -1,9 +1,11 @@
-﻿import { env } from 'process';
+﻿import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  // ... rest of config
+  // Suas outras configurações aqui...
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);
