@@ -7,6 +7,9 @@ export const instrumentSchema = z.object({
     manufacturer: z.string().nullable().optional().transform(v => v || "Unknown"),
     model: z.string().nullable().optional().transform(v => v || "N/A"),
     type: z.string().nullable().optional(),
+    instrument_type_id: z.string().nullable().optional(),
+    instrument_type_name: z.string().nullable().optional(),
+    instrument_type: z.any().optional(),
     // Aligning with backend: active, inactive, maintenance, calibrating, lost
     // Plus frontend-only computed statuses: due, expired, in_calibration
     status: z.union([
@@ -27,6 +30,11 @@ export const instrumentSchema = z.object({
     location: z.string().nullable().optional().transform(v => v || "Unassigned"),
     station_id: z.number().nullable().optional(),
     range: z.string().nullable().optional(),
+    mpe: z.string().nullable().optional(),
+    mpe_value: z.number().nullable().optional(),
+    precision: z.string().nullable().optional(),
+    resolution: z.string().nullable().optional(),
+    nfc_tag: z.string().nullable().optional(),
     image_url: z.string().nullable().optional(),
     material_id: z.number().nullable().optional(),
     open_non_conformity: z.object({

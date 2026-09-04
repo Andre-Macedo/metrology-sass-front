@@ -316,7 +316,7 @@ export default function CalibrationDetailsPage() {
                                     <tr className="bg-primary/5">
                                         <td colSpan={4} className="px-4 py-2 text-right font-bold uppercase tracking-tighter">Combined Uncertainty (uc)</td>
                                         <td className="px-4 py-2 text-right font-black font-mono text-primary">
-                                            {(calibration.uncertainty / (calibration.k_factor || 2)).toFixed(5)}
+                                            {((calibration.uncertainty || 0) / (calibration.k_factor || 2)).toFixed(5)}
                                         </td>
                                     </tr>
                                 </tbody>

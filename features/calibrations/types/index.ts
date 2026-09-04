@@ -12,7 +12,7 @@ export const calibrationSchema = z.object({
     next_due_date: z.string().nullable(),
     technician: z.string().default("Sistema"),
 
-    result: z.enum(['pass', 'fail', 'conditional', 'approved_with_restrictions', 'unknown']),
+    result: z.enum(['pass', 'fail', 'conditional_pass', 'unknown']),
     result_label: z.string().nullable().optional(),
     as_found_result: z.string().nullable().optional(),
     as_left_result: z.string().nullable().optional(),

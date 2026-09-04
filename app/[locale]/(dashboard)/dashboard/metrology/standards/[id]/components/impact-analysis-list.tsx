@@ -89,7 +89,7 @@ export function ImpactAnalysisList({ standardId }: ImpactAnalysisListProps) {
                                     </TableCell>
                                     <TableCell>{cal.calibrated_item?.serial_number}</TableCell>
                                     <TableCell>
-                                        <Badge variant={cal.result === 'approved' ? 'default' : 'destructive'}>
+                                        <Badge variant={cal.result === 'pass' ? 'default' : 'destructive'}>
                                             {cal.result}
                                         </Badge>
                                     </TableCell>

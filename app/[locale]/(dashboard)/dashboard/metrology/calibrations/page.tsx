@@ -129,8 +129,8 @@ function CalibrationsTable() {
                                     </TableCell>
                                     <TableCell>
                                         <Badge variant={
-                                            cal.result === 'pass' || cal.result === 'approved' ? 'default' : 
-                                            cal.result === 'conditional' || cal.result === 'approved_with_restrictions' || cal.result === 'conditional_pass' ? 'secondary' :
+                                            cal.result === 'pass' ? 'default' : 
+                                            cal.result === 'conditional_pass' ? 'secondary' :
                                             'destructive'
                                         }>
                                             {t(`result.${cal.result}`)}
@@ -179,13 +179,13 @@ function ReviewQueueTable() {
     const rejectMutation = useRejectCalibration()
 
     const handleApprove = (id: string) => {
-        approveMutation.mutate(id, {
+        approveMutation.mutate({ id }, {
             onSuccess: () => toast.success(t('messages.approved'))
         })
     }
 
     const handleReject = (id: string) => {
-        rejectMutation.mutate(id, {
+        rejectMutation.mutate({ id }, {
             onSuccess: () => toast.success(t('messages.rejected'))
         })
     }
@@ -229,10 +229,11 @@ function ReviewQueueTable() {
                                 <TableCell>{cal.technician}</TableCell>
                                 <TableCell>
                                     <Badge variant={
-                                        cal.result === 'pass' || cal.result === 'approved' ? 'default' : 
-                                        cal.result === 'conditional' || cal.result === 'approved_with_restrictions' || cal.result === 'conditional_pass' ? 'secondary' :
+                                        cal.result === 'pass' ? 'default' : 
+                                        cal.result === 'conditional_pass' ? 'secondary' :
                                         'destructive'
                                     }>
+
                                         {t(`result.${cal.result}`)}
                                     </Badge>
                                 </TableCell>

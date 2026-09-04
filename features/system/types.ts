@@ -55,7 +55,7 @@ export interface SupplierFormData {
 }
 
 export interface Station {
-    id: number
+    id: string
     name: string
     location?: string
     hostname?: string

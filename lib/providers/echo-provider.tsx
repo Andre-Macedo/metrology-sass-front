@@ -10,20 +10,20 @@ if (typeof window !== 'undefined') {
 }
 
 interface EchoContextType {
-  echo: Echo | null
+  echo: Echo<any> | null
 }
 
 const EchoContext = createContext<EchoContextType>({ echo: null })
 
 export function EchoProvider({ children }: { children: React.ReactNode }) {
-  const [echoInstance, setEchoInstance] = useState<Echo | null>(null)
+  const [echoInstance, setEchoInstance] = useState<Echo<any> | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
 
     const echo = new Echo({
       broadcaster: 'reverb',
-      key: process.env.NEXT_PUBLIC_REVERB_APP_KEY,
+      key: process.env.NEXT_PUBLIC_REVERB_KEY,
       wsHost: process.env.NEXT_PUBLIC_REVERB_HOST || window.location.hostname,
       wsPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT) || 80,
       wssPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT) || 443,

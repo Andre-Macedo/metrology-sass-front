@@ -49,7 +49,7 @@ export default function CalibrationReviewPage() {
     }
 
     const handleReject = (id: string) => {
-        rejectMutation.mutate(id, {
+        rejectMutation.mutate({ id }, {
             onSuccess: () => toast.success("Calibration Returned for Correction")
         })
     }
@@ -90,16 +90,16 @@ export default function CalibrationReviewPage() {
                             data?.data.map((cal) => (
                                 <TableRow key={cal.id}>
                                     <TableCell className="font-mono">#{cal.id}</TableCell>
-                                    <TableCell>{format(new Date(cal.date), 'dd/MM/yyyy')}</TableCell>
+                                    <TableCell>{cal.date ? format(new Date(cal.date), 'dd/MM/yyyy') : 'N/A'}</TableCell>
                                     <TableCell>
                                         <div className="flex flex-col">
-                                            <span className="font-medium">{cal.calibrated_item_name}</span>
-                                            <span className="text-xs text-muted-foreground">ID: {cal.calibrated_item_id}</span>
+                                            <span className="font-medium">{cal.instrument_name}</span>
+                                            <span className="text-xs text-muted-foreground">ID: {cal.instrument_id}</span>
                                         </div>
                                     </TableCell>
                                     <TableCell>{cal.technician}</TableCell>
                                     <TableCell>
-                                        <Badge variant={cal.result === 'approved' || cal.result === 'pass' ? 'default' : 'destructive'}>
+                                        <Badge variant={cal.result === 'pass' ? 'default' : 'destructive'}>
                                             {cal.result}
                                         </Badge>
                                     </TableCell>

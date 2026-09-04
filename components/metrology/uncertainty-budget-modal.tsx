@@ -25,25 +25,37 @@ import { useTranslations } from "next-intl"
 import { Plus, Trash2, Save } from "lucide-react"
 import { calculateStandardUncertainty, calculateExpandedUncertainty, DISTRIBUTIONS } from "@/features/calibrations/utils/gum"
 
+import { DialogTrigger } from "@/components/ui/dialog"
+
 interface UncertaintyBudgetModalProps {
     budget: UncertaintyBudgetItem[]
     kFactor: string | number
-    isOpen: boolean
-    onClose: () => void
+    isOpen?: boolean
+    onClose?: () => void
     onSave?: (newBudget: UncertaintyBudgetItem[], newExpandedUncertainty: number) => void
+    trigger?: React.ReactNode
+    expandedUncertainty?: number
 }
 
 export function UncertaintyBudgetModal({
     budget: initialBudget,
     kFactor,
-    isOpen,
-    onClose,
-    onSave
+    isOpen: externalIsOpen,
+    onClose: externalOnClose,
+    onSave,
+    trigger
 }: UncertaintyBudgetModalProps) {
     const t = useTranslations('Metrology.uncertainty_budget')
     const commonT = useTranslations('Common')
 
     const [budget, setBudget] = useState<UncertaintyBudgetItem[]>([])
+    const [internalIsOpen, setInternalIsOpen] = useState(false)
+    const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen
+
+    const onClose = () => {
+        if (externalOnClose) externalOnClose()
+        setInternalIsOpen(false)
+    }
 
     // Sync with initial props when opened
     useEffect(() => {
@@ -104,7 +116,11 @@ export function UncertaintyBudgetModal({
     }
 
     return (
-        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+        <Dialog open={isOpen} onOpenChange={(open) => {
+            if (!open) onClose()
+            else setInternalIsOpen(true)
+        }}>
+            {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>{t('title')} (GUM Dynamic Calculator)</DialogTitle>

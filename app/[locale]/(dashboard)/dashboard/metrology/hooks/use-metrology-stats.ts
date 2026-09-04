@@ -29,7 +29,7 @@ export function useMetrologyStats() {
     return useQuery({
         queryKey: ["metrology-stats"],
         queryFn: async () => {
-            const { data } = await apiClient.get<MetrologyStats>("/dashboard/stats")
+            const data = await apiClient.get<MetrologyStats>("/dashboard/stats")
             return data
         },
     })

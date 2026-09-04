@@ -10,9 +10,9 @@ import { toast } from "sonner"
 import { formatDistanceToNow } from "date-fns"
 
 interface AttachmentsListProps {
-    attachments?: Attachment[]
+    attachments: Attachment[]
     attachableType: string
-    attachableId: number
+    attachableId: number | string
 }
 
 export function AttachmentsList({ attachments = [], attachableType, attachableId }: AttachmentsListProps) {

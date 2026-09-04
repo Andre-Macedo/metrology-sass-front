@@ -22,7 +22,7 @@ export function InstrumentTypesList() {
     const [open, setOpen] = useState(false)
     const [editingItem, setEditingItem] = useState<InstrumentType | null>(null)
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string | number) => {
         if (confirm(commonT('confirm_delete'))) {
             await deleteMutation.mutateAsync(id)
             toast.success(commonT('deleted_success'))
@@ -30,7 +30,15 @@ export function InstrumentTypesList() {
     }
 
     const columns: ColumnDef<InstrumentType>[] = [
-        { accessorKey: "id", header: "ID", size: 50 },
+        { 
+            accessorKey: "id", 
+            header: "ID", 
+            size: 50,
+            cell: ({ row }) => {
+                const id = row.original.id;
+                return <span className="text-xs text-muted-foreground">{typeof id === 'string' && id.length > 10 ? id.slice(0, 8) + '...' : id}</span>
+            }
+        },
         { accessorKey: "name", header: t('form.name') },
         {
             accessorKey: "calibration_frequency_months",

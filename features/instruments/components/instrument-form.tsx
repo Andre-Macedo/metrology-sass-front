@@ -60,7 +60,7 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
         model: z.string().min(1, {
             message: tV('required')
         }),
-        status: z.enum(['active', 'expired', 'in_calibration', 'rejected', 'inactive', 'due', 'calibrating', 'lost', 'maintenance', 'scrapped']),
+        status: z.string(),
         current_station_id: z.string().optional(),
         last_calibration_date: z.string(),
         next_calibration_date: z.string(),
@@ -73,7 +73,7 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
             ...initialData,
             instrument_type_id: initialData.instrument_type_id || "",
             current_station_id: initialData.current_station_id || "",
-            material_id: initialData.material_id || undefined,
+            material_id: initialData.material_id ? String(initialData.material_id) : undefined,
             guard_band_multiplier_override: initialData.guard_band_multiplier_override || undefined,
         } : {
             name: "",

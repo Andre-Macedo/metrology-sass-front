@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DashboardStats } from "../hooks/use-dashboard"
+import { DashboardStats } from "../../hooks/use-dashboard"
 import { CheckCircle2, XCircle } from "lucide-react"
 
 interface RecentActivityProps {

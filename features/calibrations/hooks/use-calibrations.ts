@@ -131,12 +131,12 @@ export function useApproveCalibration() {
 export function useRejectCalibration() {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: async (id: string) => {
+        mutationFn: async ({ id }: { id: string }) => {
             await apiClient.post(`/calibrations/${id}/reject`)
         },
-        onSuccess: (data, id) => {
+        onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ['calibrations'] })
-            queryClient.invalidateQueries({ queryKey: ['calibrations', id] })
+            queryClient.invalidateQueries({ queryKey: ['calibrations', variables.id] })
         }
     })
 }
