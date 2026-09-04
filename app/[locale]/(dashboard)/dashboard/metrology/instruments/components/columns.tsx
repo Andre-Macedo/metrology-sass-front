@@ -20,16 +20,17 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 // Status Config mapping
 const statusConfig: Record<string, { label: string; className: string }> = {
-    active: { label: 'Active', className: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' },
-    inactive: { label: 'Inactive', className: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300' },
-    maintenance: { label: 'Maintenance', className: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300' },
-    in_calibration: { label: 'In Calibration', className: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' },
-    rejected: { label: 'Rejected', className: 'bg-destructive/10 text-destructive' },
-    lost: { label: 'Lost', className: 'bg-destructive/10 text-destructive' },
-    expired: { label: 'Expired', className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' },
-    scrapped: { label: 'Scrapped', className: 'bg-gray-500 text-white' },
-    due: { label: 'Due Soon', className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' }
-}
+    active: { label: 'Ativo', className: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' },
+    inactive: { label: 'Inativo', className: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300' },
+    maintenance: { label: 'Manutenção', className: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300' },
+    in_calibration: { label: 'Em Calibração', className: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' },
+    rejected: { label: 'Rejeitado', className: 'bg-destructive/10 text-destructive' },
+    lost: { label: 'Perdido', className: 'bg-destructive/10 text-destructive' },
+    expired: { label: 'Expirado', className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' },
+    scrapped: { label: 'Sucateado', className: 'bg-gray-500 text-white' },
+    due: { label: 'Vencendo', className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' },
+};
+
 
 export const columns: ColumnDef<Instrument>[] = [
     {

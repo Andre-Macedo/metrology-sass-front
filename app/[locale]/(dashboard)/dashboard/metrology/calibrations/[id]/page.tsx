@@ -33,12 +33,13 @@ export default function CalibrationDetailsPage() {
                         <div className="flex items-center gap-2 text-muted-foreground">
                             <span>{calibration.calibrated_item_name}</span>
                             <span>•</span>
-                            <span>{format(new Date(calibration.date), 'dd/MM/yyyy')}</span>
-                        </div>
+                            <span>{calibration.date ? format(new Date(calibration.date), 'dd/MM/yyyy') : 'N/A'}</span>
+                            </div>
+
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    <Badge variant={calibration.result === 'approved' ? 'default' : 'destructive'} className="text-sm px-3">
+                    <Badge variant={calibration.result === 'pass' ? 'default' : 'destructive'} className="text-sm px-3">
                         {calibration.result.toUpperCase()}
                     </Badge>
                     {calibration.certificate_url && (

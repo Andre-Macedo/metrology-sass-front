@@ -1,6 +1,6 @@
-import { redirect } from '@/i18n/routing'
+import { redirect } from 'next/navigation'
 
-export default function HomePage() {
-  // This will automatically redirect to the localized path, e.g. `/en/dashboard`
-  redirect('/dashboard')
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  redirect(`/${locale}/dashboard`)
 }

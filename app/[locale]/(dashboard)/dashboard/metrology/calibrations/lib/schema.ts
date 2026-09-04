@@ -4,6 +4,7 @@ export const calibrationSchema = z.object({
     id: z.string(),
     instrument_id: z.string().nullable().optional(),
     instrument_name: z.string().nullable().optional().default("N/A"),
+    calibrated_item_name: z.string().nullable().optional(),
     checklist_id: z.string().nullable().optional(),
 
     date: z.string().nullable(),
@@ -14,10 +15,15 @@ export const calibrationSchema = z.object({
 
     result: z.enum(['pass', 'fail', 'conditional_pass', 'unknown']),
     result_label: z.string().nullable().optional(),
+    as_found_result: z.string().nullable().optional(),
+    as_left_result: z.string().nullable().optional(),
 
     // Technical details
     deviation: z.coerce.number().nullable().optional(),
+    as_found_deviation: z.coerce.number().nullable().optional(),
+    as_left_deviation: z.coerce.number().nullable().optional(),
     uncertainty: z.coerce.number().nullable().optional(),
+    k_factor: z.coerce.number().nullable().optional(),
     temperature: z.coerce.number().nullable().optional(), // Added
     humidity: z.coerce.number().nullable().optional(), // Added
     notes: z.string().nullable().optional(),

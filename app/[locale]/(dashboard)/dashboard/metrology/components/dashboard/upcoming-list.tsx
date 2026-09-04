@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { DashboardStats } from "../hooks/use-dashboard"
+import { DashboardStats } from "../../hooks/use-dashboard"
 import Link from "next/link"
 
 interface UpcomingListProps {

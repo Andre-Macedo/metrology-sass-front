@@ -29,7 +29,7 @@ const formSchema = z.object({
     serial_number: z.string().min(1, { message: "Serial number is required." }),
     manufacturer: z.string().min(1, { message: "Manufacturer is required." }),
     model: z.string().min(1, { message: "Model is required." }),
-    status: z.enum(['active', 'expired', 'in_calibration', 'rejected', 'inactive', 'due']),
+    status: z.string(),
     location: z.string().optional(),
     last_calibration_date: z.string().optional(),
     next_calibration_date: z.string().optional(),

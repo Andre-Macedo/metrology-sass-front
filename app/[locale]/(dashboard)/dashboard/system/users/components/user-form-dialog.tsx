@@ -28,7 +28,7 @@ import {
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { User, useUserMutations, useRoles } from "@/lib/hooks/use-system"
+import { User, useUserMutations, useRoles } from "@/features/system/hooks/use-system"
 import { useEffect } from "react"
 import { toast } from "sonner"
 import { useTranslations } from "next-intl"
