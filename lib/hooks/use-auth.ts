@@ -13,6 +13,7 @@ interface User {
     avatar?: string
     signature_image_path?: string
     tenant_id?: string
+    tenant_slug?: string
 }
 
 interface LoginCredentials {
@@ -70,8 +71,8 @@ export function useAuth() {
             // Se o usuário pertence a um tenant e não estamos no domínio dele ainda
             if (targetDomain && currentHost !== targetDomain && !currentHost.includes('localhost:3000')) {
                 // Redireciona para o domínio do tenant passando o token via URL para captura
-                // Usamos a rota /verify que já existe ou uma similar
-                window.location.href = `http://${targetDomain}/${locale}/verify?token=${data.token}`
+                const protocol = typeof window !== 'undefined' ? window.location.protocol : 'https:'
+                window.location.href = `${protocol}//${targetDomain}/${locale}/verify?token=${data.token}`
                 return
             }
 

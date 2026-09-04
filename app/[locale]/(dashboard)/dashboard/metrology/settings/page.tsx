@@ -20,7 +20,7 @@ export default function MetrologySettingsPage() {
 
             <Tabs defaultValue="global" className="w-full">
                 <TabsList>
-                    <TabsTrigger value="global">Global Preferences</TabsTrigger>
+                    <TabsTrigger value="global">{t('global_preferences')}</TabsTrigger>
                     <TabsTrigger value="instruments">{t('instrument_types')}</TabsTrigger>
                     <TabsTrigger value="standards">{t('standard_types')}</TabsTrigger>
                     <TabsTrigger value="materials">{t('materials.tab_title')}</TabsTrigger>

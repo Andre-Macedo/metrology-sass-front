@@ -21,7 +21,7 @@ import {
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Station, StationFormData } from "@/lib/hooks/use-system"
+import { Station, StationFormData } from "@/features/system/hooks/use-system"
 import { useRouter } from "next/navigation"
 
 const formSchema = z.object({

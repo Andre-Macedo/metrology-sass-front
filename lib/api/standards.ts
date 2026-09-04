@@ -7,6 +7,8 @@ export interface ReferenceStandard {
     type: string; // Updated to string to support backend types
     type_id?: number; // Added for backend compatibility
     nominal_value?: string;
+    next_calibration_date?: string;
+    status?: string;
 }
 
 export async function fetchStandards(): Promise<ReferenceStandard[]> {

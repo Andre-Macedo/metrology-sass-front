@@ -1,4 +1,4 @@
-import { client } from "./client"
+import { apiClient } from "./client"
 
 export interface NonConformity {
     id: number
@@ -28,22 +28,21 @@ export interface NonConformity {
     }
 }
 
-export async function fetchNonConformities(params?: { page?: number, status?: string }): Promise<{ data: NonConformity[], meta: any }> {
-    const { data } = await client.get("/non-conformities", params)
-    return data
+export async function fetchNonConformities(params?: Record<string, string>): Promise<{ data: NonConformity[], meta: any }> {
+    return await apiClient.get<{ data: NonConformity[], meta: any }>("/non-conformities", params)
 }
 
 export async function fetchNonConformity(id: string): Promise<NonConformity> {
-    const { data } = await client.get(`/non-conformities/${id}`)
-    return data
+    const response = await apiClient.get<{ data: NonConformity }>(`/non-conformities/${id}`)
+    return response.data
 }
 
 export async function updateNonConformity(id: string, payload: Partial<NonConformity>): Promise<NonConformity> {
-    const { data } = await client.put(`/non-conformities/${id}`, payload)
-    return data
+    const response = await apiClient.put<{ data: NonConformity }>(`/non-conformities/${id}`, payload)
+    return response.data
 }
 
 export async function closeNonConformity(id: string): Promise<NonConformity> {
-    const { data } = await client.post(`/non-conformities/${id}/close`)
-    return data
+    const response = await apiClient.post<{ data: NonConformity }>(`/non-conformities/${id}/close`)
+    return response.data
 }

@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Gauge, AlertTriangle, CalendarDays } from 'lucide-react'
-import { DashboardStats } from "../hooks/use-dashboard"
+import { DashboardStats } from "../../hooks/use-dashboard"
 
 interface KPICardsProps {
     kpis: DashboardStats['kpis']

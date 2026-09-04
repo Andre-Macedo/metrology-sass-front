@@ -213,7 +213,7 @@ export function CalibrationWizardForm({ initialData }: { initialData?: Calibrati
                             </Select>
                             
                             {formData.provider_id && supplierAccreditation && !supplierAccreditation.is_accredited && (
-                                <Alert variant="warning" className="mt-2 py-2">
+                                <Alert variant="destructive" className="mt-2 py-2">
                                     <AlertTriangle className="h-4 w-4" />
                                     <AlertTitle className="text-xs">Accreditation Warning</AlertTitle>
                                     <AlertDescription className="text-[10px]">
@@ -246,7 +246,7 @@ export function CalibrationWizardForm({ initialData }: { initialData?: Calibrati
                         </Select>
                         
                         {competenceData && !competenceData.has_competence && (
-                            <Alert variant={competenceData.is_strict_enforced ? "destructive" : "warning"} className="mt-2 py-2">
+                            <Alert variant={competenceData.is_strict_enforced ? "destructive" : "default"} className="mt-2 py-2">
                                 {competenceData.is_strict_enforced ? <Ban className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
                                 <AlertTitle className="text-xs">
                                     {competenceData.is_strict_enforced ? "Unauthorized" : "Training Expired"}

@@ -128,7 +128,7 @@ export default function MetrologyPage() {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs text-muted-foreground">{format(parseISO(cal.date), 'dd/MM')}</span>
-                                            <Badge variant={cal.result === 'approved' || cal.result === 'pass' ? 'default' : 'destructive'}>
+                                            <Badge variant={cal.result === 'pass' ? 'default' : 'destructive'}>
                                                 {tCal(`result.${cal.result}`) || cal.result}
                                             </Badge>
                                         </div>

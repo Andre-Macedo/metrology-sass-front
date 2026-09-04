@@ -2,7 +2,7 @@
 
 import { PageHeader } from "@/components/layout/page-header"
 import { StationForm } from "@/app/[locale]/(dashboard)/dashboard/system/stations/components/station-form"
-import { useStationMutations, useStation } from "@/lib/hooks/use-system"
+import { useStationMutations, useStation } from "@/features/system/hooks/use-system"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { use } from "react"

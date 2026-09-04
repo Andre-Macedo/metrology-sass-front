@@ -321,7 +321,7 @@ export default function InstrumentDetailsPage() {
                                                             </TableCell>
                                                             <TableCell>{cal.technician}</TableCell>
                                                             <TableCell>
-                                                                {cal.result === 'approved' || cal.result === 'pass' ? (
+                                                                {cal.result === 'pass' ? (
                                                                     <Badge className="bg-green-100 text-green-800 hover:bg-green-100 border-green-200">
                                                                         <CheckCircle2 className="mr-1 h-3 w-3" /> PASS
                                                                     </Badge>
@@ -392,7 +392,7 @@ export default function InstrumentDetailsPage() {
                                     <CardContent className="pt-6">
                                         <DriftChart instrumentId={id} />
                                     </CardContent>
-                                </TabsContent>
+                                </Card>
                             </TabsContent>
                             <TabsContent value="checks">
                                 <Card>

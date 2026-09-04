@@ -17,10 +17,8 @@ export function useAuditLogs({ auditable_type, auditable_id }: UseAuditLogsParam
         queryFn: async () => {
             if (!auditable_id) return []
             const response = await apiClient.get<any>('/audit-logs', {
-                params: {
-                    auditable_type,
-                    auditable_id
-                }
+                auditable_type,
+                auditable_id: String(auditable_id)
             })
             // Handle pagination if needed, for now assuming data wrapper or array
             const items = response.data || []

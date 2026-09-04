@@ -151,7 +151,7 @@ export function CalibrationForm({ initialData, onSubmit, isLoading }: Calibratio
                                         <SelectContent>
                                             <SelectItem value="pass">{tResult('pass')}</SelectItem>
                                             <SelectItem value="fail">{tResult('fail')}</SelectItem>
-                                            <SelectItem value="conditional">{tResult('conditional')}</SelectItem>
+                                            <SelectItem value="conditional_pass">{tResult('conditional_pass')}</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -191,7 +191,7 @@ export function CalibrationForm({ initialData, onSubmit, isLoading }: Calibratio
                                         <SelectContent>
                                             <SelectItem value="pass">{tResult('pass')}</SelectItem>
                                             <SelectItem value="fail">{tResult('fail')}</SelectItem>
-                                            <SelectItem value="conditional">{tResult('conditional')}</SelectItem>
+                                            <SelectItem value="conditional_pass">{tResult('conditional_pass')}</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />

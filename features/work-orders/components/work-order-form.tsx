@@ -45,7 +45,7 @@ export function WorkOrderForm({ initialData, onSuccess }: WorkOrderFormProps) {
     const form = useForm<WorkOrderFormData>({
         resolver: zodResolver(workOrderFormDataSchema),
         defaultValues: initialData || {
-            item_id: 0,
+            item_id: "",
             item_type: 'Modules\\Metrology\\Models\\Instrument',
             visual_inspection_notes: "",
             customer_notes: "",

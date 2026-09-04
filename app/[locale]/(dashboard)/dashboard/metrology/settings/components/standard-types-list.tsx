@@ -10,30 +10,42 @@ import { Edit, Trash2, Plus } from "lucide-react"
 import { StandardTypeForm } from "./standard-type-form"
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 
 export function StandardTypesList() {
+    const t = useTranslations('Settings')
+    const tInstruments = useTranslations('Instruments')
+    const commonT = useTranslations('Common')
+
     const { data: types = [], isLoading } = useReferenceStandardTypes()
     const deleteMutation = useDeleteReferenceStandardType()
     const [open, setOpen] = useState(false)
     const [editingItem, setEditingItem] = useState<ReferenceStandardType | null>(null)
 
-    const handleDelete = async (id: number) => {
-        if (confirm("Are you sure? This might affect existing standards.")) {
+    const handleDelete = async (id: string | number) => {
+        if (confirm(commonT('confirm_delete'))) {
             await deleteMutation.mutateAsync(id)
-            toast.success("Type deleted")
+            toast.success(commonT('deleted_success'))
         }
     }
 
     const columns: ColumnDef<ReferenceStandardType>[] = [
-        { accessorKey: "id", header: "ID", size: 50 },
-        { accessorKey: "name", header: "Name" },
+        { 
+            accessorKey: "id", 
+            header: "ID", 
+            size: 50,
+            cell: ({ row }) => {
+                const id = row.original.id;
+                return <span className="text-xs text-muted-foreground">{typeof id === 'string' && id.length > 10 ? id.slice(0, 8) + '...' : id}</span>
+            }
+        },
+        { accessorKey: "name", header: tInstruments('form.name') },
         {
             accessorKey: "calibration_frequency_months",
-            header: "Frequency (Months)",
+            header: tInstruments('form.next_calibration'),
             cell: ({ row }) => <span className="text-center block">{row.original.calibration_frequency_months}</span>
         },
-        // Description is optional
-        { accessorKey: "description", header: "Description" },
+        { accessorKey: "description", header: tInstruments('form.description') },
         {
             id: "actions",
             cell: ({ row }) => (
@@ -58,12 +70,12 @@ export function StandardTypesList() {
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
                         <Button onClick={() => setEditingItem(null)}>
-                            <Plus className="mr-2 h-4 w-4" /> Add Type
+                            <Plus className="mr-2 h-4 w-4" /> {editingItem ? commonT('edit') : tInstruments('form.save')}
                         </Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>{editingItem ? 'Edit Standard Type' : 'New Standard Type'}</DialogTitle>
+                            <DialogTitle>{editingItem ? commonT('edit') : tInstruments('form.description_add')}</DialogTitle>
                         </DialogHeader>
                         <StandardTypeForm
                             initialData={editingItem}

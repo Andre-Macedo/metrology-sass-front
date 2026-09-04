@@ -2,7 +2,7 @@
 
 import { PageHeader } from "@/components/layout/page-header"
 import { SupplierForm } from "@/app/[locale]/(dashboard)/dashboard/system/suppliers/components/supplier-form"
-import { useSupplierMutations } from "@/lib/hooks/use-system"
+import { useSupplierMutations } from "@/features/system/hooks/use-system"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 

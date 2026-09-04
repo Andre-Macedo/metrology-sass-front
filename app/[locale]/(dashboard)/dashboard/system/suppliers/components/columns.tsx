@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Supplier } from "@/lib/hooks/use-system"
+import { Supplier } from "@/features/system/hooks/use-system"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, Edit, Trash2, Star } from "lucide-react"
