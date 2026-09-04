@@ -126,12 +126,12 @@ export function useCalculateUncertainty() {
 export function useApproveCalibration() {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: async (id: string) => {
-            await apiClient.post(`/calibrations/${id}/approve`)
+        mutationFn: async ({ id, password }: { id: string, password?: string }) => {
+            await apiClient.post(`/calibrations/${id}/approve`, { password })
         },
-        onSuccess: (data, id) => {
+        onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ['calibrations'] })
-            queryClient.invalidateQueries({ queryKey: ['calibrations', id] })
+            queryClient.invalidateQueries({ queryKey: ['calibrations', variables.id] })
         }
     })
 }
@@ -139,13 +139,29 @@ export function useApproveCalibration() {
 export function useRejectCalibration() {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: async (id: string) => {
+        mutationFn: async ({ id }: { id: string }) => {
             await apiClient.post(`/calibrations/${id}/reject`)
         },
-        onSuccess: (data, id) => {
+        onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ['calibrations'] })
-            queryClient.invalidateQueries({ queryKey: ['calibrations', id] })
+            queryClient.invalidateQueries({ queryKey: ['calibrations', variables.id] })
         }
+    })
+}
+
+export function useCompetenceCheck(instrumentTypeId?: number) {
+    return useQuery({
+        queryKey: ['metrology', 'competence-check', instrumentTypeId],
+        queryFn: async () => {
+            const response = await apiClient.get<{ 
+                can_proceed: boolean, 
+                has_competence: boolean,
+                is_strict_enforced: boolean,
+                reason?: string 
+            }>(`/metrology/competence-check/${instrumentTypeId}`)
+            return response
+        },
+        enabled: !!instrumentTypeId
     })
 }
 

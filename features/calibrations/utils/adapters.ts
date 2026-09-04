@@ -1,11 +1,11 @@
 import { Calibration, calibrationSchema } from "../types"
 
 export function calibrationAdapter(data: any): Calibration {
-    const resultMap: Record<string, 'pass' | 'fail' | 'conditional' | 'approved_with_restrictions'> = {
+    const resultMap: Record<string, 'pass' | 'fail' | 'conditional_pass' | 'unknown'> = {
         'approved': 'pass',
         'rejected': 'fail',
-        'conditional': 'conditional',
-        'approved_with_restrictions': 'approved_with_restrictions',
+        'conditional': 'conditional_pass',
+        'approved_with_restrictions': 'conditional_pass',
     }
 
     const key = data.status_key;

@@ -22,7 +22,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Supplier, SupplierFormData } from "@/lib/hooks/use-system"
+import { Supplier, SupplierFormData } from "@/features/system/hooks/use-system"
 import { useRouter } from "next/navigation"
 
 const formSchema = z.object({

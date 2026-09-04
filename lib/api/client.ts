@@ -115,13 +115,18 @@ class ApiClient {
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname
       
-      // Se houver um subdomínio (ex: amemiya.localhost)
-      if (hostname !== 'localhost' && hostname.includes('.localhost')) {
+      // Se houver um subdomínio (ex: amemiya.localhost ou amemiya.leantech.andremacedo.dev.br)
+      const isLocalhost = hostname.includes('localhost')
+      const baseDomain = 'leantech.andremacedo.dev.br'
+      
+      if (isLocalhost && hostname !== 'localhost') {
         const tenantSlug = hostname.split('.')[0]
         headers['X-Tenant-ID'] = tenantSlug
+      } else if (hostname.endsWith(`.${baseDomain}`)) {
+        const tenantSlug = hostname.replace(`.${baseDomain}`, '')
+        headers['X-Tenant-ID'] = tenantSlug
       } else {
-        // Se estivermos puramente em localhost, tentamos pegar o tenant do localStorage 
-        // ou de um parâmetro (fallback para dev sem subdomínios)
+        // Se estivermos no domínio central, tentamos pegar o tenant do localStorage 
         const savedTenant = localStorage.getItem('current_tenant_slug')
         if (savedTenant) {
           headers['X-Tenant-ID'] = savedTenant
@@ -133,7 +138,12 @@ class ApiClient {
   }
 
   async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
-    const url = new URL(`${this.baseUrl}${endpoint}`)
+    const urlString = `${this.baseUrl}${endpoint}`
+    
+    // Se a URL for relativa, precisamos de uma base para o construtor URL
+    const url = urlString.startsWith('http') 
+      ? new URL(urlString) 
+      : new URL(urlString, typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {

@@ -81,6 +81,9 @@ export interface Calibration {
         resolution?: string;
         range?: string;
     };
+    calibrated_item_name?: string;
+    instrument_id?: string;
+    instrument_name?: string;
     date: string;
     calibration_date: string; // Backend direct field
     technician: string;
@@ -89,12 +92,17 @@ export interface Calibration {
     decision_rule?: string;
     certificate_url?: string;
     deviation?: number;
+    as_found_deviation?: number;
+    as_left_deviation?: number;
     uncertainty?: number;
     k_factor?: number;
     temperature?: number;
     humidity?: number;
     notes?: string;
+    checklist_template_id?: string;
     conformity_statement?: string;
+    as_found_result?: string;
+    as_left_result?: string;
     procedure_snapshot?: {
         instrument: {
             name: string;
@@ -128,7 +136,7 @@ export interface UncertaintyBudgetItem {
 }
 
 export interface CalibrationChecklistItem {
-    id: string; // ULID
+    id?: string; // ULID
     step: string;
     question_type: 'numeric' | 'boolean' | 'text';
     template_item_id?: string;
@@ -136,11 +144,25 @@ export interface CalibrationChecklistItem {
     error?: number;
     as_found_readings: (number | string)[];
     as_left_readings?: (number | string)[];
+    readings?: any;
+    readings_formatted?: string;
     adjusted?: boolean;
     result: string;
     uncertainty?: string;
     notes?: string;
+    standard_id?: string;
     reference_standard_id?: string;
+    reference_standard?: any;
+}
+
+export interface Certificate {
+    id: string;
+    calibration_id: string;
+    instrument_name?: string;
+    issue_date: string;
+    hash?: string;
+    pdf_url: string;
+    status: string;
 }
 
 export interface Tenant {

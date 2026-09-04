@@ -67,7 +67,7 @@ export function CalibrationForm({ initialData, onSubmit, isLoading }: Calibratio
                             <FormItem>
                                 <FormLabel>Instrument Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Digital Caliper" {...field} />
+                                    <Input placeholder="Digital Caliper" {...field} value={field.value ?? ""} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

@@ -19,7 +19,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useRoles } from "@/lib/hooks/use-system"
+import { useRoles } from "@/features/system/hooks/use-system"
 import { Badge } from "@/components/ui/badge"
 
 // Simple placeholder for Role type until we have a proper hook/type
