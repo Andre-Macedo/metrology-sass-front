@@ -32,22 +32,30 @@ class ApiClient {
 
   private getAuthToken(): string | null {
     if (typeof window === 'undefined') return null
+    if (window.location.pathname.includes('/portal')) {
+      return localStorage.getItem('portal_token') || localStorage.getItem('auth_token')
+    }
     return localStorage.getItem('auth_token')
   }
 
   private redirectToLogin() {
     if (typeof window !== 'undefined') {
       // Evita loop se já estiver na página de login
-      if (window.location.pathname.includes('/login')) {
+      if (window.location.pathname.includes('/login') || window.location.pathname.endsWith('/portal')) {
         return
       }
 
-      localStorage.removeItem('auth_token')
-      // Extract locale from current path (e.g. /en/dashboard -> en)
       const pathParts = window.location.pathname.split('/')
       const currentLocale = pathParts[1]
       const locale = ['en', 'pt-BR'].includes(currentLocale) ? currentLocale : 'pt-BR'
 
+      if (window.location.pathname.includes('/portal')) {
+        localStorage.removeItem('portal_token')
+        window.location.href = `/${locale}/portal`
+        return
+      }
+
+      localStorage.removeItem('auth_token')
       window.location.href = `/${locale}/login`
     }
   }
@@ -207,6 +215,25 @@ class ApiClient {
       // Handle error similar to handleResponse but without assuming JSON
       if (response.status === 401) {
         // Só redireciona se a falha for na obtenção do perfil (check de sessão vital)
+        if (response.url.includes('/system/profile') || response.url.includes('/system/user')) {
+          this.redirectToLogin()
+        }
+      }
+      throw new Error(`Request failed with status ${response.status}`)
+    }
+
+    return response.blob()
+  }
+
+  async postBlob(endpoint: string, data?: unknown): Promise<Blob> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: data ? JSON.stringify(data) : undefined,
+    })
+
+    if (!response.ok) {
+      if (response.status === 401) {
         if (response.url.includes('/system/profile') || response.url.includes('/system/user')) {
           this.redirectToLogin()
         }
