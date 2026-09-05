@@ -1,19 +1,20 @@
 "use client"
 
 import { useCallback } from 'react'
-import ReactFlow, {
+import {
+    ReactFlow,
     MiniMap,
     Controls,
     Background,
     useNodesState,
     useEdgesState,
     addEdge,
-    Connection,
-    Edge,
-    Node,
+    type Connection,
+    type Edge,
+    type Node,
     Position,
-} from 'reactflow'
-import 'reactflow/dist/style.css'
+} from '@xyflow/react'
+import '@xyflow/react/dist/style.css'
 import { useTraceabilityChain } from '@/app/[locale]/(dashboard)/dashboard/metrology/calibrations/hooks/use-calibrations'
 import { Loader2, AlertCircle } from 'lucide-react'
 
