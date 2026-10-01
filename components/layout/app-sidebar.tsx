@@ -16,6 +16,7 @@ import {
   Palette,
   CreditCard,
   MessageSquare,
+  CheckCircle2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -70,6 +71,11 @@ export function AppSidebar({ className }: AppSidebarProps) {
           title: t('instruments'),
           href: '/dashboard/metrology/instruments',
           icon: Gauge,
+        },
+        {
+          title: t('calibrations'),
+          href: '/dashboard/metrology/calibrations',
+          icon: CheckCircle2,
         },
         {
           title: t('standards'),

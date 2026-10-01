@@ -21,6 +21,7 @@ interface TelemetryData {
   rms_y: number
   rms_z: number
   mic_rms: number
+  mic_db?: number
   timestamp: string
   ml_status: string
   ml_confidence: number

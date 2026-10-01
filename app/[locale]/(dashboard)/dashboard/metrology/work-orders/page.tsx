@@ -47,7 +47,7 @@ export default function WorkOrdersPage() {
             header: t('table.item'),
             cell: ({ row }) => (
                 <div className="flex flex-col">
-                    <span className="font-medium">{row.original.item_name || 'N/A'}</span>
+                    <span className="font-medium">{row.original.item?.name || row.original.item_name || 'N/A'}</span>
                     <span className="text-xs text-muted-foreground">{row.original.item_type.split('\\').pop()}</span>
                 </div>
             )

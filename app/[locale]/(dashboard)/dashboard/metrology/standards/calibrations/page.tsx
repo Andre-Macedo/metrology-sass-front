@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { useCalibrations } from "@/app/[locale]/(dashboard)/dashboard/metrology/calibrations/hooks/use-calibrations"
+import { useCalibrations } from "@/features/calibrations"
 import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/layout/page-header"
 import { Search } from "lucide-react"

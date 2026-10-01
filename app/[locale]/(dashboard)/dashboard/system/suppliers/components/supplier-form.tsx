@@ -50,7 +50,7 @@ interface SupplierFormProps {
 export function SupplierForm({ initialData, onSubmit, isLoading }: SupplierFormProps) {
     const router = useRouter()
 
-    const form = useForm<SupplierFormData>({
+    const form = useForm<any>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: initialData?.name || "",
@@ -58,9 +58,9 @@ export function SupplierForm({ initialData, onSubmit, isLoading }: SupplierFormP
             email: initialData?.email || "",
             phone: initialData?.phone || "",
             status: initialData?.status || "Active",
-            category: initialData?.category || "General",
-            rating: initialData?.rating || 0,
-            country: initialData?.country || "",
+            category: (initialData as any)?.category || "General",
+            rating: (initialData as any)?.rating || 0,
+            country: (initialData as any)?.country || "",
             cnpj: initialData?.cnpj || "",
             address: initialData?.address || "",
             is_manufacturer: initialData?.is_manufacturer || false,
@@ -146,7 +146,7 @@ export function SupplierForm({ initialData, onSubmit, isLoading }: SupplierFormP
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Category</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                                    <Select onValueChange={field.onChange} defaultValue={String(field.value || "General")} value={String(field.value || "General")}>
                                         <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
                                         <SelectContent>
                                             <SelectItem value="General">General</SelectItem>

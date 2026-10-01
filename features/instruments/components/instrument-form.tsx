@@ -61,20 +61,22 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
             message: tV('required')
         }),
         status: z.string(),
+        criticality: z.string().optional(),
         current_station_id: z.string().optional(),
         last_calibration_date: z.string(),
         next_calibration_date: z.string(),
-        guard_band_multiplier_override: z.coerce.number().optional(),
+        guard_band_multiplier_override: z.number().optional(),
     })
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<any>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData ? {
             ...initialData,
             instrument_type_id: initialData.instrument_type_id || "",
             current_station_id: initialData.current_station_id || "",
             material_id: initialData.material_id ? String(initialData.material_id) : undefined,
-            guard_band_multiplier_override: initialData.guard_band_multiplier_override || undefined,
+            criticality: initialData.criticality || "operational_reference",
+            guard_band_multiplier_override: initialData.guard_band_multiplier_override ? Number(initialData.guard_band_multiplier_override) : undefined,
         } : {
             name: "",
             instrument_type_id: "",
@@ -83,9 +85,11 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
             manufacturer: "",
             model: "",
             status: "active",
+            criticality: "operational_reference",
             current_station_id: "",
             last_calibration_date: new Date().toISOString().split('T')[0],
             next_calibration_date: new Date().toISOString().split('T')[0],
+            guard_band_multiplier_override: undefined,
         },
     })
 
@@ -138,7 +142,7 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
                                     </FormControl>
                                     <SelectContent>
                                         {instrumentTypes.map((type) => (
-                                            <SelectItem key={type.id} value={type.id}>
+                                            <SelectItem key={type.id} value={String(type.id)}>
                                                 {type.name} ({type.calibration_frequency_months}m)
                                             </SelectItem>
                                         ))}
@@ -169,7 +173,7 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
                                     </FormControl>
                                     <SelectContent>
                                         {materials?.map((material) => (
-                                            <SelectItem key={material.id} value={material.id}>
+                                            <SelectItem key={material.id} value={String(material.id)}>
                                                 {material.name} (CTE: {material.cte})
                                             </SelectItem>
                                         ))}
@@ -225,6 +229,34 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
 
                     <FormField
                         control={form.control}
+                        name="criticality"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Classificação de Criticidade</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value || 'operational_reference'}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecione a criticidade..." />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="operational_reference">Operacional / Referência</SelectItem>
+                                        <SelectItem value="safety_nr12">Segurança de Máquinas (NR-12)</SelectItem>
+                                        <SelectItem value="safety_nr13">Vasos de Pressão / Caldeiras (NR-13)</SelectItem>
+                                        <SelectItem value="product_quality_ctq">Crítico para Qualidade (CTQ / IATF)</SelectItem>
+                                        <SelectItem value="environmental">Meio Ambiente (ISO 14001)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormDescription>
+                                    Impacto regulatório e prioridade na calibração.
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
                         name="current_station_id"
                         render={({ field }) => (
                             <FormItem>
@@ -265,7 +297,8 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
                                         type="number" 
                                         step="0.1" 
                                         placeholder="Padrão do Tipo" 
-                                        {...field} 
+                                        value={field.value ?? ''}
+                                        onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))}
                                     />
                                 </FormControl>
                                 <FormDescription>

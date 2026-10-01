@@ -24,7 +24,7 @@ import { useTranslations } from "next-intl"
 interface StationCardProps {
     station: Station
     onEdit: (station: Station) => void
-    onDelete: (id: number) => void
+    onDelete: (id: string) => void
 }
 
 export function StationCard({ station, onEdit, onDelete }: StationCardProps) {
@@ -41,10 +41,10 @@ export function StationCard({ station, onEdit, onDelete }: StationCardProps) {
         }
     }
 
-    const getStatusVariant = (status: string) => {
+    const getStatusVariant = (status: string): "default" | "destructive" | "outline" | "secondary" => {
         switch (status) {
             case 'Active': return 'default'
-            case 'Maintenance': return 'warning'
+            case 'Maintenance': return 'outline'
             case 'Inactive': return 'secondary'
             default: return 'outline'
         }

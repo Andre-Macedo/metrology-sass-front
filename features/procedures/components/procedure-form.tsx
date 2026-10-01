@@ -41,8 +41,9 @@ export function ProcedureForm({ initialData, onSubmit, isLoading }: ProcedureFor
 
     const formSchema = z.object({
         name: z.string().min(1, tV('required')),
-        instrument_type_id: z.coerce.number().min(1, tV('select_option')),
+        instrument_type_id: z.number().min(1, tV('select_option')),
         items: z.array(z.object({
+            id: z.string().optional(),
             step: z.string().min(1, tV('required')),
             question_type: z.enum(['numeric', 'boolean', 'text']),
             nominal_value: z.number().optional(),
@@ -52,13 +53,17 @@ export function ProcedureForm({ initialData, onSubmit, isLoading }: ProcedureFor
         })).min(1),
     })
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    type FormValues = z.infer<typeof formSchema>
+
+    const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData ? {
             name: initialData.name,
-            instrument_type_id: initialData.instrument_type_id || 0,
+            instrument_type_id: Number(initialData.instrument_type_id) || 0,
             items: initialData.items.map(i => ({
-                ...i,
+                id: i.id,
+                step: i.step,
+                question_type: i.question_type as 'numeric' | 'boolean' | 'text',
                 nominal_value: i.nominal_value || 0,
                 required_readings: i.required_readings || 1,
                 criteria: i.criteria || 0,

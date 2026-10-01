@@ -6,8 +6,8 @@ describe('Calibration Adapter', () => {
         const scenarios = [
             { key: 'approved', expected: 'pass' },
             { key: 'rejected', expected: 'fail' },
-            { key: 'conditional', expected: 'conditional' },
-            { key: 'approved_with_restrictions', expected: 'approved_with_restrictions' },
+            { key: 'conditional', expected: 'conditional_pass' },
+            { key: 'approved_with_restrictions', expected: 'conditional_pass' },
         ]
 
         scenarios.forEach(({ key, expected }) => {

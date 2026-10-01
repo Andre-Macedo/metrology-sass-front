@@ -8,7 +8,7 @@ import { Edit, Trash2 } from "lucide-react"
 
 export const columns = (
     onEdit: (station: Station) => void,
-    onDelete: (id: number) => void
+    onDelete: (id: string) => void
 ): ColumnDef<Station>[] => [
     {
         accessorKey: "name",
@@ -28,7 +28,7 @@ export const columns = (
         cell: ({ row }) => {
             const status = row.original.status
             return (
-                <Badge variant={status === 'Active' ? 'default' : status === 'Maintenance' ? 'warning' : 'secondary'}>
+                <Badge variant={status === 'Active' ? 'default' : status === 'Maintenance' ? 'outline' : 'secondary'}>
                     {status}
                 </Badge>
             )

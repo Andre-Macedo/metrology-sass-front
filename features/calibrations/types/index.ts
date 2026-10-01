@@ -22,6 +22,7 @@ export const calibrationSchema = z.object({
     as_found_deviation: z.coerce.number().nullable().optional(),
     as_left_deviation: z.coerce.number().nullable().optional(),
     uncertainty: z.coerce.number().nullable().optional(),
+    k_factor: z.coerce.number().nullable().optional(),
     temperature: z.coerce.number().nullable().optional(),
     humidity: z.coerce.number().nullable().optional(),
     notes: z.string().nullable().optional(),
@@ -30,6 +31,7 @@ export const calibrationSchema = z.object({
     checklist_template_id: z.string().nullable().optional(),
     checklist_items: z.array(z.any()).optional().default([]),
 
+    certificate_number: z.string().nullable().optional(),
     certificate_url: z.string().nullable().optional(),
     status: z.string().optional(),
     calibrated_item_id: z.string().optional(),

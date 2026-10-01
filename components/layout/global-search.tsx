@@ -39,8 +39,8 @@ export function GlobalSearch() {
 
         const timer = setTimeout(async () => {
             try {
-                const { data } = await apiClient.get<any[]>(`/search?q=${query}`)
-                setResults(data)
+                const response = await apiClient.get<any>(`/search?q=${query}`)
+                setResults(Array.isArray(response) ? response : (response?.data || []))
             } catch (error) {
                 console.error(error)
             }

@@ -4,7 +4,12 @@ import { fetchNonConformities, fetchNonConformity, updateNonConformity, closeNon
 export function useNonConformities(params?: { page?: number, status?: string }) {
     return useQuery({
         queryKey: ["non-conformities", params],
-        queryFn: () => fetchNonConformities(params),
+        queryFn: () => {
+            const queryParams: Record<string, string> = {}
+            if (params?.page) queryParams.page = params.page.toString()
+            if (params?.status && params.status !== 'all') queryParams.status = params.status
+            return fetchNonConformities(queryParams)
+        },
     })
 }
 

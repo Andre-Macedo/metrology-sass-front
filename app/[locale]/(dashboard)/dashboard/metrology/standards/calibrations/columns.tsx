@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Calibration } from "@/app/[locale]/(dashboard)/dashboard/metrology/calibrations/lib/schema"
+import { Calibration } from "@/features/calibrations"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, Eye, Edit, Trash2, Download } from "lucide-react"
@@ -95,7 +95,7 @@ export const columns: ColumnDef<Calibration>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/metrology/instruments/calibrations/${calibration.id}`}>
+                            <Link href={`/dashboard/metrology/calibrations/${calibration.id}`}>
                                 <Eye className="mr-2 h-4 w-4" /> View Details
                             </Link>
                         </DropdownMenuItem>

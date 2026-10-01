@@ -24,10 +24,17 @@ export function CheckList({ instrumentId }: CheckListProps) {
             accessorKey: "result",
             header: "Result",
             cell: ({ row }) => (
-                <Badge variant={row.original.result === 'passed' ? 'default' : 'destructive'}
-                    className={row.original.result === 'passed' ? 'bg-green-600' : ''}>
-                    {row.original.result.toUpperCase()}
-                </Badge>
+                <div className="flex items-center gap-1.5">
+                    <Badge variant={row.original.result === 'passed' ? 'default' : 'destructive'}
+                        className={row.original.result === 'passed' ? 'bg-green-600' : ''}>
+                        {row.original.result.toUpperCase()}
+                    </Badge>
+                    {row.original.result === 'failed' && (
+                        <span className="text-[10px] text-destructive font-semibold bg-destructive/10 px-1.5 py-0.5 rounded border border-destructive/20">
+                            Bloqueio & NC
+                        </span>
+                    )}
+                </div>
             )
         },
         {

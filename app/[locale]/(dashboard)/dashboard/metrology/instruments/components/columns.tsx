@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Instrument } from "@/app/[locale]/(dashboard)/dashboard/metrology/instruments/lib/schema"
+import { Instrument, CRITICALITY_LABELS, CRITICALITY_BADGE_VARIANTS } from "@/features/instruments"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, ArrowUpDown, Eye, Edit, Trash2, AlertTriangle } from "lucide-react"
@@ -116,6 +116,21 @@ export const columns: ColumnDef<Instrument>[] = [
             return (
                 <Badge variant="secondary" className={config.className}>
                     {config.label}
+                </Badge>
+            )
+        },
+    },
+    {
+        accessorKey: "criticality",
+        header: "Criticidade",
+        cell: ({ row }) => {
+            const criticality = row.original.criticality || 'operational_reference'
+            const label = CRITICALITY_LABELS[criticality] || 'Operacional'
+            const variant = CRITICALITY_BADGE_VARIANTS[criticality] || 'outline'
+
+            return (
+                <Badge variant={variant} className="whitespace-nowrap text-xs">
+                    {label}
                 </Badge>
             )
         },

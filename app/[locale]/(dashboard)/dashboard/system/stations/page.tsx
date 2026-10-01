@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/layout/page-header"
 import { Button } from "@/components/ui/button"
 import { Plus, Search, LayoutGrid, List as ListIcon, Loader2 } from "lucide-react"
 import { DataTable } from "@/components/ui/data-table"
-import { useStations, useStationMutations, Station, columns, StationCard } from "@/features/system"
+import { useStations, useStationMutations, Station, stationColumns as columns, StationCard } from "@/features/system"
 import { toast } from "sonner"
 import {
     Dialog,
@@ -217,7 +217,7 @@ export default function StationsPage() {
 
     const handleCreate = () => { setSelected(null); setOpen(true) }
     const handleEdit = (s: Station) => { setSelected(s); setOpen(true) }
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string | number) => {
         if (confirm(t('messages.confirm_delete'))) {
             try {
                 await deleteMutation.mutateAsync(id)

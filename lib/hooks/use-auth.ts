@@ -14,6 +14,7 @@ interface User {
     signature_image_path?: string
     tenant_id?: string
     tenant_slug?: string
+    terms_accepted_at?: string | null
 }
 
 interface LoginCredentials {

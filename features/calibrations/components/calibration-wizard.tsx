@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useInstruments } from "@/app/[locale]/(dashboard)/dashboard/metrology/instruments/hooks/use-instruments"
-import { useCreateCalibration, useUpdateCalibration, useCalculateUncertainty, useCompetenceCheck } from "@/app/[locale]/(dashboard)/dashboard/metrology/calibrations/hooks/use-calibrations"
+import { useInstruments } from "@/features/instruments"
+import { useCreateCalibration, useUpdateCalibration, useCalculateUncertainty, useCompetenceCheck } from "../hooks/use-calibrations"
 import { useSuppliers, useCheckSupplierAccreditation } from "@/features/system/hooks/use-system"
 import { fetchChecklistTemplates, ChecklistTemplate } from "@/lib/api/procedures"
 import { fetchStandards, ReferenceStandard } from "@/lib/api/standards"
@@ -19,7 +19,7 @@ import { toast } from "sonner"
 import { Loader2, Upload, FileType, AlertTriangle, Ban, CheckCircle2, Fingerprint } from "lucide-react"
 import { UncertaintyBudgetModal } from "@/components/metrology/uncertainty-budget-modal"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
-import { SignatureModal } from "@/features/calibrations/components/signature-modal"
+import { SignatureModal } from "./signature-modal"
 
 const STEPS = [
     { id: 'ident', title: 'Identification', description: 'Setup' },
@@ -165,7 +165,7 @@ export function CalibrationWizardForm({ initialData }: { initialData?: Calibrati
                 toast.success("Calibration recorded successfully!")
             }
             setIsSignatureModalOpen(false)
-            router.push("/dashboard/metrology/instruments/calibrations")
+            router.push("/dashboard/metrology/calibrations")
         } catch (e: any) {
             toast.error(e.message || "Failed to save")
         }
@@ -217,7 +217,7 @@ export function CalibrationWizardForm({ initialData }: { initialData?: Calibrati
                                     <AlertTriangle className="h-4 w-4" />
                                     <AlertTitle className="text-xs">Accreditation Warning</AlertTitle>
                                     <AlertDescription className="text-[10px]">
-                                        This lab is <strong>not accredited</strong> for {selectedInstrument?.instrument_type_name || 'this type'}. 
+                                        This lab is <strong>not accredited</strong> for {(selectedInstrument as any)?.instrument_type_name || (selectedInstrument as any)?.type?.name || 'this type'}. 
                                     </AlertDescription>
                                 </Alert>
                             )}
@@ -611,11 +611,12 @@ export function CalibrationWizardForm({ initialData }: { initialData?: Calibrati
                                 {(() => {
                                     if (!calcResult || !selectedInstrument) return null;
                                     
-                                    const mpe = selectedInstrument.mpe_value || 0;
+                                    const inst = selectedInstrument as any;
+                                    const mpe = Number(inst.mpe_value ?? inst.mpe ?? 0);
                                     const dev = maxAsLeftDeviation;
                                     const u = calcResult.uncertainty;
-                                    const rule = selectedInstrument.instrument_type?.decision_rule || 'simple';
-                                    const w = selectedInstrument.instrument_type?.guard_band_multiplier || 1.0;
+                                    const rule = inst.instrument_type?.decision_rule || inst.type?.decision_rule || 'simple';
+                                    const w = Number(inst.guard_band_multiplier_override ?? inst.instrument_type?.guard_band_multiplier ?? inst.type?.guard_band_multiplier ?? 1.0);
                                     
                                     let status: 'approved' | 'rejected' | 'conditional_pass' = 'approved';
                                     let ruleLabel = "Simple Acceptance";

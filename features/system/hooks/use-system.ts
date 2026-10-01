@@ -128,11 +128,11 @@ export function useStationMutations() {
             onSuccess: () => queryClient.invalidateQueries({ queryKey: SYSTEM_KEYS.stations }),
         }),
         update: useMutation({
-            mutationFn: ({ id, data }: { id: number; data: StationFormData }) => apiClient.put(`/system/stations/${id}`, data),
+            mutationFn: ({ id, data }: { id: string | number; data: StationFormData }) => apiClient.put(`/system/stations/${id}`, data),
             onSuccess: () => queryClient.invalidateQueries({ queryKey: SYSTEM_KEYS.stations }),
         }),
         delete: useMutation({
-            mutationFn: (id: number) => apiClient.delete(`/system/stations/${id}`),
+            mutationFn: (id: string | number) => apiClient.delete(`/system/stations/${id}`),
             onSuccess: () => queryClient.invalidateQueries({ queryKey: SYSTEM_KEYS.stations }),
         }),
     }

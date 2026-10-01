@@ -36,7 +36,7 @@ export function SupplierAccreditationsDialog({ open, onOpenChange, supplier }: {
 
     const formSchema = z.object({
         accreditations: z.array(z.object({
-            instrument_type_id: z.number(),
+            instrument_type_id: z.union([z.number(), z.string()]),
             instrument_type_name: z.string(),
             selected: z.boolean(),
             range: z.string().nullable().optional(),
@@ -79,7 +79,7 @@ export function SupplierAccreditationsDialog({ open, onOpenChange, supplier }: {
             const selectedAccreditations = values.accreditations
                 .filter(a => a.selected)
                 .map(a => ({
-                    instrument_type_id: a.instrument_type_id,
+                    instrument_type_id: Number(a.instrument_type_id),
                     range: a.range || null,
                     uncertainty: a.uncertainty || null
                 }))

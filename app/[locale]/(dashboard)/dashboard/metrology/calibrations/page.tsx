@@ -4,7 +4,8 @@ import { useState } from "react"
 import { 
     useCalibrations, 
     useApproveCalibration, 
-    useRejectCalibration 
+    useRejectCalibration,
+    SignatureModal
 } from "@/features/calibrations"
 import { PageHeader } from "@/components/layout/page-header"
 import {
@@ -177,11 +178,17 @@ function ReviewQueueTable() {
     const { data, isLoading } = useCalibrations({ status: 'in_review' })
     const approveMutation = useApproveCalibration()
     const rejectMutation = useRejectCalibration()
+    const [signingCalibrationId, setSigningCalibrationId] = useState<string | null>(null)
 
-    const handleApprove = (id: string) => {
-        approveMutation.mutate({ id }, {
-            onSuccess: () => toast.success(t('messages.approved'))
-        })
+    const handleConfirmSignature = async (password: string) => {
+        if (!signingCalibrationId) return
+        try {
+            await approveMutation.mutateAsync({ id: signingCalibrationId, password })
+            toast.success(t('messages.approved'))
+            setSigningCalibrationId(null)
+        } catch (error: any) {
+            toast.error(error.message || 'Falha ao assinar e homologar calibração')
+        }
     }
 
     const handleReject = (id: string) => {
@@ -248,7 +255,7 @@ function ReviewQueueTable() {
                                             variant="outline" 
                                             size="icon" 
                                             className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
-                                            onClick={() => handleApprove(cal.id)}
+                                            onClick={() => setSigningCalibrationId(cal.id)}
                                             disabled={approveMutation.isPending}
                                             title={t('tooltips.approve')}
                                         >
@@ -271,6 +278,15 @@ function ReviewQueueTable() {
                     )}
                 </TableBody>
             </Table>
+
+            <SignatureModal
+                isOpen={!!signingCalibrationId}
+                onClose={() => setSigningCalibrationId(null)}
+                isLoading={approveMutation.isPending}
+                onConfirm={handleConfirmSignature}
+                title="Assinatura Eletrônica de Homologação"
+                description="Como signatário autorizado, insira sua senha de login para homologar tecnicamente e publicar este certificado de calibração em conformidade com ISO 17025."
+            />
         </div>
     )
 }

@@ -5,7 +5,7 @@ export function useUploadAttachment() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: async ({ file, attachable_type, attachable_id }: { file: File, attachable_type: string, attachable_id: number }) => {
+        mutationFn: async ({ file, attachable_type, attachable_id }: { file: File, attachable_type: string, attachable_id: number | string }) => {
             const formData = new FormData()
             formData.append('file', file)
             formData.append('attachable_type', attachable_type)
@@ -45,7 +45,7 @@ export function useDeleteAttachment() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: async ({ id, attachable_type, attachable_id }: { id: number, attachable_type: string, attachable_id: number }) => {
+        mutationFn: async ({ id, attachable_type, attachable_id }: { id: number | string, attachable_type: string, attachable_id: number | string }) => {
             await apiClient.delete(`/metrology/attachments/${id}`)
         },
         onSuccess: (_, variables) => {

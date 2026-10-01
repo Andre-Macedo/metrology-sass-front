@@ -1,6 +1,6 @@
 "use client"
 
-import { useCalibrationRecommendation, useUpdateInstrument } from "@/app/[locale]/(dashboard)/dashboard/metrology/instruments/hooks/use-instruments"
+import { useCalibrationRecommendation, useUpdateInstrument } from "@/features/instruments"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { ShieldCheck, TrendingUp, TrendingDown, AlertTriangle, Loader2, Info } from "lucide-react"

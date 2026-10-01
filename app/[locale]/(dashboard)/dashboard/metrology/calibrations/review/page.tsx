@@ -1,7 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { useCalibrations, useApproveCalibration, useRejectCalibration } from "@/app/[locale]/(dashboard)/dashboard/metrology/calibrations/hooks/use-calibrations"
+import { 
+    useCalibrations, 
+    useApproveCalibration, 
+    useRejectCalibration,
+    SignatureModal 
+} from "@/features/calibrations"
 import { PageHeader } from "@/components/layout/page-header"
 import {
     Table,
@@ -17,7 +22,6 @@ import { Loader2, CheckCircle, XCircle, Eye } from "lucide-react"
 import Link from "next/link"
 import { format } from "date-fns"
 import { toast } from "sonner"
-import { SignatureModal } from "@/features/calibrations/components/signature-modal"
 
 export default function CalibrationReviewPage() {
     const { data, isLoading } = useCalibrations({ status: 'in_review' })

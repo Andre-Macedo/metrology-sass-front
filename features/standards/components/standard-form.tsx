@@ -53,6 +53,9 @@ export function StandardForm({ initialData, onSubmit, isLoading }: StandardFormP
         nominal_value: z.string().optional(),
         actual_value: z.string().optional(),
         unit: z.string().optional(),
+        certificate_number: z.string().optional(),
+        accredited_lab: z.string().optional(),
+        traceability_chain: z.string().optional(),
         material_id: z.number().optional().nullable(),
         parent_id: z.coerce.string().optional().nullable(),
     })
@@ -67,7 +70,10 @@ export function StandardForm({ initialData, onSubmit, isLoading }: StandardFormP
             nominal_value: initialData.nominal_value || "",
             actual_value: initialData.actual_value || "",
             unit: initialData.unit || "",
-            material_id: initialData.material_id || undefined,
+            certificate_number: initialData.certificate_number || "",
+            accredited_lab: initialData.accredited_lab || "",
+            traceability_chain: initialData.traceability_chain || "",
+            material_id: initialData.material_id ? Number(initialData.material_id) : undefined,
             parent_id: initialData.parent_id?.toString() || undefined,
         } : {
             name: "",
@@ -77,6 +83,9 @@ export function StandardForm({ initialData, onSubmit, isLoading }: StandardFormP
             nominal_value: "",
             actual_value: "",
             unit: "",
+            certificate_number: "",
+            accredited_lab: "",
+            traceability_chain: "",
             material_id: undefined,
             parent_id: undefined,
         },
@@ -253,6 +262,60 @@ export function StandardForm({ initialData, onSubmit, isLoading }: StandardFormP
                             </FormItem>
                         )}
                     />
+
+                    {/* Rastreabilidade RBC (ISO 17025) */}
+                    <div className="col-span-1 md:col-span-2 pt-2 border-t mt-2">
+                        <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wider">
+                            Rastreabilidade Metrológica (RBC / ISO 17025)
+                        </h4>
+                    </div>
+
+                    <FormField
+                        control={form.control}
+                        name="certificate_number"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Nº Certificado de Calibração</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Ex: CAL-0891/2026" {...field} value={field.value || ''} />
+                                </FormControl>
+                                <FormDescription>Número emitido pelo laboratório acreditado.</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="accredited_lab"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Laboratório Acreditado (RBC)</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Ex: Mitutoyo Sul Americana - RBC CAL 0031" {...field} value={field.value || ''} />
+                                </FormControl>
+                                <FormDescription>Órgão/Laboratório RBC responsável pela calibração.</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <div className="col-span-1 md:col-span-2">
+                        <FormField
+                            control={form.control}
+                            name="traceability_chain"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Cadeia Ininterrupta de Rastreabilidade</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Ex: Padrão Primário LNM/Inmetro rastreado ao BIPM (Sèvres, França)" {...field} value={field.value || ''} />
+                                    </FormControl>
+                                    <FormDescription>Cadeia documental que liga o padrão aos padrões nacionais/internacionais (SI).</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
                 </div>
                 <div className="flex justify-end gap-4">
                     <Button type="submit" disabled={isLoading}>

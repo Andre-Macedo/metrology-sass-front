@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/layout/page-header"
 import { Button } from "@/components/ui/button"
 import { Plus, Search } from "lucide-react"
 import { DataTable } from "@/components/ui/data-table"
-import { useSuppliers, useSupplierMutations, Supplier, columns } from "@/features/system"
+import { useSuppliers, useSupplierMutations, Supplier, supplierColumns as columns } from "@/features/system"
 import { SupplierAccreditationsDialog } from "@/features/system/suppliers/supplier-accreditations-dialog"
 import { toast } from "sonner"
 import {

@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ReferenceStandard } from "../lib/schema"
+import { ReferenceStandard } from "@/features/standards"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, ArrowUpDown, Eye, Edit, Trash2, AlertTriangle } from "lucide-react"

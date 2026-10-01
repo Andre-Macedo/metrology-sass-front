@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { TraceabilityGraph } from '@/app/[locale]/(dashboard)/dashboard/metrology/calibrations/[id]/components/traceability-graph'
+import { TraceabilityGraph } from '@/features/calibrations'
 
 const meta: Meta<typeof TraceabilityGraph> = {
     title: 'Metrology/TraceabilityGraph',

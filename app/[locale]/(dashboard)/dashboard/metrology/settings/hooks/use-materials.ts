@@ -28,7 +28,7 @@ export function useCreateMaterial() {
 export function useUpdateMaterial() {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: ({ id, data }: { id: number; data: Partial<Material> }) => 
+        mutationFn: ({ id, data }: { id: string | number; data: Partial<Material> }) => 
             apiClient.put(`/metrology/materials/${id}`, data),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: MATERIAL_KEYS.lists() }),
     })
@@ -37,7 +37,7 @@ export function useUpdateMaterial() {
 export function useDeleteMaterial() {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: (id: number) => apiClient.delete(`/metrology/materials/${id}`),
+        mutationFn: (id: string | number) => apiClient.delete(`/metrology/materials/${id}`),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: MATERIAL_KEYS.lists() }),
     })
 }

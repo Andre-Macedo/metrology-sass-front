@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useTranslations } from "next-intl"
 
-export const columns = (onEdit: (station: Station) => void, onDelete: (id: number) => void): ColumnDef<Station>[] => {
+export const columns = (onEdit: (station: Station) => void, onDelete: (id: string | number) => void): ColumnDef<Station>[] => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const t = useTranslations('Stations')
     // eslint-disable-next-line react-hooks/rules-of-hooks

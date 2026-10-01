@@ -124,7 +124,7 @@ export function KanbanBoard({ initialOrders, onStatusChange }: KanbanBoardProps)
                                     serialNumber={order.item?.serial_number || 'N/A'}
                                     date={order.created_at}
                                     status={order.status}
-                                    technician={order.received_by_name}
+                                    technician={order.received_by_name ?? undefined}
                                 />
                             ))}
                         </KanbanColumn>
@@ -141,7 +141,7 @@ export function KanbanBoard({ initialOrders, onStatusChange }: KanbanBoardProps)
                             serialNumber={activeOrder.item?.serial_number || 'N/A'}
                             date={activeOrder.created_at}
                             status={activeOrder.status}
-                            technician={activeOrder.received_by_name}
+                            technician={activeOrder.received_by_name ?? undefined}
                         />
                     ) : null}
                 </DragOverlay>

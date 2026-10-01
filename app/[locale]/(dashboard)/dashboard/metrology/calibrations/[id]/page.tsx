@@ -1,15 +1,23 @@
 "use client"
 
+import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { useCalibration } from "@/app/[locale]/(dashboard)/dashboard/metrology/calibrations/hooks/use-calibrations"
+import { 
+    useCalibration, 
+    useApproveCalibration, 
+    useRejectCalibration, 
+    SignatureModal,
+    TraceabilityGraph
+} from "@/features/calibrations"
 import { PageHeader } from "@/components/layout/page-header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, FileText, ArrowLeft, GitMerge } from "lucide-react"
-import { TraceabilityGraph } from "./components/traceability-graph"
+import { Loader2, FileText, ArrowLeft, GitMerge, CheckCircle, XCircle, Edit } from "lucide-react"
 import { format } from "date-fns"
+import { toast } from "sonner"
+import { Link } from "@/i18n/routing"
 
 export default function CalibrationDetailsPage() {
     const params = useParams()
@@ -17,9 +25,33 @@ export default function CalibrationDetailsPage() {
     const id = params.id as string
 
     const { data: calibration, isLoading } = useCalibration(id)
+    const approveMutation = useApproveCalibration()
+    const rejectMutation = useRejectCalibration()
+    const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false)
 
     if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>
     if (!calibration) return <div>Calibration not found</div>
+
+    const handleConfirmSignature = async (password: string) => {
+        try {
+            await approveMutation.mutateAsync({ id, password })
+            toast.success("Calibração homologada e assinada com sucesso!")
+            setIsSignatureModalOpen(false)
+        } catch (error: any) {
+            toast.error(error.message || "Falha na assinatura eletrônica.")
+        }
+    }
+
+    const handleReject = async () => {
+        try {
+            await rejectMutation.mutateAsync({ id })
+            toast.success("Calibração devolvida para correção.")
+        } catch (error: any) {
+            toast.error(error.message || "Erro ao devolver calibração.")
+        }
+    }
+
+    const isPendingReview = calibration.status === 'in_review' || calibration.status === 'pending'
 
     return (
         <div className="space-y-6">
@@ -34,14 +66,39 @@ export default function CalibrationDetailsPage() {
                             <span>{calibration.calibrated_item_name}</span>
                             <span>•</span>
                             <span>{calibration.date ? format(new Date(calibration.date), 'dd/MM/yyyy') : 'N/A'}</span>
-                            </div>
-
+                            <span>•</span>
+                            <Badge variant="outline" className="text-xs">
+                                {calibration.status || 'published'}
+                            </Badge>
+                        </div>
                     </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                     <Badge variant={calibration.result === 'pass' ? 'default' : 'destructive'} className="text-sm px-3">
                         {calibration.result.toUpperCase()}
                     </Badge>
+                    {isPendingReview && (
+                        <>
+                            <Button 
+                                variant="outline" 
+                                className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
+                                onClick={() => setIsSignatureModalOpen(true)}
+                                disabled={approveMutation.isPending}
+                            >
+                                <CheckCircle className="mr-2 h-4 w-4" />
+                                Homologar & Assinar
+                            </Button>
+                            <Button 
+                                variant="outline" 
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                                onClick={handleReject}
+                                disabled={rejectMutation.isPending}
+                            >
+                                <XCircle className="mr-2 h-4 w-4" />
+                                Devolver
+                            </Button>
+                        </>
+                    )}
                     {calibration.certificate_url && (
                         <Button variant="outline" asChild>
                             <a href={calibration.certificate_url} target="_blank" rel="noopener noreferrer">
@@ -50,8 +107,23 @@ export default function CalibrationDetailsPage() {
                             </a>
                         </Button>
                     )}
+                    <Button variant="outline" asChild>
+                        <Link href={`/dashboard/metrology/calibrations/${calibration.id}/edit`}>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Editar
+                        </Link>
+                    </Button>
                 </div>
             </div>
+
+            <SignatureModal
+                isOpen={isSignatureModalOpen}
+                onClose={() => setIsSignatureModalOpen(false)}
+                isLoading={approveMutation.isPending}
+                onConfirm={handleConfirmSignature}
+                title="Assinatura Eletrônica de Homologação"
+                description="Como signatário técnico autorizado, digite sua senha para homologar este certificado e assinar digitalmente conforme FDA 21 CFR Part 11 e ISO 17025."
+            />
 
             <Tabs defaultValue="details" className="w-full">
                 <TabsList>

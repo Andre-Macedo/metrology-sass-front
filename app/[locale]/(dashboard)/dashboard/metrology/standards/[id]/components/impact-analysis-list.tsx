@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useStandardImpact } from "@/app/[locale]/(dashboard)/dashboard/metrology/standards/hooks/use-standards"
+import { useStandardImpact } from "@/features/standards"
 import {
     Table,
     TableBody,

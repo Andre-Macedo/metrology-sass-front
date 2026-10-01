@@ -27,7 +27,7 @@ export function useCreateInstrumentType() {
 export function useUpdateInstrumentType() {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: ({ id, data }: { id: number; data: InstrumentType }) =>
+        mutationFn: ({ id, data }: { id: string | number; data: InstrumentType }) =>
             apiClient.put(`/instrument-types/${id}`, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["instrument-types"] })
@@ -38,7 +38,7 @@ export function useUpdateInstrumentType() {
 export function useDeleteInstrumentType() {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: (id: number) => apiClient.delete(`/instrument-types/${id}`),
+        mutationFn: (id: string | number) => apiClient.delete(`/instrument-types/${id}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["instrument-types"] })
         },
@@ -70,7 +70,7 @@ export function useCreateReferenceStandardType() {
 export function useUpdateReferenceStandardType() {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: ({ id, data }: { id: number; data: ReferenceStandardType }) =>
+        mutationFn: ({ id, data }: { id: string | number; data: ReferenceStandardType }) =>
             apiClient.put(`/reference-standard-types/${id}`, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["reference-standard-types"] })
@@ -81,7 +81,7 @@ export function useUpdateReferenceStandardType() {
 export function useDeleteReferenceStandardType() {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: (id: number) => apiClient.delete(`/reference-standard-types/${id}`),
+        mutationFn: (id: string | number) => apiClient.delete(`/reference-standard-types/${id}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["reference-standard-types"] })
         },

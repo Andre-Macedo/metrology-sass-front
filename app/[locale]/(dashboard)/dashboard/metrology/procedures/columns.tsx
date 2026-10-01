@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ChecklistTemplate } from "@/app/[locale]/(dashboard)/dashboard/metrology/procedures/lib/schema"
+import { ChecklistTemplate } from "@/features/procedures"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, Edit, Trash2, ListChecks } from "lucide-react"

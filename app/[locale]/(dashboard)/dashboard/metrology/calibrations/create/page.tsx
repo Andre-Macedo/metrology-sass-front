@@ -1,14 +1,14 @@
 "use client"
 
-import { CalibrationWizardForm } from "@/app/[locale]/(dashboard)/dashboard/metrology/calibrations/components/calibration-wizard"
+import { CalibrationWizardForm } from "@/features/calibrations"
 import { PageHeader } from "@/components/layout/page-header"
 
 export default function CreateCalibrationPage() {
     return (
         <div className="space-y-6">
             <PageHeader
-                title="Record New Calibration"
-                description="Follow the wizard to execute and record a calibration"
+                title="Executar Nova Calibração"
+                description="Assistente técnico passo a passo para execução e registro metrológico"
             />
             <CalibrationWizardForm />
         </div>

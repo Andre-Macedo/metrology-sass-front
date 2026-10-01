@@ -88,7 +88,7 @@ export function InstrumentTypeForm({ initialData, onSuccess }: Props) {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{t('decision_rule')}</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} defaultValue={field.value || undefined} value={field.value || undefined}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder={t('decision_rule_placeholder')} />

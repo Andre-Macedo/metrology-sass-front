@@ -36,7 +36,7 @@ export function UserCompetencesDialog({ open, onOpenChange, user }: { open: bool
 
     const formSchema = z.object({
         competences: z.array(z.object({
-            instrument_type_id: z.number(),
+            instrument_type_id: z.union([z.number(), z.string()]),
             instrument_type_name: z.string(),
             selected: z.boolean(),
             valid_until: z.string().nullable().optional()
@@ -77,7 +77,7 @@ export function UserCompetencesDialog({ open, onOpenChange, user }: { open: bool
             const selectedCompetences = values.competences
                 .filter(c => c.selected)
                 .map(c => ({
-                    instrument_type_id: c.instrument_type_id,
+                    instrument_type_id: Number(c.instrument_type_id),
                     valid_until: c.valid_until || null
                 }))
 

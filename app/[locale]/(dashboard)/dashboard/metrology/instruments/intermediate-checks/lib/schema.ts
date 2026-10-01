@@ -2,11 +2,11 @@ import { z } from "zod"
 
 export const intermediateCheckSchema = z.object({
     id: z.string().optional(),
-    instrument_id: z.number().min(1, "Instrument ID is required"),
+    instrument_id: z.union([z.string(), z.number()]),
     check_date: z.string().min(1, "Date is required"),
     result: z.enum(['passed', 'failed']),
-    reference_standard_id: z.coerce.number().optional().nullable(),
-    performed_by: z.number().optional(),
+    reference_standard_id: z.union([z.string(), z.number()]).optional().nullable(),
+    performed_by: z.union([z.string(), z.number()]).optional(),
     temperature: z.coerce.number().optional().nullable(),
     humidity: z.coerce.number().optional().nullable(),
     notes: z.string().optional().nullable(),

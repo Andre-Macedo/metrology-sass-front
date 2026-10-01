@@ -68,7 +68,6 @@ export function SignaturePad({ onSave, onCancel, existingSignatureUrl, loading =
                     backgroundColor="rgba(255,255,255,1)"
                     minWidth={1}
                     maxWidth={2.5}
-                    placeholder="Sign here"
                 />
 
                 {isEmpty && (

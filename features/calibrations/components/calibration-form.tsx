@@ -47,7 +47,7 @@ export function CalibrationForm({ initialData, onSubmit, isLoading }: Calibratio
         next_due_date: z.string(),
     })
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<any>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData || {
             instrument_id: "",

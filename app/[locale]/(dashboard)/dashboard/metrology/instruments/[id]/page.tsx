@@ -4,7 +4,7 @@ import { apiClient } from "@/lib/api/client"
 import { toast } from "sonner"
 
 import { PageHeader } from "@/components/layout/page-header"
-import { useInstrument } from "@/app/[locale]/(dashboard)/dashboard/metrology/instruments/hooks/use-instruments"
+import { useInstrument } from "@/features/instruments"
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Edit, ArrowLeft, Printer, Loader2, AlertTriangle, ShieldCheck, Download, FileText, CheckCircle2, XCircle, FileCheck, Gauge, MapPin, Archive } from "lucide-react"
@@ -334,7 +334,7 @@ export default function InstrumentDetailsPage() {
                                                             <TableCell className="text-right">
                                                                 <div className="flex justify-end gap-2">
                                                                     <Button variant="ghost" size="sm" asChild>
-                                                                        <Link href={`/dashboard/metrology/instruments/calibrations/${cal.id}`}>
+                                                                        <Link href={`/dashboard/metrology/calibrations/${cal.id}`}>
                                                                             <FileText className="h-4 w-4 mr-2" /> Details
                                                                         </Link>
                                                                     </Button>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react"
-import { useDriftData } from "@/app/[locale]/(dashboard)/dashboard/metrology/instruments/hooks/use-instruments"
+import { useDriftData } from "@/features/instruments"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Area } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"

@@ -1,7 +1,7 @@
 "use client"
 
 import { PageHeader } from "@/components/layout/page-header"
-import { useStandard } from "@/app/[locale]/(dashboard)/dashboard/metrology/standards/hooks/use-standards"
+import { useStandard } from "@/features/standards"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { 
@@ -190,7 +190,7 @@ export default function StandardDetailsPage() {
                                     </div>
                                     <div className="space-y-1.5">
                                         <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-tighter">Precision Grade</p>
-                                        <p className="text-sm font-bold text-primary">{standard.grade || 'N/A'}</p>
+                                        <p className="text-sm font-bold text-primary">{String(standard.grade || 'N/A')}</p>
                                     </div>
                                     <div className="space-y-1.5">
                                         <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-tighter">Type</p>
@@ -211,7 +211,7 @@ export default function StandardDetailsPage() {
                                     </div>
                                     <div className="space-y-1.5">
                                         <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-tighter">Frequency</p>
-                                        <p className="text-sm font-medium">{standard.calibration_frequency_months || 24} Months</p>
+                                        <p className="text-sm font-medium">{String(standard.calibration_frequency_months || 24)} Months</p>
                                     </div>
 
                                     <div className="space-y-1.5">
@@ -306,9 +306,9 @@ export default function StandardDetailsPage() {
 
                         <TabsContent value="attachments" className="mt-6">
                             <AttachmentsList 
-                                attachments={standard.attachments || []} 
+                                attachments={(standard.attachments as any) || []} 
                                 attachableType="Modules\Metrology\Models\ReferenceStandard" 
-                                attachableId={Number(standard.id)} 
+                                attachableId={standard.id} 
                             />
                         </TabsContent>
                     </Tabs>

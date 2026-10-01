@@ -10,7 +10,7 @@ import { useRouter } from '@/i18n/routing'
 
 export default function WorkOrdersKanbanPage() {
     const router = useRouter()
-    const { data: workOrdersResult, isLoading } = useWorkOrders(1, '', 100) // Busca as OSs
+    const { data: workOrdersResult, isLoading } = useWorkOrders({ page: 1, search: '', per_page: 100 })
     const updateMutation = useUpdateWorkOrder()
 
     const workOrders = (workOrdersResult as any)?.data || []

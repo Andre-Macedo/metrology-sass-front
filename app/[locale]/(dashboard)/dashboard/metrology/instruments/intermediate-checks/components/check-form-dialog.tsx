@@ -32,13 +32,14 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useState } from "react"
 import { toast } from "sonner"
-import { ClipboardCheck } from "lucide-react"
+import { ClipboardCheck, AlertTriangle } from "lucide-react"
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 import { intermediateCheckFormSchema } from "../lib/schema"
 import { useCreateIntermediateCheck } from "../hooks/use-intermediate-checks"
-import { useStandards } from "@/app/[locale]/(dashboard)/dashboard/metrology/standards/hooks/use-standards"
+import { useStandards } from "@/features/standards"
 
 interface CheckFormDialogProps {
-    instrumentId: number
+    instrumentId: string | number
 }
 
 export function CheckFormDialog({ instrumentId }: CheckFormDialogProps) {
@@ -65,7 +66,11 @@ export function CheckFormDialog({ instrumentId }: CheckFormDialogProps) {
     const onSubmit = async (values: z.infer<typeof intermediateCheckFormSchema>) => {
         try {
             await createMutation.mutateAsync(values)
-            toast.success("Intermediate Check recorded successfully")
+            if (values.result === 'failed') {
+                toast.warning("Instrumento bloqueado por reprovação na checagem intermediária (ISO/IEC 17025 §6.4.10). Não conformidade aberta.")
+            } else {
+                toast.success("Checagem intermediária registrada com sucesso.")
+            }
             setOpen(false)
             form.reset({
                 ...values,
@@ -73,7 +78,7 @@ export function CheckFormDialog({ instrumentId }: CheckFormDialogProps) {
                 notes: ""
             })
         } catch (error) {
-            toast.error("Failed to record check")
+            toast.error("Falha ao registrar checagem intermediária")
         }
     }
 
@@ -82,14 +87,14 @@ export function CheckFormDialog({ instrumentId }: CheckFormDialogProps) {
             <DialogTrigger asChild>
                 <Button>
                     <ClipboardCheck className="mr-2 h-4 w-4" />
-                    Register Check
+                    Registrar Checagem
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Register Intermediate Check</DialogTitle>
+                    <DialogTitle>Registrar Checagem Intermediária</DialogTitle>
                     <DialogDescription>
-                        Record a simplified verification. Failed checks may restrict the instrument.
+                        Registro de verificação metrológica periódica. Falhas bloqueiam o instrumento imediatamente conforme ISO/IEC 17025 §6.4.10.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -101,7 +106,7 @@ export function CheckFormDialog({ instrumentId }: CheckFormDialogProps) {
                                 name="check_date"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Date</FormLabel>
+                                        <FormLabel>Data</FormLabel>
                                         <FormControl>
                                             <Input type="date" {...field} />
                                         </FormControl>
@@ -114,7 +119,7 @@ export function CheckFormDialog({ instrumentId }: CheckFormDialogProps) {
                                 name="result"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Result</FormLabel>
+                                        <FormLabel>Resultado</FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl>
                                                 <SelectTrigger>
@@ -122,8 +127,8 @@ export function CheckFormDialog({ instrumentId }: CheckFormDialogProps) {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="passed" className="text-green-600 font-medium">PASS</SelectItem>
-                                                <SelectItem value="failed" className="text-red-600 font-medium">FAIL</SelectItem>
+                                                <SelectItem value="passed" className="text-green-600 font-medium">PASS (Aprovado)</SelectItem>
+                                                <SelectItem value="failed" className="text-red-600 font-medium">FAIL (Reprovado)</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -132,25 +137,35 @@ export function CheckFormDialog({ instrumentId }: CheckFormDialogProps) {
                             />
                         </div>
 
+                        {form.watch('result') === 'failed' && (
+                            <Alert variant="destructive" className="py-2.5">
+                                <AlertTriangle className="h-4 w-4" />
+                                <AlertTitle className="text-xs font-semibold">Bloqueio Automático ISO/IEC 17025 §6.4.10</AlertTitle>
+                                <AlertDescription className="text-xs">
+                                    Ao registrar o resultado como <strong>FAIL</strong>, o instrumento será imediatamente bloqueado com status <strong>Reprovado</strong> e uma <strong>Não Conformidade (NC)</strong> será aberta automaticamente para investigação de impacto metrológico.
+                                </AlertDescription>
+                            </Alert>
+                        )}
+
                         <FormField
                             control={form.control}
                             name="reference_standard_id"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Reference Standard Used</FormLabel>
+                                    <FormLabel>Padrão de Referência Utilizado</FormLabel>
                                     <Select
-                                        onValueChange={(val) => field.onChange(val ? parseInt(val) : 0)}
-                                        value={field.value?.toString()}
+                                        onValueChange={(val) => field.onChange(val || undefined)}
+                                        value={field.value ? String(field.value) : undefined}
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select standard..." />
+                                                <SelectValue placeholder="Selecione o padrão de referência..." />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             {standards.map(std => (
-                                                <SelectItem key={std.id} value={std.id.toString()}>
-                                                    {std.name} ({std.id})
+                                                <SelectItem key={std.id} value={String(std.id)}>
+                                                    {std.name} {std.code ? `(${std.code})` : ''}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

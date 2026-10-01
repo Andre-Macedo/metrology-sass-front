@@ -11,6 +11,7 @@ export const workOrderSchema = z.object({
         name: z.string(),
         serial_number: z.string(),
     }).nullable().optional(),
+    item_name: z.string().nullable().optional(),
     origin_station_id: z.string().nullable().optional(),
     origin_station_name: z.string().nullable().optional(),
     destination_station_id: z.string().nullable().optional(),

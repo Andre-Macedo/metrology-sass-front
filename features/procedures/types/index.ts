@@ -14,6 +14,9 @@ export const checklistTemplateSchema = z.object({
     id: z.string(),
     name: z.string().min(2),
     instrument_type_id: z.string().optional().nullable(),
+    instrument_type: z.string().optional().nullable(),
+    created_at: z.string().optional().nullable(),
+    updated_at: z.string().optional().nullable(),
     items: z.array(checklistItemSchema).min(1),
 }).passthrough()
 

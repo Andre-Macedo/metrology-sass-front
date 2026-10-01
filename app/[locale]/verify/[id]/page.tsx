@@ -33,8 +33,8 @@ export default function PublicVerificationPage() {
         const fetchInstrument = async () => {
             try {
                 // Direct fetch bypassing standard hooks to ensure it works with public endpoint
-                const response = await apiClient.get<PublicInstrument>(`/public/instruments/${id}`)
-                setInstrument(response.data)
+                const response = await apiClient.get<any>(`/public/instruments/${id}`)
+                setInstrument(response.data || response)
             } catch (e) {
                 console.error(e)
                 setError(true)

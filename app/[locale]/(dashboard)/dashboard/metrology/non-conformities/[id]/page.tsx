@@ -25,7 +25,13 @@ export default function NonConformityDetailsPage() {
     const updateMutation = useUpdateNonConformity()
     const closeMutation = useCloseNonConformity()
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<{
+        root_cause_analysis: string
+        immediate_action: string
+        corrective_action: string
+        preventive_action: string
+        status: "open" | "investigating" | "resolved" | "closed"
+    }>({
         root_cause_analysis: "",
         immediate_action: "",
         corrective_action: "",
@@ -128,7 +134,7 @@ export default function NonConformityDetailsPage() {
                                     <Label>{t('update_status')}</Label>
                                     <Select 
                                         value={formData.status} 
-                                        onValueChange={(v) => setFormData({...formData, status: v})}
+                                        onValueChange={(v) => setFormData({...formData, status: v as "open" | "investigating" | "resolved" | "closed"})}
                                         disabled={isClosed}
                                     >
                                         <SelectTrigger className="mt-1">

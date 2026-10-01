@@ -53,7 +53,7 @@ export default function StandardCertificatesPage() {
 
     const filteredData = data.filter((cert) => {
         const matchesSearch =
-            cert.instrument_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (cert.instrument_name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
             cert.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
             cert.calibration_id.toLowerCase().includes(searchQuery.toLowerCase())
         const matchesFilter = statusFilter === 'all' || cert.status === statusFilter
