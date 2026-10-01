@@ -205,6 +205,19 @@ class ApiClient {
 
     return this.handleResponse<T>(response)
   }
+
+  async upload<T>(endpoint: string, formData: FormData): Promise<T> {
+    const headers = this.getHeaders()
+    delete headers['Content-Type']
+
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    })
+
+    return this.handleResponse<T>(response)
+  }
   async getBlob(endpoint: string): Promise<Blob> {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'GET',

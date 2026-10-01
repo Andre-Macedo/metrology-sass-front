@@ -11,23 +11,7 @@ export function useUploadAttachment() {
             formData.append('attachable_type', attachable_type)
             formData.append('attachable_id', attachable_id.toString())
 
-            // Fetch natively to handle FormData correctly if apiClient wrapper doesn't support it directly
-            const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/metrology/attachments`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                },
-                body: formData
-            })
-
-            if (!res.ok) {
-                const errorData = await res.json().catch(() => ({}))
-                throw new Error(errorData.message || 'Upload failed')
-            }
-
-            return await res.json()
+            return await apiClient.upload<{ data: any }>('/metrology/attachments', formData)
         },
         onSuccess: (_, variables) => {
             // Invalidate the entity's query to refresh its attachments list

@@ -18,6 +18,7 @@ import { Loader2, FileText, ArrowLeft, GitMerge, CheckCircle, XCircle, Edit } fr
 import { format } from "date-fns"
 import { toast } from "sonner"
 import { Link } from "@/i18n/routing"
+import { apiClient } from "@/lib/api/client"
 
 export default function CalibrationDetailsPage() {
     const params = useParams()
@@ -48,6 +49,29 @@ export default function CalibrationDetailsPage() {
             toast.success("Calibração devolvida para correção.")
         } catch (error: any) {
             toast.error(error.message || "Erro ao devolver calibração.")
+        }
+    }
+
+    const [isDownloadingPdf, setIsDownloadingPdf] = useState(false)
+
+    const handleDownloadPdf = async () => {
+        try {
+            setIsDownloadingPdf(true)
+            const blob = await apiClient.getBlob(`/calibrations/${id}/pdf`)
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `certificado-${calibration.certificate_number || id}.pdf`
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+            toast.success("Certificado baixado com sucesso!")
+        } catch (error) {
+            console.error(error)
+            toast.error("Não foi possível gerar o certificado em PDF.")
+        } finally {
+            setIsDownloadingPdf(false)
         }
     }
 
@@ -99,14 +123,18 @@ export default function CalibrationDetailsPage() {
                             </Button>
                         </>
                     )}
-                    {calibration.certificate_url && (
-                        <Button variant="outline" asChild>
-                            <a href={calibration.certificate_url} target="_blank" rel="noopener noreferrer">
-                                <FileText className="mr-2 h-4 w-4" />
-                                Download PDF
-                            </a>
-                        </Button>
-                    )}
+                    <Button 
+                        variant="outline" 
+                        onClick={handleDownloadPdf}
+                        disabled={isDownloadingPdf}
+                    >
+                        {isDownloadingPdf ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <FileText className="mr-2 h-4 w-4" />
+                        )}
+                        Certificado PDF
+                    </Button>
                     <Button variant="outline" asChild>
                         <Link href={`/dashboard/metrology/calibrations/${calibration.id}/edit`}>
                             <Edit className="mr-2 h-4 w-4" />
