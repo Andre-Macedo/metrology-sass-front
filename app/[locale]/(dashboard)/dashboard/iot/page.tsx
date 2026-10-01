@@ -5,6 +5,7 @@ import { PageHeader } from '@/components/layout/page-header'
 import { useTranslations } from 'next-intl'
 import { RealTimeTelemetry } from '@/components/iot/RealTimeTelemetry'
 import { HistoricalTelemetry } from '@/components/iot/HistoricalTelemetry'
+import { IoTLogsDiagnostic } from '@/components/iot/IoTLogsDiagnostic'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function IoTPage() {
@@ -26,6 +27,7 @@ export default function IoTPage() {
         <TabsList>
           <TabsTrigger value="realtime">Tempo Real</TabsTrigger>
           <TabsTrigger value="history">Análise Histórica</TabsTrigger>
+          <TabsTrigger value="logs">Logs & Diagnóstico de Falhas</TabsTrigger>
         </TabsList>
 
         <TabsContent value="realtime">
@@ -44,6 +46,10 @@ export default function IoTPage() {
 
         <TabsContent value="history">
           <HistoricalTelemetry />
+        </TabsContent>
+
+        <TabsContent value="logs">
+          <IoTLogsDiagnostic />
         </TabsContent>
       </Tabs>
     </div>
