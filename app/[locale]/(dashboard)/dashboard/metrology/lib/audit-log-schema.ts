@@ -2,7 +2,10 @@ import { z } from "zod"
 
 export const auditLogSchema = z.object({
     id: z.string(),
-    event: z.string(), // created, updated
+    sequence_number: z.number().optional().nullable(),
+    previous_hash: z.string().optional().nullable(),
+    record_hash: z.string().optional().nullable(),
+    event: z.string(), // created, updated, deleted
     user_name: z.string(),
     created_at: z.string(),
     formatted_date: z.string(),
