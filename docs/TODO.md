@@ -27,6 +27,7 @@ Este documento lista as melhorias técnicas recomendadas para elevar a maturidad
 
 ## 🟣 Infraestrutura, Servidor e Monitoramento (SaaS)
 
+- [ ] **Ambiente Remoto de Staging (`dev.leantech.andremacedo.dev.br`):** Testes integrados com a API de staging antes do merge na branch `main`.
 - [x] **Configuração do Docker:** Containers Next.js em multi-stage build integrados ao docker-compose com Reverb e API.
 - [x] **Adição do Redis:** Redis configurado no cluster para filas e cache.
 - [x] **Monitoramento de Exceções (Sentry):** Integração com `@sentry/nextjs` no frontend e `sentry/sentry-laravel` no backend.

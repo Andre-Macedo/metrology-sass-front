@@ -13,17 +13,21 @@ O sistema utiliza o padrão de módulos para isolar domínios de negócio.
 Modules/
 └── {NomeDoModulo}/
     ├── app/
+    │   ├── Actions/                 # Lógica de negócio orquestrada (Service Layer)
+    │   ├── DTOs/                    # Data Transfer Objects estritamente tipados
+    │   ├── Enums/                   # Tipos enumerados de estado e classificação
     │   ├── Http/
     │   │   ├── Controllers/Api/V1/  # Versionamento de API
-    │   │   └── Resources/           # Padronização de saídas
-    │   ├── Models/                  # Modelos de domínio
-    │   └── Providers/               # Injeção de dependência e rotas
-    ├── Actions/                     # Lógica de negócio pura (Service Layer)
+    │   │   └── Resources/           # Padronização de saídas JsonResource
+    │   ├── Models/                  # Modelos Eloquent de domínio
+    │   ├── Services/                # Motores de cálculo matemáticos e regras normativas
+    │   └── Providers/               # Injeção de dependência e registro do módulo
     ├── database/
-    │   ├── migrations/
-    │   └── factories/
+    │   ├── migrations/              # Migrações isoladas do módulo
+    │   ├── seeders/                 # Seeders de dados iniciais
+    │   └── factories/               # Model factories para testes
     └── routes/
-        └── api.php                  # Definição de endpoints
+        └── api.php                  # Definição de endpoints REST
 ```
 
 ## 2. Padrão de API (V1)

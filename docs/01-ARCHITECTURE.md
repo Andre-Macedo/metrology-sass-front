@@ -30,24 +30,24 @@ metrology-sass-front/
 │   ├── api/                    # Configuração base do Axios/Fetch
 │   ├── utils.ts                # cn(), formatters globais
 │   └── types.ts                # Tipagens GLOBAIS (Evitar tipagens de domínio aqui)
-├── features/                   # ✨ NOVO PADRÃO: Lógica separada por domínio (Feature-based)
+├── features/                   # Padrão Adotado: Lógica separada por domínio (Feature-based)
 │   ├── instruments/
 │   │   ├── components/         # Componentes específicos de instrumentos (InstrumentForm, etc)
 │   │   ├── hooks/              # useInstruments, useCreateInstrument (React Query)
-│   │   ├── utils/              # Funções puras específicas do domínio
+│   │   ├── utils/              # Funções puras específicas do domínio (adapters, cálculos)
 │   │   └── types.ts            # Tipos e Schemas Zod específicos do domínio
 │   ├── calibrations/
-│   └── system/
+│   ├── standards/
+│   ├── iot/
+│   └── portal/
 └── hooks/                      # Hooks GLOBAIS (useAuth, useMobile, useDebounce)
 ```
 
-## Regras de Refatoração (Para o cenário atual)
+## Regras de Organização
 
-Atualmente, o projeto mistura os conceitos. Por exemplo, existem pastas `components` e `hooks` *dentro* das rotas no diretório `app` (ex: `app/[locale]/(dashboard)/dashboard/metrology/instruments/hooks`).
-
-**O que precisamos ajustar gradativamente:**
-1.  **Mover a lógica de domínio para fora da pasta `app`:** A pasta `app` tem roteamento dinâmico e layouts, o que pode causar confusão ao importar arquivos relativos. A longo prazo, adotaremos o padrão de uma pasta `/features` na raiz.
-2.  **Limpar o `components/` raiz:** Manter apenas componentes verdadeiramente agnósticos (UI) e de layout na pasta global `components`. Componentes como `calibration-form.tsx` que estão soltos na pasta global devem ir para seu domínio específico dentro de `/features`.
+1.  **Domínio isolado em `/features`:** Componentes, hooks de React Query, adaptadores de dados e schemas Zod de um domínio pertencem a `features/<dominio>`.
+2.  **App Router para Roteamento:** A pasta `app` atua apenas como camada de roteamento, montando as páginas e layouts a partir dos componentes das features.
+3.  **Componentes Globais:** Componentes primitivos Shadcn UI residem em `components/ui`. Componentes de casca/layout residem em `components/layout`.
 
 ## O Padrão `index.ts` (Barrel Files)
 Para evitar caminhos de importação longos, use `index.ts` para exportar a interface pública de uma feature.
