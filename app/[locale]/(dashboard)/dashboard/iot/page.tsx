@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl'
 import { RealTimeTelemetry } from '@/components/iot/RealTimeTelemetry'
 import { HistoricalTelemetry } from '@/components/iot/HistoricalTelemetry'
 import { IoTLogsDiagnostic } from '@/components/iot/IoTLogsDiagnostic'
+import { IoTDatasetsManager } from '@/components/iot/IoTDatasetsManager'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function IoTPage() {
@@ -28,6 +29,7 @@ export default function IoTPage() {
           <TabsTrigger value="realtime">Tempo Real</TabsTrigger>
           <TabsTrigger value="history">Análise Histórica</TabsTrigger>
           <TabsTrigger value="logs">Logs & Diagnóstico de Falhas</TabsTrigger>
+          <TabsTrigger value="datasets">Datasets & Modelos IA</TabsTrigger>
         </TabsList>
 
         <TabsContent value="realtime">
@@ -50,6 +52,10 @@ export default function IoTPage() {
 
         <TabsContent value="logs">
           <IoTLogsDiagnostic />
+        </TabsContent>
+
+        <TabsContent value="datasets">
+          <IoTDatasetsManager />
         </TabsContent>
       </Tabs>
     </div>

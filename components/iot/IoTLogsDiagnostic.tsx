@@ -32,7 +32,9 @@ import {
 } from '@/components/ui/sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
+  Activity,
   AlertTriangle, 
+  BrainCircuit,
   CheckCircle2, 
   Copy, 
   Eye, 
@@ -41,6 +43,8 @@ import {
   Layers, 
   RefreshCcw, 
   Search, 
+  ShieldCheck,
+  Sliders,
   Terminal, 
   Zap 
 } from 'lucide-react'
@@ -93,20 +97,50 @@ export function IoTLogsDiagnostic() {
   // Sheet Inspection State
   const [inspectedLog, setInspectedLog] = useState<IoTDeviceLogItem | null>(null)
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false)
+  const [isLabeling, setIsLabeling] = useState<boolean>(false)
+  const [availableDatasets, setAvailableDatasets] = useState<{ id: string; name: string; type: string }[]>([])
+  const [selectedDatasetForLabel, setSelectedDatasetForLabel] = useState<string>('auto')
 
-  // Carrega nós de sensores para o seletor de filtro
+  const handleLabelLog = async (logId: string, label: string, isBaseline = false) => {
+    setIsLabeling(true)
+    try {
+      await apiClient.post(`/iot-logs/${logId}/label`, {
+        ground_truth_label: label,
+        is_baseline: isBaseline,
+        dataset_id: selectedDatasetForLabel !== 'auto' ? selectedDatasetForLabel : undefined,
+      })
+      toast.success(`Amostra rotulada com sucesso como: ${label.replace(/_/g, ' ').toUpperCase()}!`)
+      fetchLogs(currentPage)
+    } catch (err: any) {
+      toast.error('Erro ao rotular evento: ' + (err.message || 'Falha'))
+    } finally {
+      setIsLabeling(false)
+    }
+  }
+
+  // Carrega nós e datasets disponíveis
   useEffect(() => {
-    async function fetchNodes() {
+    async function fetchInitialData() {
       try {
-        const response = await apiClient.get<any>('/iot-nodes')
-        if (response?.data) {
-          setNodes(Array.isArray(response.data) ? response.data : response.data.data || [])
+        const [nodesRes, datasetsRes] = await Promise.allSettled([
+          apiClient.get<any>('/iot-nodes'),
+          apiClient.get<any>('/iot-datasets'),
+        ])
+        
+        if (nodesRes.status === 'fulfilled' && nodesRes.value?.data) {
+          const list = Array.isArray(nodesRes.value.data) ? nodesRes.value.data : nodesRes.value.data.data || []
+          setNodes(list)
+        }
+
+        if (datasetsRes.status === 'fulfilled' && datasetsRes.value?.data) {
+          const dsList = Array.isArray(datasetsRes.value.data) ? datasetsRes.value.data : datasetsRes.value.data.data || []
+          setAvailableDatasets(dsList)
         }
       } catch (err) {
-        console.error('Falha ao carregar nós de IoT:', err)
+        console.error('Falha ao carregar dados auxiliares de IoT:', err)
       }
     }
-    fetchNodes()
+    fetchInitialData()
   }, [])
 
   // Carrega logs com filtros aplicados
@@ -444,6 +478,102 @@ export function IoTLogsDiagnostic() {
                   <p className="font-medium text-foreground">{inspectedLog.message}</p>
                 </div>
               )}
+
+              {/* Triagem & Rotulação MLOps (Human-in-the-Loop) */}
+              <Card className="border-primary/20 bg-primary/5">
+                <CardHeader className="p-3.5 pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 text-primary">
+                      <BrainCircuit className="h-4 w-4" />
+                      Triagem Humana & Curadoria MLOps
+                    </CardTitle>
+                    <Badge variant="outline" className="text-[10px] bg-background">
+                      {isLabeling ? 'Gravando Amostra...' : 'Pronto para Rotulação'}
+                    </Badge>
+                  </div>
+                  <CardDescription className="text-[11px]">
+                    Valide o evento para alimentar a esteira de retreino (XGBoost / Isolation Forest). 
+                    As 36 features canônicas deste disparo serão anexadas ao dataset selecionado.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-3.5 pt-0 space-y-3">
+                  {/* Seletor de Dataset Opcional */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">Dataset Destino:</span>
+                    <Select 
+                      value={selectedDatasetForLabel} 
+                      onValueChange={setSelectedDatasetForLabel}
+                      disabled={isLabeling}
+                    >
+                      <SelectTrigger className="h-7 text-xs flex-1">
+                        <SelectValue placeholder="Automático (Baseado no Ativo)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="auto">Automático (Baseado na Máquina/Ativo)</SelectItem>
+                        {availableDatasets.map((ds) => (
+                          <SelectItem key={ds.id} value={ds.id}>
+                            {ds.name} ({ds.type === 'supervised_xgboost' ? 'XGBoost' : 'iForest'})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Botões de Ação Rápida de Rotulação */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs font-medium justify-start border-emerald-500/30 hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300"
+                      disabled={isLabeling}
+                      onClick={() => handleLabelLog(inspectedLog.id, 'saudavel', true)}
+                    >
+                      <ShieldCheck className="h-3.5 w-3.5 mr-1.5 text-emerald-500 shrink-0" />
+                      <span className="truncate">Saudável (Baseline)</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs font-medium justify-start border-amber-500/30 hover:bg-amber-500/10 hover:text-amber-700 dark:hover:text-amber-300"
+                      disabled={isLabeling}
+                      onClick={() => handleLabelLog(inspectedLog.id, 'desbalanceamento')}
+                    >
+                      <AlertTriangle className="h-3.5 w-3.5 mr-1.5 text-amber-500 shrink-0" />
+                      <span className="truncate">Desbalanceamento</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs font-medium justify-start border-amber-500/30 hover:bg-amber-500/10 hover:text-amber-700 dark:hover:text-amber-300"
+                      disabled={isLabeling}
+                      onClick={() => handleLabelLog(inspectedLog.id, 'folga_mecanica')}
+                    >
+                      <Sliders className="h-3.5 w-3.5 mr-1.5 text-amber-600 shrink-0" />
+                      <span className="truncate">Folga Mecânica</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs font-medium justify-start border-rose-500/30 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300"
+                      disabled={isLabeling}
+                      onClick={() => handleLabelLog(inspectedLog.id, 'falha_rolamento')}
+                    >
+                      <Activity className="h-3.5 w-3.5 mr-1.5 text-rose-500 shrink-0" />
+                      <span className="truncate">Falha de Rolamento</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs font-medium justify-start border-blue-500/30 hover:bg-blue-500/10 hover:text-blue-700 dark:hover:text-blue-300 col-span-2 sm:col-span-2"
+                      disabled={isLabeling}
+                      onClick={() => handleLabelLog(inspectedLog.id, 'falso_positivo')}
+                    >
+                      <CheckCircle2 className="h-3.5 w-3.5 mr-1.5 text-blue-500 shrink-0" />
+                      <span className="truncate">Falso Alarme (Ruído Transitório / Ignorar)</span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Abas com Cargas JSON */}
               <Tabs defaultValue="raw" className="space-y-3">
