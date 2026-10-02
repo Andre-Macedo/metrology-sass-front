@@ -50,6 +50,7 @@ import {
   Zap 
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { ISO20816SeverityGauge } from '@/components/iot/ISO20816SeverityGauge'
 
 export interface IoTDeviceLogItem {
   id: string
@@ -65,6 +66,9 @@ export interface IoTDeviceLogItem {
   cloud_ml_confidence?: number | null
   rpm?: number | null
   rms_global?: number | null
+  velocity_rms?: number | null
+  iso_zone?: string | null
+  iso_evaluation?: Record<string, any> | null
   raw_payload?: Record<string, any> | null
   features?: Record<string, any> | null
   sent_command?: Record<string, any> | null
@@ -324,26 +328,27 @@ export function IoTLogsDiagnostic() {
           <Table>
             <TableHeader className="bg-muted/40">
               <TableRow>
-                <TableHead className="w-[170px]">Data / Hora</TableHead>
+                <TableHead className="w-[160px]">Data / Hora</TableHead>
                 <TableHead>Nó / Máquina</TableHead>
                 <TableHead>Evento</TableHead>
                 <TableHead>Veredito Edge IA</TableHead>
                 <TableHead>Veredito Nuvem</TableHead>
-                <TableHead className="w-[100px]">Nível</TableHead>
-                <TableHead className="text-right w-[130px]">Ações</TableHead>
+                <TableHead>Norma ISO 20816</TableHead>
+                <TableHead className="w-[90px]">Nível</TableHead>
+                <TableHead className="text-right w-[120px]">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-12 text-muted-foreground text-sm">
+                  <TableCell colSpan={8} className="text-center py-12 text-muted-foreground text-sm">
                     <RefreshCcw className="h-5 w-5 animate-spin mx-auto mb-2 text-primary" />
                     Carregando eventos de telemetria...
                   </TableCell>
                 </TableRow>
               ) : logs.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-12 text-muted-foreground text-sm">
+                  <TableCell colSpan={8} className="text-center py-12 text-muted-foreground text-sm">
                     Nenhum registro de anomalia ou evento encontrado com os filtros atuais.
                   </TableCell>
                 </TableRow>
@@ -373,6 +378,13 @@ export function IoTLogsDiagnostic() {
                     </TableCell>
                     <TableCell>
                       {renderStatusBadge(log.cloud_ml_status, log.cloud_ml_confidence)}
+                    </TableCell>
+                    <TableCell>
+                      <ISO20816SeverityGauge 
+                        compact 
+                        velocityRms={log.velocity_rms} 
+                        zone={log.iso_zone} 
+                      />
                     </TableCell>
                     <TableCell>
                       {renderBadgeLevel(log.level)}
@@ -471,6 +483,12 @@ export function IoTLogsDiagnostic() {
                   </p>
                 </Card>
               </div>
+
+              {/* Avaliação Metrológica Normativa ISO 20816-3 */}
+              <ISO20816SeverityGauge 
+                velocityRms={inspectedLog.velocity_rms} 
+                zone={inspectedLog.iso_zone} 
+              />
 
               {/* Mensagem descritiva */}
               {inspectedLog.message && (

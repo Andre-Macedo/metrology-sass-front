@@ -7,6 +7,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { useEcho } from '@/lib/providers/echo-provider'
 import { Badge } from '@/components/ui/badge'
 import { Activity } from 'lucide-react'
+import { ISO20816SeverityGauge } from '@/components/iot/ISO20816SeverityGauge'
 import { 
   Select, 
   SelectContent, 
@@ -27,6 +28,8 @@ interface TelemetryData {
   ml_confidence: number
   cloud_ml_status?: string
   cloud_ml_confidence?: number
+  velocity_rms?: number
+  iso_zone?: string
 }
 
 const chartConfig = {
@@ -113,7 +116,9 @@ export function RealTimeTelemetry({ tenantId }: { tenantId: string }) {
         rms_x: Number(data.time_domain?.rms_x || data.rms_x || (data.features && data.features.x_rms)) || 0,
         rms_y: Number(data.time_domain?.rms_y || data.rms_y || (data.features && data.features.y_rms)) || 0,
         rms_z: Number(data.time_domain?.rms_z || data.rms_z || (data.features && data.features.z_rms)) || 0,
-        mic_db: toDecibels(data.mic_rms || (data.features && data.features.mic_rms) || 0)
+        mic_db: toDecibels(data.mic_rms || (data.features && data.features.mic_rms) || 0),
+        velocity_rms: data.velocity_rms !== undefined && data.velocity_rms !== null ? Number(data.velocity_rms) : undefined,
+        iso_zone: data.iso_zone,
       }
 
       setLastData(processedPoint)
@@ -213,6 +218,11 @@ export function RealTimeTelemetry({ tenantId }: { tenantId: string }) {
           </CardContent>
         </Card>
       </div>
+
+      <ISO20816SeverityGauge 
+        velocityRms={lastData?.velocity_rms} 
+        zone={lastData?.iso_zone} 
+      />
 
       <Card className="col-span-4">
         <CardHeader className="flex flex-row items-center justify-between">
