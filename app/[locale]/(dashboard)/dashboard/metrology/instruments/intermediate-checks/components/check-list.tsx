@@ -43,6 +43,34 @@ export function CheckList({ instrumentId }: CheckListProps) {
             cell: ({ row }) => row.original.reference_standard_name || '-'
         },
         {
+            accessorKey: "nominal_value",
+            header: "Nominal",
+            cell: ({ row }) => row.original.nominal_value !== null && row.original.nominal_value !== undefined ? (
+                <span className="font-mono text-xs">{Number(row.original.nominal_value).toFixed(3)}</span>
+            ) : '-'
+        },
+        {
+            accessorKey: "measured_value",
+            header: "Medido",
+            cell: ({ row }) => row.original.measured_value !== null && row.original.measured_value !== undefined ? (
+                <span className="font-mono text-xs">{Number(row.original.measured_value).toFixed(3)}</span>
+            ) : '-'
+        },
+        {
+            accessorKey: "deviation",
+            header: "Desvio (e)",
+            cell: ({ row }) => {
+                const dev = row.original.deviation
+                if (dev === null || dev === undefined) return '-'
+                const num = Number(dev)
+                return (
+                    <span className={`font-mono text-xs font-semibold ${num > 0 ? 'text-blue-600' : num < 0 ? 'text-amber-600' : 'text-slate-600'}`}>
+                        {num > 0 ? `+${num.toFixed(4)}` : num.toFixed(4)}
+                    </span>
+                )
+            }
+        },
+        {
             accessorKey: "notes",
             header: "Notes",
             cell: ({ row }) => <span className="text-muted-foreground text-sm">{row.original.notes || '-'}</span>

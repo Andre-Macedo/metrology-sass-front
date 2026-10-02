@@ -57,6 +57,9 @@ export function CheckFormDialog({ instrumentId }: CheckFormDialogProps) {
             check_date: new Date().toISOString().split('T')[0],
             result: 'passed',
             reference_standard_id: undefined,
+            nominal_value: undefined,
+            measured_value: undefined,
+            deviation: undefined,
             temperature: undefined,
             humidity: undefined,
             notes: "",
@@ -174,6 +177,72 @@ export function CheckFormDialog({ instrumentId }: CheckFormDialogProps) {
                                 </FormItem>
                             )}
                         />
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="nominal_value"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Valor Nominal (Padrão)</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                step="any"
+                                                placeholder="Ex: 10.000"
+                                                {...field}
+                                                value={field.value ?? ""}
+                                                onChange={e => {
+                                                    const val = e.target.value !== "" ? parseFloat(e.target.value) : null
+                                                    field.onChange(val)
+                                                    const measured = form.getValues('measured_value')
+                                                    if (val !== null && measured !== null && measured !== undefined) {
+                                                        form.setValue('deviation', Math.round((measured - val) * 100000) / 100000)
+                                                    }
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="measured_value"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Valor Medido (Indicação)</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                step="any"
+                                                placeholder="Ex: 10.002"
+                                                {...field}
+                                                value={field.value ?? ""}
+                                                onChange={e => {
+                                                    const val = e.target.value !== "" ? parseFloat(e.target.value) : null
+                                                    field.onChange(val)
+                                                    const nominal = form.getValues('nominal_value')
+                                                    if (val !== null && nominal !== null && nominal !== undefined) {
+                                                        form.setValue('deviation', Math.round((val - nominal) * 100000) / 100000)
+                                                    }
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        {form.watch('nominal_value') !== undefined && form.watch('nominal_value') !== null && form.watch('measured_value') !== undefined && form.watch('measured_value') !== null && (
+                            <div className="p-2.5 rounded-md bg-muted/60 border text-xs flex justify-between items-center">
+                                <span className="font-medium text-muted-foreground">Desvio Calculado (Erro de Indicação):</span>
+                                <span className="font-mono font-bold text-foreground">
+                                    {((Number(form.watch('measured_value')) || 0) - (Number(form.watch('nominal_value')) || 0)).toFixed(4)}
+                                </span>
+                            </div>
+                        )}
 
                         <div className="grid grid-cols-2 gap-4">
                             <FormField

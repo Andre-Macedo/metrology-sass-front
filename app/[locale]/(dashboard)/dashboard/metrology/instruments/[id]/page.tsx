@@ -22,6 +22,7 @@ import {
 import { useTranslations, useLocale } from 'next-intl'
 import { CheckList } from "@/app/[locale]/(dashboard)/dashboard/metrology/instruments/intermediate-checks/components/check-list"
 import { CheckFormDialog } from "@/app/[locale]/(dashboard)/dashboard/metrology/instruments/intermediate-checks/components/check-form-dialog"
+import { ShewhartControlChart } from "@/app/[locale]/(dashboard)/dashboard/metrology/instruments/[id]/components/shewhart-control-chart"
 import { AuditLogList } from "../../components/audit-log-list"
 import { DriftChart } from "@/app/[locale]/(dashboard)/dashboard/metrology/instruments/[id]/components/drift-chart"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -394,13 +395,15 @@ export default function InstrumentDetailsPage() {
                                     </CardContent>
                                 </Card>
                             </TabsContent>
-                            <TabsContent value="checks">
+                            <TabsContent value="checks" className="space-y-4">
+                                <ShewhartControlChart instrumentId={id} />
+
                                 <Card>
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                         <div className="space-y-1">
-                                            <CardTitle>Intermediate Checks</CardTitle>
+                                            <CardTitle>Histórico de Checagens Intermediárias</CardTitle>
                                             <div className="text-sm text-muted-foreground">
-                                                Simplified verifications to ensure ongoing instrument confidence.
+                                                Registros metrológicos de rotina e ensaios periódicos com padrões de trabalho.
                                             </div>
                                         </div>
                                         <CheckFormDialog instrumentId={+id} />

@@ -31,6 +31,59 @@ export function useIntermediateChecks(instrumentId: string | number) {
     })
 }
 
+export interface ShewhartPoint {
+    id: number
+    check_date: string
+    formatted_date: string
+    nominal_value: number | null
+    measured_value: number | null
+    deviation: number | null
+    result: string
+    temperature: number | null
+    humidity: number | null
+    standard_name: string | null
+    performer_name: string | null
+    notes: string | null
+    is_out_of_control: boolean
+    out_of_control_reason: string | null
+}
+
+export interface ShewhartData {
+    instrument_id: number
+    instrument_name: string
+    mpe: number | null
+    total_checks: number
+    has_sufficient_data: boolean
+    statistics: {
+        count: number
+        mean: number
+        std_dev: number
+        ucl: number
+        lcl: number
+        uwl: number
+        lwl: number
+        usl: number | null
+        lsl: number | null
+    } | null
+    in_control: boolean
+    alerts: string[]
+    points: ShewhartPoint[]
+}
+
+/**
+ * Fetches Shewhart control chart statistical data for an instrument
+ */
+export function useShewhartChart(instrumentId: string | number) {
+    return useQuery<ShewhartData>({
+        queryKey: ['shewhart-chart', instrumentId],
+        queryFn: async () => {
+            if (!instrumentId) throw new Error("Instrument ID is required")
+            return await apiClient.get<ShewhartData>(`/instruments/${instrumentId}/intermediate-checks/shewhart`)
+        },
+        enabled: !!instrumentId
+    })
+}
+
 /**
  * Create a new check
  */
@@ -44,8 +97,9 @@ export function useCreateIntermediateCheck() {
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['intermediate-checks', data.instrument_id] })
-            // Optional: Invalidate instrument details if status changes
+            queryClient.invalidateQueries({ queryKey: ['shewhart-chart', data.instrument_id] })
             queryClient.invalidateQueries({ queryKey: ['instruments'] })
         }
     })
 }
+
