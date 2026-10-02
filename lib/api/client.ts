@@ -168,20 +168,32 @@ class ApiClient {
   }
 
   async post<T>(endpoint: string, data?: unknown): Promise<T> {
+    const isFormData = typeof FormData !== 'undefined' && data instanceof FormData
+    const headers = this.getHeaders()
+    if (isFormData) {
+      delete headers['Content-Type']
+    }
+
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'POST',
-      headers: this.getHeaders(),
-      body: data ? JSON.stringify(data) : undefined,
+      headers,
+      body: isFormData ? (data as FormData) : (data ? JSON.stringify(data) : undefined),
     })
 
     return this.handleResponse<T>(response)
   }
 
   async put<T>(endpoint: string, data?: unknown): Promise<T> {
+    const isFormData = typeof FormData !== 'undefined' && data instanceof FormData
+    const headers = this.getHeaders()
+    if (isFormData) {
+      delete headers['Content-Type']
+    }
+
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'PUT',
-      headers: this.getHeaders(),
-      body: data ? JSON.stringify(data) : undefined,
+      headers,
+      body: isFormData ? (data as FormData) : (data ? JSON.stringify(data) : undefined),
     })
 
     return this.handleResponse<T>(response)

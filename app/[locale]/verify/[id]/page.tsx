@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
+import { useLocale } from "next-intl"
 import { apiClient } from "@/lib/api/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -24,26 +25,37 @@ interface PublicInstrument {
 
 export default function PublicVerificationPage() {
     const params = useParams()
+    const router = useRouter()
+    const locale = useLocale()
     const id = params.id as string
     const [instrument, setInstrument] = useState<PublicInstrument | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
 
     useEffect(() => {
-        const fetchInstrument = async () => {
+        const fetchTarget = async () => {
             try {
-                // Direct fetch bypassing standard hooks to ensure it works with public endpoint
+                // Tenta buscar como instrumento
                 const response = await apiClient.get<any>(`/public/instruments/${id}`)
                 setInstrument(response.data || response)
             } catch (e) {
-                console.error(e)
+                // Se não for instrumento, tenta verificar se é um certificado
+                try {
+                    const certRes = await apiClient.get<any>(`/public/certificates/verify/${id}`)
+                    if (certRes.valid && certRes.certificate) {
+                        router.replace(`/${locale}/verify/certificate/${id}`)
+                        return
+                    }
+                } catch {
+                    // Ignora, segue para estado de erro
+                }
                 setError(true)
             } finally {
                 setLoading(false)
             }
         }
-        fetchInstrument()
-    }, [id])
+        fetchTarget()
+    }, [id, router, locale])
 
     if (loading) {
         return <div className="min-h-screen flex items-center justify-center bg-slate-50"><Loader2 className="h-10 w-10 animate-spin text-slate-400" /></div>
