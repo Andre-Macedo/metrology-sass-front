@@ -361,7 +361,7 @@ export default function InstrumentDetailsPage() {
                                 <Card>
                                     <CardHeader>
                                         <CardTitle>Maintenance & Adjustments</CardTitle>
-                                        <CardDescription>History of технические intervenções.</CardDescription>
+                                        <CardDescription>History of technical interventions, repairs and adjustments.</CardDescription>
                                     </CardHeader>
                                     <CardContent>
                                         <MaintenanceList instrumentId={id} />
