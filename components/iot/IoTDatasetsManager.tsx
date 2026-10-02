@@ -50,7 +50,7 @@ export interface MLDatasetItem {
   id: string
   name: string
   slug: string
-  type: 'supervised_xgboost' | 'unsupervised_iforest'
+  type: 'diagnostic_multiclass' | 'baseline_normal' | 'benchmark_golden_set' | 'run_to_failure' | 'supervised_xgboost' | 'unsupervised_iforest'
   target_machine_id?: string | null
   description?: string | null
   status: 'collecting' | 'ready' | 'archived'
@@ -87,7 +87,7 @@ export function IoTDatasetsManager() {
 
   // Form New Dataset
   const [datasetName, setDatasetName] = useState('')
-  const [datasetType, setDatasetType] = useState<'supervised_xgboost' | 'unsupervised_iforest'>('supervised_xgboost')
+  const [datasetType, setDatasetType] = useState<string>('diagnostic_multiclass')
   const [targetMachineId, setTargetMachineId] = useState<string>('none')
   const [datasetDesc, setDatasetDesc] = useState('')
   const [isSubmittingDataset, setIsSubmittingDataset] = useState(false)
@@ -235,6 +235,23 @@ export function IoTDatasetsManager() {
     }
   }
 
+  const renderDatasetTypeBadge = (type: string) => {
+    switch (type) {
+      case 'diagnostic_multiclass':
+      case 'supervised_xgboost':
+        return <Badge variant="default" className="text-[10px] uppercase font-bold shrink-0">Diagnóstico</Badge>
+      case 'baseline_normal':
+      case 'unsupervised_iforest':
+        return <Badge variant="secondary" className="text-[10px] uppercase font-bold shrink-0 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30">Linha de Base</Badge>
+      case 'benchmark_golden_set':
+        return <Badge variant="outline" className="text-[10px] uppercase font-bold shrink-0 border-purple-500/40 text-purple-600 bg-purple-50 dark:bg-purple-950/30">Benchmark</Badge>
+      case 'run_to_failure':
+        return <Badge variant="outline" className="text-[10px] uppercase font-bold shrink-0 border-amber-500/40 text-amber-600 bg-amber-50 dark:bg-amber-950/30">Degradação (R2F)</Badge>
+      default:
+        return <Badge variant="outline" className="text-[10px] uppercase font-bold shrink-0">{type}</Badge>
+    }
+  }
+
   return (
     <div className="space-y-8">
       {/* Top Header & Overview */}
@@ -301,12 +318,7 @@ export function IoTDatasetsManager() {
                     <CardTitle className="text-base font-bold leading-tight">
                       {ds.name}
                     </CardTitle>
-                    <Badge 
-                      variant={ds.type === 'supervised_xgboost' ? 'default' : 'secondary'}
-                      className="text-[10px] uppercase font-bold shrink-0"
-                    >
-                      {ds.type === 'supervised_xgboost' ? 'XGBoost Nuvem' : 'iForest Borda'}
-                    </Badge>
+                    {renderDatasetTypeBadge(ds.type)}
                   </div>
                   <CardDescription className="text-xs line-clamp-2 mt-1">
                     {ds.description || 'Sem descrição cadastrada.'}
@@ -497,14 +509,16 @@ export function IoTDatasetsManager() {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">Tipo de Aprendizado</Label>
+              <Label className="text-xs font-semibold">Tipo do Dataset (Propósito MLOps)</Label>
               <Select value={datasetType} onValueChange={(val: any) => setDatasetType(val)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="supervised_xgboost">Supervisionado (Diagnóstico Multiclasse - XGBoost)</SelectItem>
-                  <SelectItem value="unsupervised_iforest">Não-Supervisionado (Baseline de Borda - iForest)</SelectItem>
+                  <SelectItem value="diagnostic_multiclass">Diagnóstico Multiclasse (Saudável + Falhas)</SelectItem>
+                  <SelectItem value="baseline_normal">Linha de Base Padrão-Ouro (Apenas Saudável)</SelectItem>
+                  <SelectItem value="benchmark_golden_set">Benchmark / Teste Cego (Auditoria de Modelos)</SelectItem>
+                  <SelectItem value="run_to_failure">Degradação Mecânica / Histórico (R2F)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

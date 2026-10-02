@@ -46,6 +46,7 @@ import {
   ShieldCheck,
   Sliders,
   Terminal, 
+  XCircle,
   Zap 
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -564,12 +565,22 @@ export function IoTLogsDiagnostic() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="h-8 text-xs font-medium justify-start border-blue-500/30 hover:bg-blue-500/10 hover:text-blue-700 dark:hover:text-blue-300 col-span-2 sm:col-span-2"
+                      className="h-8 text-xs font-medium justify-start border-blue-500/30 hover:bg-blue-500/10 hover:text-blue-700 dark:hover:text-blue-300"
                       disabled={isLabeling}
-                      onClick={() => handleLabelLog(inspectedLog.id, 'falso_positivo')}
+                      onClick={() => handleLabelLog(inspectedLog.id, 'falso_positivo_operacional')}
                     >
                       <CheckCircle2 className="h-3.5 w-3.5 mr-1.5 text-blue-500 shrink-0" />
-                      <span className="truncate">Falso Alarme (Ruído Transitório / Ignorar)</span>
+                      <span className="truncate">Falso Alarme (Ruído de Linha / Saudável)</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs font-medium justify-start border-zinc-500/30 hover:bg-zinc-500/10 hover:text-zinc-700 dark:hover:text-zinc-300 text-muted-foreground"
+                      disabled={isLabeling}
+                      onClick={() => handleLabelLog(inspectedLog.id, 'descarte_outlier')}
+                    >
+                      <XCircle className="h-3.5 w-3.5 mr-1.5 text-zinc-500 shrink-0" />
+                      <span className="truncate">Descartar (Choque Externo / Outlier)</span>
                     </Button>
                   </div>
                 </CardContent>
