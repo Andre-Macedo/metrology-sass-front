@@ -227,3 +227,52 @@ export function useCheckSupplierAccreditation(supplierId: number | null, instrum
         enabled: !!supplierId && !!instrumentTypeId,
     })
 }
+
+// Digital Certificate (ISO 17025 / FDA 21 CFR Part 11)
+export interface DigitalCertificateStatus {
+    configured: boolean;
+    is_valid: boolean;
+    common_name: string | null;
+    issuer: string | null;
+    valid_from: string | null;
+    valid_to: string | null;
+    days_remaining: number | null;
+    serial_number: string | null;
+}
+
+export function useDigitalCertificate() {
+    return useQuery({
+        queryKey: ['system', 'certificate'],
+        queryFn: async () => {
+            return await apiClient.get<DigitalCertificateStatus>('/system/certificate');
+        },
+    });
+}
+
+export function useUploadCertificate() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ file, password }: { file: File; password: string }) => {
+            const formData = new FormData();
+            formData.append('certificate', file);
+            formData.append('password', password);
+            return await apiClient.post<{ message: string; certificate: DigitalCertificateStatus }>('/system/certificate', formData);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['system', 'certificate'] });
+        },
+    });
+}
+
+export function useDeleteCertificate() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async () => {
+            return await apiClient.delete<{ message: string }>('/system/certificate');
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['system', 'certificate'] });
+        },
+    });
+}
+

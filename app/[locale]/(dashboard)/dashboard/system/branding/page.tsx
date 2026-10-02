@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
 import { apiClient } from "@/lib/api/client"
 import { Loader2, Upload, Palette, Building2, Zap } from "lucide-react"
+import { DigitalCertificateSection } from "@/features/system/components/digital-certificate-section"
 
 export default function BrandingPage() {
     const [isLoading, setIsLoading] = useState(true)
@@ -178,6 +179,9 @@ export default function BrandingPage() {
                             </div>
                         </CardContent>
                     </Card>
+
+                    {/* Digital Certificate X.509 / PKCS#7 */}
+                    <DigitalCertificateSection />
                 </div>
 
                 {/* Brand Sidebar */}
