@@ -41,11 +41,28 @@ export function useStandard(id: string) {
     })
 }
 
+export interface StandardImpactStats {
+    total_calibrations: number
+    unique_instruments: number
+    critical_count: number
+    moderate_count: number
+    low_count: number
+}
+
+export interface StandardImpactResponse {
+    data: any[]
+    stats?: StandardImpactStats
+    meta?: any
+    report_code?: string
+    document_hash?: string
+    links?: any
+}
+
 /**
  * Fetches impact analysis.
  */
 export function useStandardImpact(id: string, params?: { page?: number, start_date?: string, end_date?: string }) {
-    return useQuery({
+    return useQuery<StandardImpactResponse>({
         queryKey: ['standards', id, 'impact', params],
         queryFn: async () => {
             const queryParams: Record<string, string> = {}
@@ -53,7 +70,7 @@ export function useStandardImpact(id: string, params?: { page?: number, start_da
             if (params?.start_date) queryParams.start_date = params.start_date
             if (params?.end_date) queryParams.end_date = params.end_date
 
-            const response = await apiClient.get<{ data: any[], meta: any, links: any }>(`/standards/${id}/impact-analysis`, queryParams)
+            const response = await apiClient.get<StandardImpactResponse>(`/standards/${id}/impact-analysis`, queryParams)
             return response
         },
         enabled: !!id
