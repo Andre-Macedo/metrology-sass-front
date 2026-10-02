@@ -63,11 +63,39 @@ A aplicação estará disponível em [http://localhost:3000](http://localhost:30
 | `npm run build` | Compila o projeto em modo standalone para produção |
 | `npm start` | Inicia o servidor de produção após o build |
 | `npm run lint` | Executa a verificação estática do código com ESLint |
-| `npx tsc --noEmit` | Verifica erros de tipagem estática do TypeScript |
+| `npm run typecheck` | Verifica integridade de tipos com TypeScript (`tsc --noEmit`) |
+| `npm run quality` | Executa validação de tipos e linter de uma vez |
+| `npm run test` | Executa a suíte de testes unitários com Vitest |
+| `npm run test:e2e` | Executa os testes ponta a ponta com Playwright |
+| `npm run storybook` | Inicia o Storybook para visualização dos componentes (porta 6006) |
 
 ---
 
-## 5. Build com Docker
+## 5. Estrutura de Documentação Técnica
+
+Os guias técnicos do frontend estão centralizados no diretório [`docs/`](docs):
+
+- [`docs/01-ARCHITECTURE.md`](docs/01-ARCHITECTURE.md) — Arquitetura de diretórios, convenções e separação de responsabilidades.
+- [`docs/02-COMPONENTS.md`](docs/02-COMPONENTS.md) — Padrões de componentes, Shadcn UI e acessibilidade.
+- [`docs/03-STATE_AND_DATA.md`](docs/03-STATE_AND_DATA.md) — Camada de dados, TanStack Query e cache.
+- [`docs/04-STYLING.md`](docs/04-STYLING.md) — Design system, tokens e Tailwind CSS v4.
+- [`docs/05-BACKEND_STANDARDS.md`](docs/05-BACKEND_STANDARDS.md) — Contratos com API Laravel, DTOs e códigos de erro.
+- [`docs/06-TESTING_AND_STORYBOOK.md`](docs/06-TESTING_AND_STORYBOOK.md) — Estratégia de testes e componentes isolados.
+- [`docs/07-ZOD_GUIDE.md`](docs/07-ZOD_GUIDE.md) — Guia de validação de schemas em tempo de execução com Zod.
+- [`docs/TODO.md`](docs/TODO.md) — Roadmap de melhorias e tarefas pendentes.
+
+---
+
+## 6. Fluxo de Contribuição
+
+1. Clone o repositório e trabalhe sempre a partir da branch **`develop`**.
+2. Crie uma branch nomeada para sua tarefa: `git checkout -b feat/minha-feature develop`.
+3. Garanta que o comando `npm run quality` execute sem erros antes de submeter alterações.
+4. Abra uma Pull Request com destino à branch **`develop`** (veja [`CONTRIBUTING.md`](CONTRIBUTING.md)).
+
+---
+
+## 7. Build com Docker
 
 Para construir e executar a imagem isolada do frontend via Docker:
 
@@ -78,3 +106,4 @@ docker build -t metrology-sass-front .
 # Execução do container
 docker run -p 3000:3000 --env-file .env.local metrology-sass-front
 ```
+

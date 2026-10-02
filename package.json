@@ -1,14 +1,17 @@
 {
-  "name": "my-v0-project",
+  "name": "metrology-sass-front",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "eslint .",
-    "start": "next start",
-    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --project unit",
+    "test:all": "vitest run",
+    "test:watch": "vitest --project unit",
     "test:e2e": "playwright test",
+    "quality": "npm run typecheck && npm run test",
+    "start": "next start",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

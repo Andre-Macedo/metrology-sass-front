@@ -27,11 +27,11 @@ Este documento lista as melhorias técnicas recomendadas para elevar a maturidad
 
 ## 🟣 Infraestrutura, Servidor e Monitoramento (SaaS)
 
-- [ ] **Configuração do Docker (Supervisord):** Centralizar os processos de Web (PHP-FPM), Fila (queue:work) e Agendamentos (cron) no mesmo container para otimizar o uso da RAM da VPS.
-- [ ] **Adição do Redis:** Instalar e configurar o Redis no `docker-compose` para gerenciar as filas de processamento assíncrono (ex: geração de PDFs).
-- [ ] **Monitoramento de Exceções (Sentry/Flare):** Integrar ferramenta de rastreamento de erros para capturar falhas antes do cliente reportar.
-- [ ] **Monitoramento de Saúde (Laravel Pulse):** Instalar o Pulse para monitorar gargalos de banco de dados, lentidão de rotas e uso de CPU em tempo real.
-- [ ] **Rotina de Backup Automatizada:** Configurar o `spatie/laravel-backup` com dump do banco de dados e envio automatizado para a nuvem (S3/Cloudflare R2).
+- [x] **Configuração do Docker:** Containers Next.js em multi-stage build integrados ao docker-compose com Reverb e API.
+- [x] **Adição do Redis:** Redis configurado no cluster para filas e cache.
+- [x] **Monitoramento de Exceções (Sentry):** Integração com `@sentry/nextjs` no frontend e `sentry/sentry-laravel` no backend.
+- [x] **Monitoramento de Saúde (Laravel Pulse):** Monitoramento de jobs, rotas e uso de recursos ativo no backend.
+- [x] **Rotina de Backup Automatizada:** Implementada com `spatie/laravel-backup` no backend.
 
 ---
 *Nota: Este documento deve ser atualizado conforme as melhorias forem implementadas.*
