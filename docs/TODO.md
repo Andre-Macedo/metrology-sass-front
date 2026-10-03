@@ -17,8 +17,18 @@ Este documento lista as melhorias técnicas recomendadas para elevar a maturidad
 - [ ] **Skeleton Screens:** Substituir o texto "Loading..." por componentes de Skeleton reais no `Suspense` das tabelas.
 - [ ] **Empty States Padronizados:** Criar um componente reutilizável para quando as buscas não retornam resultados.
 
-## 🔴 Prioridade Alta (Integridade de Dados - Qualidade/Metrologia)
+## 🔴 Prioridade Alta (Integridade de Dados & Auditoria ISO 17025 - Rodada 6)
 
+- [ ] **Impressão de Etiquetas Térmicas (Stickers Metrológicos):**
+  - *Objetivo:* Modal e gerador de etiquetas adesivas (formato padrão 50x30mm e Zebra ZPL) contendo Tag, Data de Calibração, Próxima Validade, Status Aprovado/Reprovado, Responsável Técnico e QR Code com link para `/verify/certificate/[hash]`.
+- [ ] **MPE Customizado no Formulário de Instrumento:**
+  - *Objetivo:* Permitir override do Erro Máximo Admissível (`mpe_value`, `mpe_type`) diretamente na criação/edição do instrumento para ativos com especificações especiais além da família padrão.
+- [ ] **Validador Estrito de CNPJ/CPF (Módulo 11):**
+  - *Objetivo:* Implementar validação matemática oficial dos dígitos verificadores de CNPJ e CPF em formulários de clientes e fornecedores via Zod `refine`.
+- [ ] **Modo de Coleta Offline (PWA / IndexedDB):**
+  - *Objetivo:* Permitir que técnicos realizem a coleta de dados de calibração em áreas industriais sem conectividade de rede (estilo Beamex bMobile), sincronizando automaticamente ao reconectar.
+- [ ] **Importação em Lote de Leituras (Paste from Spreadsheet):**
+  - *Objetivo:* Permitir copiar e colar matrizes de dados do Excel diretamente no grid de calibração para instrumentos com dezenas de pontos.
 - [ ] **Testes Unitários (Vitest):** Cobrir 100% dos `utils/adapters` e funções de cálculos metrológicos.
   - *Por que:* Erros em cálculos de incerteza ou conversão de unidades são críticos em sistemas de qualidade.
 - [ ] **Testes E2E (Playwright):** Implementar o "Caminho Crítico":
