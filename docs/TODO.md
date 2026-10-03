@@ -19,10 +19,14 @@ Este documento lista as melhorias técnicas recomendadas para elevar a maturidad
 
 ## 🔴 Prioridade Alta (Integridade de Dados & Auditoria ISO 17025 - Rodada 6)
 
-- [ ] **Impressão de Etiquetas Térmicas (Stickers Metrológicos):**
-  - *Objetivo:* Modal e gerador de etiquetas adesivas (formato padrão 50x30mm e Zebra ZPL) contendo Tag, Data de Calibração, Próxima Validade, Status Aprovado/Reprovado, Responsável Técnico e QR Code com link para `/verify/certificate/[hash]`.
-- [ ] **MPE Customizado no Formulário de Instrumento:**
-  - *Objetivo:* Permitir override do Erro Máximo Admissível (`mpe_value`, `mpe_type`) diretamente na criação/edição do instrumento para ativos com especificações especiais além da família padrão.
+- [ ] **Correção do Endpoint de Cálculo de Incerteza (Wizard 404):**
+  - *Problema:* O botão "Calculate" em `calibration-wizard.tsx` chama `useCalculateUncertainty` (`POST /calibrations/calculate`), resultando em erro 404 porque a rota não foi registrada no backend.
+  - *Ação:* Sincronizar o contrato da API com o novo endpoint do backend ou unificar o fluxo no `UncertaintyBudgetModal`.
+- [ ] **Botão de Impressão de Etiqueta Adesiva na Calibração Aprovada (`calibrations/[id]`):**
+  - *Problema:* A tela de visualização da calibração exibe apenas o download do Certificado A4. O técnico não tem atalho imediato para imprimir a etiqueta adesiva física para afixar no instrumento.
+  - *Ação:* Adicionar botão "Imprimir Etiqueta" em `calibrations/[id]/page.tsx` conectado ao endpoint de emissão de label.
+- [ ] **MPE Customizado no Formulário de Instrumento (`instrument-form.tsx`):**
+  - *Objetivo:* Expor os campos `mpe_value` e `mpe_type` diretamente no formulário de criação/edição do instrumento para permitir tolerâncias personalizadas além da família padrão.
 - [ ] **Validador Estrito de CNPJ/CPF (Módulo 11):**
   - *Objetivo:* Implementar validação matemática oficial dos dígitos verificadores de CNPJ e CPF em formulários de clientes e fornecedores via Zod `refine`.
 - [ ] **Modo de Coleta Offline (PWA / IndexedDB):**
