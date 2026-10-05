@@ -24,6 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Supplier, SupplierFormData } from "@/features/system/hooks/use-system"
 import { useRouter } from "next/navigation"
+import { isValidCpfCnpj } from "@/lib/validators/cpf-cnpj"
 
 const formSchema = z.object({
     name: z.string().min(2, "Name is required"),
@@ -34,7 +35,9 @@ const formSchema = z.object({
     category: z.string().min(1, "Category is required"),
     rating: z.coerce.number().min(0).max(5).optional(),
     country: z.string().optional(),
-    cnpj: z.string().optional(),
+    cnpj: z.string().optional().refine(val => isValidCpfCnpj(val), {
+        message: "Documento (CNPJ/CPF) inválido conforme Módulo 11 da Receita Federal",
+    }),
     address: z.string().optional(),
     is_manufacturer: z.boolean().default(false),
     is_calibration_provider: z.boolean().default(false),

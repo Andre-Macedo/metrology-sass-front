@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, FileText, ArrowLeft, GitMerge, CheckCircle, XCircle, Edit } from "lucide-react"
+import { Loader2, FileText, ArrowLeft, GitMerge, CheckCircle, XCircle, Edit, Printer } from "lucide-react"
 import { format } from "date-fns"
 import { toast } from "sonner"
 import { Link } from "@/i18n/routing"
@@ -75,6 +75,32 @@ export default function CalibrationDetailsPage() {
         }
     }
 
+    const [isPrintingLabel, setIsPrintingLabel] = useState(false)
+
+    const handlePrintLabel = async () => {
+        const itemId = calibration.calibrated_item_id || calibration.instrument_id
+        if (!itemId) {
+            toast.error("Instrumento não identificado para impressão de etiqueta.")
+            return
+        }
+
+        setIsPrintingLabel(true)
+        try {
+            const blob = await apiClient.getBlob(`/instruments/${itemId}/label`)
+            const url = window.URL.createObjectURL(blob)
+            const printWindow = window.open(url, '_blank')
+            if (!printWindow) {
+                toast.error("Por favor, permita popups para imprimir a etiqueta adesiva.")
+            }
+            setTimeout(() => window.URL.revokeObjectURL(url), 60000)
+        } catch (error) {
+            console.error('Failed to print label:', error)
+            toast.error("Não foi possível gerar a etiqueta metrológica.")
+        } finally {
+            setIsPrintingLabel(false)
+        }
+    }
+
     const isPendingReview = calibration.status === 'in_review' || calibration.status === 'pending'
 
     return (
@@ -123,6 +149,18 @@ export default function CalibrationDetailsPage() {
                             </Button>
                         </>
                     )}
+                    <Button 
+                        variant="outline" 
+                        onClick={handlePrintLabel}
+                        disabled={isPrintingLabel}
+                    >
+                        {isPrintingLabel ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <Printer className="mr-2 h-4 w-4" />
+                        )}
+                        Imprimir Etiqueta
+                    </Button>
                     <Button 
                         variant="outline" 
                         onClick={handleDownloadPdf}

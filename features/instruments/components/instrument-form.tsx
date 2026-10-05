@@ -66,6 +66,10 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
         last_calibration_date: z.string(),
         next_calibration_date: z.string(),
         guard_band_multiplier_override: z.number().optional(),
+        mpe_value: z.number().min(0, "MPE deve ser positivo").optional(),
+        mpe_type: z.string().optional(),
+        resolution: z.string().optional(),
+        measuring_range: z.string().optional(),
     })
 
     const form = useForm<any>({
@@ -77,6 +81,10 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
             material_id: initialData.material_id ? String(initialData.material_id) : undefined,
             criticality: initialData.criticality || "operational_reference",
             guard_band_multiplier_override: initialData.guard_band_multiplier_override ? Number(initialData.guard_band_multiplier_override) : undefined,
+            mpe_value: initialData.mpe_value !== undefined && initialData.mpe_value !== null ? Number(initialData.mpe_value) : undefined,
+            mpe_type: initialData.mpe_type || "absolute",
+            resolution: initialData.resolution || "",
+            measuring_range: initialData.measuring_range || "",
         } : {
             name: "",
             instrument_type_id: "",
@@ -90,6 +98,10 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
             last_calibration_date: new Date().toISOString().split('T')[0],
             next_calibration_date: new Date().toISOString().split('T')[0],
             guard_band_multiplier_override: undefined,
+            mpe_value: undefined,
+            mpe_type: "absolute",
+            resolution: "",
+            measuring_range: "",
         },
     })
 
@@ -308,6 +320,81 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
                             </FormItem>
                         )}
                     />
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="measuring_range"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Faixa de Medição</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Ex: 0 - 150 mm" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="resolution"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Resolução do Display</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Ex: 0.01 mm" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="mpe_value"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Erro Máximo Admissível (MPE)</FormLabel>
+                                    <FormControl>
+                                        <Input 
+                                            type="number" 
+                                            step="0.0001" 
+                                            placeholder="Ex: 0.05" 
+                                            value={field.value ?? ''}
+                                            onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Limite de tolerância individual deste ativo.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="mpe_type"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Tipo de MPE</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value || 'absolute'}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecione o tipo..." />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="absolute">Absoluto (Unidade de Medida)</SelectItem>
+                                            <SelectItem value="percentage">Percentual (% Fundo de Escala)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <FormField
