@@ -359,6 +359,7 @@ export function InstrumentForm({ initialData, onSubmit, isLoading }: InstrumentF
                                     <FormLabel>Erro Máximo Admissível (MPE)</FormLabel>
                                     <FormControl>
                                         <Input 
+                                            name="mpe_value"
                                             type="number" 
                                             step="0.0001" 
                                             placeholder="Ex: 0.05" 

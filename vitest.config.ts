@@ -35,7 +35,7 @@ export default defineConfig({
       {
         test: {
           name: 'unit',
-          include: ['features/**/*.test.ts', 'tests/**/*.test.ts'],
+          include: ['features/**/*.test.ts', 'tests/**/*.test.ts', 'lib/**/*.test.ts'],
           environment: 'node',
           alias: {
             '@': path.resolve(dirname, './'),
