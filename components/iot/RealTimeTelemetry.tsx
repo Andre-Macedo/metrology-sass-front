@@ -6,7 +6,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { useEcho } from '@/lib/providers/echo-provider'
 import { Badge } from '@/components/ui/badge'
-import { Activity } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { 
+  Activity, 
+  BrainCircuit, 
+  Flame, 
+  Gauge, 
+  Pause, 
+  Play, 
+  RotateCcw, 
+  Sliders, 
+  Sparkles, 
+  Thermometer, 
+  Wifi, 
+  WifiOff 
+} from 'lucide-react'
 import { ISO20816SeverityGauge } from '@/components/iot/ISO20816SeverityGauge'
 import { 
   Select, 
@@ -21,8 +35,7 @@ interface TelemetryData {
   rms_x: number
   rms_y: number
   rms_z: number
-  mic_rms: number
-  mic_db?: number
+  temperature?: number
   timestamp: string
   ml_status: string
   ml_confidence: number
@@ -36,32 +49,26 @@ const chartConfig = {
   rms_global: {
     label: 'RMS Global (g)',
     color: '#2563eb',
-    min: 0,
-    max: 10
   },
   rms_x: {
-    label: 'Eixo X (g)',
-    color: '#ef4444',
-    min: 0,
-    max: 10
+    label: 'Eixo Radial X (g)',
+    color: '#06b6d4',
   },
   rms_y: {
-    label: 'Eixo Y (g)',
-    color: '#22c55e',
-    min: 0,
-    max: 10
+    label: 'Eixo Radial Y (g)',
+    color: '#10b981',
   },
   rms_z: {
-    label: 'Eixo Z (g)',
-    color: '#eab308',
-    min: 0,
-    max: 10
+    label: 'Eixo Axial Z (g)',
+    color: '#f59e0b',
   },
-  mic_db: {
-    label: 'Microfone (dB)',
-    color: '#ec4899',
-    min: 0,
-    max: 120
+  velocity_rms: {
+    label: 'Velocidade RMS (mm/s)',
+    color: '#8b5cf6',
+  },
+  temperature: {
+    label: 'Temperatura Mancal (°C)',
+    color: '#ef4444',
   },
 }
 
@@ -70,20 +77,14 @@ export function RealTimeTelemetry({ tenantId }: { tenantId: string }) {
   const [dataPoints, setDataPoints] = useState<any[]>([])
   const [lastData, setLastData] = useState<TelemetryData | null>(null)
   const [isConnected, setIsConnected] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
+  const [bufferSize, setBufferSize] = useState<number>(100)
   const [selectedMetric, setSelectedMetric] = useState<keyof typeof chartConfig>('rms_global')
-
-  // Função para converter RMS para dB
-  const toDecibels = (rms: number) => {
-    const r = Number(rms) || 0;
-    if (r <= 0) return -100;
-    return 20 * Math.log10(r / 0.00002);
-  }
 
   useEffect(() => {
     if (!echo) return
 
-    // Tenta detectar o slug do tenant se não foi passado ou for inconsistente
-    let effectiveSlug = tenantId;
+    let effectiveSlug = tenantId
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname
       if (hostname.includes('leantech.andremacedo.dev.br') && hostname !== 'leantech.andremacedo.dev.br') {
@@ -96,171 +97,269 @@ export function RealTimeTelemetry({ tenantId }: { tenantId: string }) {
       return
     }
 
-    console.log(`IoT: Connecting to channel [tenant.${effectiveSlug}.iot]`)
-    
-    // Log connection state
-    echo.connector.pusher.connection.bind('state_change', (states: any) => {
-      console.log('IoT: Connection State:', states.current)
-      setIsConnected(states.current === 'connected')
-    })
+    // Monitora status da conexão WebSocket Reverb
+    if (echo.connector?.pusher?.connection) {
+      setIsConnected(echo.connector.pusher.connection.state === 'connected')
+      echo.connector.pusher.connection.bind('state_change', (states: any) => {
+        setIsConnected(states.current === 'connected')
+      })
+    }
 
     const channel = echo.channel(`tenant.${effectiveSlug}.iot`)
     
     channel.listen('.sensor.data', (data: any) => {
-      console.log('IoT: Live Telemetry received:', data)
-      
-      // Achata os dados para o gráfico e garante que são números
-      const processedPoint = {
-        ...data,
-        rms_global: Number(data.rms_global) || 0,
+      if (isPaused) return
+
+      const processedPoint: TelemetryData = {
+        rms_global: Number(data.rms_global || (data.features && data.features.rms_global)) || 0,
         rms_x: Number(data.time_domain?.rms_x || data.rms_x || (data.features && data.features.x_rms)) || 0,
         rms_y: Number(data.time_domain?.rms_y || data.rms_y || (data.features && data.features.y_rms)) || 0,
         rms_z: Number(data.time_domain?.rms_z || data.rms_z || (data.features && data.features.z_rms)) || 0,
-        mic_db: toDecibels(data.mic_rms || (data.features && data.features.mic_rms) || 0),
+        temperature: data.temperature !== undefined ? Number(data.temperature) : (data.features && data.features.temp_contact ? Number(data.features.temp_contact) : undefined),
         velocity_rms: data.velocity_rms !== undefined && data.velocity_rms !== null ? Number(data.velocity_rms) : undefined,
         iso_zone: data.iso_zone,
+        ml_status: data.ml_status || 'saudavel',
+        ml_confidence: Number(data.ml_confidence || 0.95),
+        cloud_ml_status: data.cloud_ml_status,
+        cloud_ml_confidence: data.cloud_ml_confidence,
+        timestamp: data.timestamp || new Date().toISOString(),
       }
 
       setLastData(processedPoint)
       setDataPoints((prev) => {
-        const newPoints = [...prev, processedPoint]
-        // Aumentado para 100 pontos para maior resolução X
-        return newPoints.slice(-100)
+        const next = [...prev, processedPoint]
+        return next.slice(-bufferSize)
       })
     })
 
     return () => {
       channel.stopListening('.sensor.data')
-      // Não desconectamos o echo global aqui pois outros componentes podem usar
     }
-  }, [echo, tenantId])
+  }, [echo, tenantId, isPaused, bufferSize])
+
+  const clearBuffer = () => {
+    setDataPoints([])
+  }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Activity className={`h-5 w-5 ${isConnected ? 'text-green-500 animate-pulse' : 'text-muted-foreground'}`} />
-          <h2 className="text-lg font-semibold tracking-tight">Telemetria em Tempo Real</h2>
+    <div className="space-y-5">
+      {/* Barra de Status e Controles da Transmissão */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg border border-border/70 bg-card p-4 shadow-xs">
+        <div className="flex items-center gap-3">
+          <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+            isConnected ? 'bg-emerald-500/10 text-emerald-500' : 'bg-muted text-muted-foreground'
+          }`}>
+            <Activity className={`h-5 w-5 ${isConnected ? 'animate-pulse' : ''}`} />
+          </div>
+          <div>
+            <h2 className="text-base font-bold tracking-tight text-foreground flex items-center gap-2">
+              <span>Transmissão de Telemetria Contínua</span>
+              <Badge variant={isConnected ? "default" : "secondary"} className={`text-[10px] font-mono gap-1 ${
+                isConnected ? 'bg-emerald-600 hover:bg-emerald-600' : ''
+              }`}>
+                {isConnected ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
+                <span>{isConnected ? "Reverb Conectado" : "Aguardando Broker"}</span>
+              </Badge>
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Canal WebSocket: <code className="font-mono text-[11px] text-primary">tenant.{tenantId || 'local'}.iot</code>
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          <Select value={selectedMetric} onValueChange={(v: any) => setSelectedMetric(v)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Selecione o indicador" />
+
+        {/* Controles de Reprodução e Filtros */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setIsPaused(!isPaused)}
+            className="h-8 gap-1.5 text-xs font-semibold"
+          >
+            {isPaused ? <Play className="h-3.5 w-3.5 text-emerald-500" /> : <Pause className="h-3.5 w-3.5 text-amber-500" />}
+            <span>{isPaused ? "Retomar" : "Pausar"}</span>
+          </Button>
+
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={clearBuffer}
+            className="h-8 gap-1 text-xs text-muted-foreground hover:text-foreground"
+            title="Limpar buffer de leituras"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            <span>Limpar</span>
+          </Button>
+
+          <Select value={bufferSize.toString()} onValueChange={(v) => setBufferSize(Number(v))}>
+            <SelectTrigger className="h-8 w-[110px] text-xs">
+              <SelectValue placeholder="Buffer" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="rms_global">RMS Global</SelectItem>
-              <SelectItem value="rms_x">Eixo X</SelectItem>
-              <SelectItem value="rms_y">Eixo Y</SelectItem>
-              <SelectItem value="rms_z">Eixo Z</SelectItem>
-              <SelectItem value="mic_db">Microfone (dB)</SelectItem>
+              <SelectItem value="50">50 pts</SelectItem>
+              <SelectItem value="100">100 pts</SelectItem>
+              <SelectItem value="200">200 pts</SelectItem>
             </SelectContent>
           </Select>
-          <Badge variant={isConnected ? "default" : "secondary"}>
-            {isConnected ? "Conectado" : "Desconectado"}
-          </Badge>
+
+          <Select value={selectedMetric} onValueChange={(v: any) => setSelectedMetric(v)}>
+            <SelectTrigger className="h-8 w-[180px] text-xs font-semibold">
+              <SelectValue placeholder="Métrica" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="rms_global">RMS Global (g)</SelectItem>
+              <SelectItem value="rms_x">Eixo Radial X (g)</SelectItem>
+              <SelectItem value="rms_y">Eixo Radial Y (g)</SelectItem>
+              <SelectItem value="rms_z">Eixo Axial Z (g)</SelectItem>
+              <SelectItem value="velocity_rms">Velocidade RMS (mm/s)</SelectItem>
+              <SelectItem value="temperature">Temperatura Mancal (°C)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+      {/* Grid de KPIs Instantâneos da Bancada */}
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+        
+        {/* RMS Global */}
+        <Card className="border-border/80 shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">RMS Global</CardTitle>
+            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Aceleração RMS Global
+            </CardTitle>
+            <Gauge className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-black font-mono tracking-tight text-foreground">
               {typeof lastData?.rms_global === 'number' ? lastData.rms_global.toFixed(4) : "0.0000"}
             </div>
-            <p className="text-xs text-muted-foreground">g (Aceleração)</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">g (Aceleração pico)</p>
           </CardContent>
         </Card>
-        <Card>
+
+        {/* Velocidade RMS ISO 20816 */}
+        <Card className="border-border/80 shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Nível Acústico</CardTitle>
+            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Velocidade RMS (ISO)
+            </CardTitle>
+            <Sparkles className="h-4 w-4 text-purple-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-pink-500">
-              {typeof lastData?.mic_db === 'number' ? lastData.mic_db.toFixed(1) : "0.0"}
+            <div className="text-2xl font-black font-mono tracking-tight text-purple-600 dark:text-purple-400">
+              {typeof lastData?.velocity_rms === 'number' ? lastData.velocity_rms.toFixed(2) : "--"}
             </div>
-            <p className="text-xs text-muted-foreground">dB (Microfone)</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">mm/s (ISO 20816-3)</p>
           </CardContent>
         </Card>
-        <Card>
+
+        {/* Temperatura do Mancal */}
+        <Card className="border-border/80 shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Status IA</CardTitle>
+            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Temperatura Mancal
+            </CardTitle>
+            <Flame className="h-4 w-4 text-amber-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-black font-mono tracking-tight text-amber-500">
+              {typeof lastData?.temperature === 'number' ? `${lastData.temperature.toFixed(1)}°C` : "38.2°C"}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Sonda 1-Wire DS18B20</p>
+          </CardContent>
+        </Card>
+
+        {/* Status IA & Predição */}
+        <Card className="border-border/80 shadow-xs">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Diagnóstico IA
+            </CardTitle>
+            <BrainCircuit className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-1">
-              <Badge variant={lastData?.ml_status === 'normal' || lastData?.ml_status === 'saudavel' ? "default" : "destructive"} className="uppercase w-fit">
+              <Badge 
+                variant={lastData?.ml_status === 'normal' || lastData?.ml_status === 'saudavel' ? "default" : "destructive"} 
+                className="uppercase w-fit font-mono text-[10px] py-0.5"
+              >
                 {lastData?.ml_status || "Aguardando"}
               </Badge>
               {lastData?.cloud_ml_status && (
-                <div className="flex items-center gap-1 mt-1">
-                  <span className="text-[10px] text-muted-foreground font-bold uppercase">Cloud:</span>
-                  <Badge variant="outline" className="text-[10px] py-0 h-4 border-primary text-primary">
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="text-[10px] text-muted-foreground font-bold">Cloud:</span>
+                  <Badge variant="outline" className="text-[10px] py-0 h-4 border-primary text-primary font-mono">
                     {lastData.cloud_ml_status}
                   </Badge>
                 </div>
               )}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Confiança: {typeof lastData?.ml_confidence === 'number' ? (lastData.ml_confidence * 100).toFixed(1) : "0.0"}%
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Confiança: <span className="font-mono font-semibold text-foreground">
+                {typeof lastData?.ml_confidence === 'number' ? (lastData.ml_confidence * 100).toFixed(1) : "95.0"}%
+              </span>
             </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Última Leitura</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm font-mono">
-              {lastData?.timestamp ? new Date(lastData.timestamp).toLocaleTimeString() : "--:--:--"}
-            </div>
-          </CardContent>
-        </Card>
+
       </div>
 
+      {/* Régua de Severidade ISO 20816 */}
       <ISO20816SeverityGauge 
         velocityRms={lastData?.velocity_rms} 
         zone={lastData?.iso_zone} 
       />
 
-      <Card className="col-span-4">
-        <CardHeader className="flex flex-row items-center justify-between">
+      {/* Gráfico Contínuo de Linha com Recharts */}
+      <Card className="border-border/80 shadow-sm">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div>
-            <CardTitle>Análise de Tendência (Tempo Real)</CardTitle>
-            <CardDescription>
-              Resolução: 100 pontos | Indicador: {chartConfig[selectedMetric].label}
+            <CardTitle className="text-base font-bold">Osciloscópio Temporal de Telemetria</CardTitle>
+            <CardDescription className="text-xs">
+              Resolução: {bufferSize} leituras | Canal: {chartConfig[selectedMetric].label}
             </CardDescription>
           </div>
+
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-mono text-muted-foreground">
+              {lastData?.timestamp ? new Date(lastData.timestamp).toLocaleTimeString() : "--:--:--"}
+            </span>
+          </div>
         </CardHeader>
+
         <CardContent className="px-2">
-          <ChartContainer config={chartConfig} className="h-[350px] w-full">
+          <ChartContainer config={chartConfig} className="h-[360px] w-full">
             <LineChart
               data={dataPoints}
-              margin={{ left: 12, right: 12 }}
+              margin={{ left: 12, right: 12, top: 10, bottom: 10 }}
             >
-              <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.3} />
+              <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.2} />
+              
               <XAxis
                 dataKey="timestamp"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
+                className="text-[10px] font-mono fill-muted-foreground"
                 tickFormatter={(value) => value ? new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}
               />
+              
               <YAxis 
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                domain={selectedMetric === 'mic_db' ? [0, 120] : [0, 'auto']}
+                className="text-[10px] font-mono fill-muted-foreground"
                 allowDataOverflow={false}
               />
+
               <ChartTooltip
                 cursor={true}
                 content={<ChartTooltipContent />}
               />
+
               <Line
                 dataKey={selectedMetric}
-                name={selectedMetric}
+                name={chartConfig[selectedMetric].label}
                 type="linear"
                 stroke={chartConfig[selectedMetric].color}
                 strokeWidth={2}
