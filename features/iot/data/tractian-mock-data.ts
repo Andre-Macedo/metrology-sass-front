@@ -514,6 +514,29 @@ export const SCENARIOS_DICTIONARY: Record<ScenarioKey, ScenarioData> = {
 }
 
 /**
+ * Gerador determinístico de números pseudo-aleatórios (Mulberry32)
+ * Garante que SSR (Node.js) e Client Hydration (Browser) gerem os mesmos valores,
+ * eliminando erros de React Hydration Mismatch.
+ */
+function createSeededRandom(seed: number) {
+  let s = Math.floor(seed) >>> 0
+  return function next(): number {
+    s = (s + 0x6D2B79F5) | 0
+    let t = Math.imul(s ^ (s >>> 15), 1 | s)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+function hashString(str: string): number {
+  let hash = 5381
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash) + str.charCodeAt(i)
+  }
+  return hash >>> 0
+}
+
+/**
  * Gera um espectro FFT sintético realista de 0 a 1000 Hz baseado no cenário selecionado.
  */
 export function generateSyntheticFFT(scenarioKey: ScenarioKey): FFTSpectrumPoint[] {
@@ -521,6 +544,8 @@ export function generateSyntheticFFT(scenarioKey: ScenarioKey): FFTSpectrumPoint
   const rpm = scenario.operatingRpm
   const fRot = rpm / 60 // ~29.17 Hz
   const bpfo = SKF_6204_KINEMATICS.bpfo // 104.2 Hz
+
+  const rng = createSeededRandom(hashString(`fft-${scenarioKey}`))
 
   const points: FFTSpectrumPoint[] = []
   const stepHz = 2.5 // Resolução de 400 pontos até 1000 Hz
@@ -532,8 +557,8 @@ export function generateSyntheticFFT(scenarioKey: ScenarioKey): FFTSpectrumPoint
   }
 
   for (let f = 0; f <= maxFreq; f += stepHz) {
-    // Ruído de fundo realista (fundo 1/f e ruído branco)
-    const baseNoise = 0.03 + 0.015 * Math.random() + (f < 100 ? (100 - f) * 0.0004 : 0)
+    // Ruído de fundo realista (fundo 1/f e ruído branco) com PRNG determinístico
+    const baseNoise = 0.03 + 0.015 * rng() + (f < 100 ? (100 - f) * 0.0004 : 0)
     let rx = baseNoise
     let ry = baseNoise * 0.9
     let az = baseNoise * 0.7
@@ -629,36 +654,47 @@ export function generate30DaysTrend(scenarioKey: ScenarioKey): TrendPoint[] {
   const baseVel = scenario.triaxialVelocityRms.global
   const baseTemp = scenario.temperature.bearingContactC
 
+  const rng = createSeededRandom(hashString(`trend-${scenarioKey}`))
+
+  // Data âncora fixa baseada no dia corrente (normalizada em UTC para consistência SSR vs Cliente)
   const now = new Date()
+  const baseTimestamp = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
 
   for (let i = 29; i >= 0; i--) {
-    const d = new Date(now)
-    d.setDate(d.getDate() - i)
+    const d = new Date(baseTimestamp - i * 86400000)
 
     // Simula degradação progressiva se o ativo estiver em falha
     const dayFactor = (30 - i) / 30
     let vRms = baseVel
     let bTemp = baseTemp
 
+    const r1 = rng() - 0.5
+    const r2 = rng() - 0.5
+    const r3 = rng() - 0.5
+    const r4 = rng() - 0.5
+
     if (scenario.id !== 'healthy') {
       // No passado estava mais perto do saudável
-      vRms = 1.0 + (baseVel - 1.0) * Math.pow(dayFactor, 1.5) + (Math.random() - 0.5) * 0.15
-      bTemp = 40.0 + (baseTemp - 40.0) * Math.pow(dayFactor, 1.3) + (Math.random() - 0.5) * 1.0
+      vRms = 1.0 + (baseVel - 1.0) * Math.pow(dayFactor, 1.5) + r1 * 0.15
+      bTemp = 40.0 + (baseTemp - 40.0) * Math.pow(dayFactor, 1.3) + r2 * 1.0
     } else {
-      vRms = baseVel + (Math.random() - 0.5) * 0.08
-      bTemp = baseTemp + (Math.random() - 0.5) * 1.2
+      vRms = baseVel + r1 * 0.08
+      bTemp = baseTemp + r2 * 1.2
     }
 
     // Horímetro típico industrial (20h rodando, 4h parado para limpeza)
-    const runH = Math.min(24, Math.max(0, 19.5 + (Math.random() - 0.5) * 3))
+    const runH = Math.min(24, Math.max(0, 19.5 + r3 * 3))
     const stopH = Number((24 - runH).toFixed(1))
+
+    const dayStr = String(d.getUTCDate()).padStart(2, '0')
+    const monthStr = String(d.getUTCMonth() + 1).padStart(2, '0')
 
     list.push({
       dayIndex: 30 - i,
-      date: d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+      date: `${dayStr}/${monthStr}`,
       velocityRms: Number(Math.max(0.4, vRms).toFixed(2)),
       bearingTempC: Number(bTemp.toFixed(1)),
-      ambientTempC: Number((23 + (Math.random() - 0.5) * 2).toFixed(1)),
+      ambientTempC: Number((23 + r4 * 2).toFixed(1)),
       runningHours: Number(runH.toFixed(1)),
       stoppedHours: stopH,
       anomalyScore: Number(Math.min(100, Math.max(0, (100 - scenario.healthScore) * dayFactor)).toFixed(0)),
@@ -677,13 +713,15 @@ export function generateTimeWaveform(scenarioKey: ScenarioKey): TimeWaveformPoin
   const fRot = scenario.operatingRpm / 60 // ~29.17 Hz
   const bpfo = SKF_6204_KINEMATICS.bpfo // 104.2 Hz
 
+  const rng = createSeededRandom(hashString(`waveform-${scenarioKey}`))
+
   const points: TimeWaveformPoint[] = []
   const durationMs = 120 // ~3.5 voltas completas do eixo
   const stepMs = 0.5 // 240 pontos
 
   for (let t = 0; t <= durationMs; t += stepMs) {
     const tSec = t / 1000
-    const noise = (Math.random() - 0.5) * 0.08
+    const noise = (rng() - 0.5) * 0.08
 
     let rx = 0
     let ry = 0

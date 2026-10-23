@@ -101,9 +101,12 @@ export function ThermalTrendCard({ scenario }: ThermalTrendCardProps) {
               <Flame className={`h-3.5 w-3.5 ${isTempCritical ? 'text-rose-500 animate-bounce' : isTempWarning ? 'text-amber-500' : 'text-emerald-500'}`} />
             </div>
             <div className="mt-1 flex items-baseline gap-1">
-              <span className={`font-mono text-2xl font-bold tracking-tight ${
-                isTempCritical ? 'text-rose-500' : isTempWarning ? 'text-amber-500' : 'text-foreground'
-              }`}>
+              <span
+                suppressHydrationWarning
+                className={`font-mono text-2xl font-bold tracking-tight ${
+                  isTempCritical ? 'text-rose-500' : isTempWarning ? 'text-amber-500' : 'text-foreground'
+                }`}
+              >
                 {currentTemp.toFixed(1)}
               </span>
               <span className="text-xs text-muted-foreground">°C</span>
@@ -120,7 +123,10 @@ export function ThermalTrendCard({ scenario }: ThermalTrendCardProps) {
               <TrendingUp className="h-3.5 w-3.5 text-blue-500" />
             </div>
             <div className="mt-1 flex items-baseline gap-1">
-              <span className="font-mono text-2xl font-bold tracking-tight text-foreground">
+              <span
+                suppressHydrationWarning
+                className="font-mono text-2xl font-bold tracking-tight text-foreground"
+              >
                 +{temp.deltaTC.toFixed(1)}
               </span>
               <span className="text-xs text-muted-foreground">°C</span>
@@ -137,9 +143,12 @@ export function ThermalTrendCard({ scenario }: ThermalTrendCardProps) {
               <History className="h-3.5 w-3.5 text-indigo-500" />
             </div>
             <div className="mt-1 flex items-baseline gap-1">
-              <span className={`font-mono text-2xl font-bold tracking-tight ${
-                temp.trendRatePerDayC > 2.0 ? 'text-rose-500' : 'text-foreground'
-              }`}>
+              <span
+                suppressHydrationWarning
+                className={`font-mono text-2xl font-bold tracking-tight ${
+                  temp.trendRatePerDayC > 2.0 ? 'text-rose-500' : 'text-foreground'
+                }`}
+              >
                 {temp.trendRatePerDayC > 0 ? `+${temp.trendRatePerDayC.toFixed(1)}` : temp.trendRatePerDayC.toFixed(1)}
               </span>
               <span className="text-xs text-muted-foreground">°C / dia</span>
@@ -156,12 +165,15 @@ export function ThermalTrendCard({ scenario }: ThermalTrendCardProps) {
               <Clock className="h-3.5 w-3.5 text-emerald-500" />
             </div>
             <div className="mt-1 flex items-baseline gap-1">
-              <span className="font-mono text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
+              <span
+                suppressHydrationWarning
+                className="font-mono text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400"
+              >
                 {availabilityPct}%
               </span>
             </div>
             <div className="mt-1 text-[11px] text-muted-foreground">
-              Rodadas: <span className="font-mono font-semibold text-foreground">{totalRunHours.toFixed(0)}h / 720h</span>
+              Rodadas: <span suppressHydrationWarning className="font-mono font-semibold text-foreground">{totalRunHours.toFixed(0)}h / 720h</span>
             </div>
           </div>
 
