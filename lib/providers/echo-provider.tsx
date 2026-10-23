@@ -21,23 +21,31 @@ export function EchoProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    const echo = new Echo({
-      broadcaster: 'reverb',
-      key: process.env.NEXT_PUBLIC_REVERB_KEY,
-      wsHost: process.env.NEXT_PUBLIC_REVERB_HOST || window.location.hostname,
-      wsPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT) || 80,
-      wssPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT) || 443,
-      forceTLS: process.env.NEXT_PUBLIC_REVERB_SCHEME === 'https',
-      enabledTransports: ['ws', 'wss'],
-      // Desativa autenticação para canais públicos se necessário, 
-      // ou configura se formos usar canais privados futuramente.
-      // authEndpoint: `${process.env.NEXT_PUBLIC_API_URL}/broadcasting/auth`,
-    })
+    const reverbKey = process.env.NEXT_PUBLIC_REVERB_KEY || process.env.NEXT_PUBLIC_REVERB_APP_KEY
 
-    setEchoInstance(echo)
+    if (!reverbKey) {
+      console.warn('Laravel Reverb key is not configured. WebSockets disabled.')
+      return
+    }
 
-    return () => {
-      echo.disconnect()
+    try {
+      const echo = new Echo({
+        broadcaster: 'reverb',
+        key: reverbKey,
+        wsHost: process.env.NEXT_PUBLIC_REVERB_HOST || window.location.hostname,
+        wsPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT) || 80,
+        wssPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT) || 443,
+        forceTLS: process.env.NEXT_PUBLIC_REVERB_SCHEME === 'https',
+        enabledTransports: ['ws', 'wss'],
+      })
+
+      setEchoInstance(echo)
+
+      return () => {
+        echo.disconnect()
+      }
+    } catch (err) {
+      console.error('Failed to initialize Laravel Echo:', err)
     }
   }, [])
 
