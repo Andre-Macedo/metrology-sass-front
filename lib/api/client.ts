@@ -135,7 +135,7 @@ class ApiClient {
         headers['X-Tenant-ID'] = tenantSlug
       } else {
         // Se estivermos no domínio central, tentamos pegar o tenant do localStorage 
-        const savedTenant = localStorage.getItem('current_tenant_slug')
+        const savedTenant = localStorage.getItem('current_tenant_slug') || 'amemiya'
         if (savedTenant) {
           headers['X-Tenant-ID'] = savedTenant
         }

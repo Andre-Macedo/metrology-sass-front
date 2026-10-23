@@ -23,9 +23,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setTenantSlug(localStorage.getItem('current_tenant_slug'))
+      const slug = localStorage.getItem('current_tenant_slug') || user?.tenant_slug || 'amemiya'
+      setTenantSlug(slug)
+      if (!localStorage.getItem('current_tenant_slug')) {
+        localStorage.setItem('current_tenant_slug', slug)
+      }
     }
-  }, [])
+  }, [user])
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
