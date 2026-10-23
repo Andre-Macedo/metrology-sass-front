@@ -70,7 +70,7 @@ export function useAuth() {
             const targetDomain = data.user.redirect_domain
 
             // Se o usuário pertence a um tenant e não estamos no domínio dele ainda
-            if (targetDomain && currentHost !== targetDomain && !currentHost.includes('localhost:3000')) {
+            if (targetDomain && currentHost !== targetDomain && (!currentHost.includes('localhost') && !currentHost.includes('127.0.0.1'))) {
                 // Redireciona para o domínio do tenant passando o token via URL para captura
                 const protocol = typeof window !== 'undefined' ? window.location.protocol : 'https:'
                 window.location.href = `${protocol}//${targetDomain}/${locale}/verify?token=${data.token}`
