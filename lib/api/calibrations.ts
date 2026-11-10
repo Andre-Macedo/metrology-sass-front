@@ -55,19 +55,29 @@ export async function deleteCalibration(id: string): Promise<void> {
     await apiClient.delete(`/calibrations/${id}`);
 }
 
-export async function fetchCertificates(): Promise<Certificate[]> {
-    // Since backend has no dedicated certs endpoint yet, we fetch calibrations with certificates
+export async function fetchCertificates(filter?: { type?: string }): Promise<Certificate[]> {
     const calibrations = await fetchCalibrations();
     return calibrations
         .filter(c => c.certificate_url)
+        .filter(c => {
+            if (!filter?.type) return true;
+            if (filter.type === 'standard') {
+                return (
+                    (c as any).is_standard === true ||
+                    (c as any).type === 'standard' ||
+                    (c.instrument_name?.toLowerCase().includes('padrão') ?? false) ||
+                    (c.instrument_name?.toLowerCase().includes('standard') ?? false)
+                );
+            }
+            return (c as any).type === filter.type;
+        })
         .map(c => ({
-            id: `CERT-${c.id}`, // Mock Cert ID structure if not provided
+            id: `CERT-`,
             calibration_id: c.id,
             instrument_name: c.instrument_name,
             issue_date: c.date,
-            hash: 'N/A', // Missing in resource
+            hash: (c as any).certificate_hash ?? 'N/A',
             pdf_url: c.certificate_url!,
             status: 'valid'
         }));
 }
-

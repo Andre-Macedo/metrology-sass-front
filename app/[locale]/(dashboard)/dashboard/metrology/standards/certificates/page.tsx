@@ -39,8 +39,7 @@ export default function StandardCertificatesPage() {
     useEffect(() => {
         async function load() {
             try {
-                // TODO: Filter by 'standard' type
-                const result = await fetchCertificates()
+                const result = await fetchCertificates({ type: 'standard' })
                 setData(result)
             } catch (error) {
                 console.error("Failed to load certificates", error)
