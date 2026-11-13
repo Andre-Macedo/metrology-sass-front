@@ -423,14 +423,14 @@ export const SCENARIOS_DICTIONARY: Record<ScenarioKey, ScenarioData> = {
       criticalThresholdC: 85.0,
     },
     insights: {
-      rootCause: 'Fadiga por Spalling na Pista Externa do Rolamento DE (BPFO)',
+      rootCause: 'Desgaste / Falha em Rolamento DE (possível região: pista externa — BPFO)',
       classification: 'danger',
       isoZone: 'D',
       isoZoneLabel: 'Zona D - Perigo / Parada Obrigatória Imediata',
       confidencePercent: 98.7,
       mlModel: 'XGBoost Specialist v2',
       urgency: 'Imediata (< 24h)',
-      summary: 'Vibração global de 5.95 mm/s viola severamente o limite da Zona D (4.5 mm/s da ISO 20816-3). Assinatura espectral com múltiplos harmônicos de BPFO (104.2 Hz, 208.4 Hz, 312.6 Hz) e bandas laterais de modulação por rotação.',
+      summary: 'Vibração global de 5.95 mm/s viola o limite da Zona D (4.5 mm/s da ISO 20816-3) com falha de rolamento confirmada pelo ML. O espectro apresenta atividade próxima a BPFO (104.2 Hz e harmônicos) como possível região de origem; na prática industrial, a intervenção padrão é a substituição integral do rolamento.',
       prescriptions: [
         'PARADA OPERACIONAL IMEDIATA: Não operar o ativo para evitar colapso catastrófico e dano ao eixo.',
         'Substituir rolamento dianteiro SKF 6204-2Z e inspecionar concentricidade do alojamento na carcaça.',
