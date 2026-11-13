@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { 
   MOCK_PLANT_ASSETS, 
   PlantAsset, 
@@ -8,6 +8,8 @@ import {
   ScenarioKey, 
   SCENARIOS_DICTIONARY 
 } from '@/features/iot/data/tractian-mock-data'
+import { apiClient } from '@/lib/api/client'
+import type { IoTNodeOption, NodeSpectrumApiResponse } from '@/features/iot/lib/spectrum-adapter'
 import { AssetHierarchyBreadcrumb } from './AssetHierarchyBreadcrumb'
 import { AssetHealthHero } from './AssetHealthHero'
 import { VibrationSeverityCockpit } from './VibrationSeverityCockpit'
@@ -18,7 +20,7 @@ import { PlantAssetCockpit } from './PlantAssetCockpit'
 import { CreatePredictiveWorkOrderModal } from './CreatePredictiveWorkOrderModal'
 import { useEcho } from '@/lib/providers/echo-provider'
 import { Button } from '@/components/ui/button'
-import { LayoutGrid, Cpu, ArrowLeft } from 'lucide-react'
+import { LayoutGrid, Cpu, ArrowLeft, Radio } from 'lucide-react'
 
 export function TractianAssetHealthStudio() {
   const { echo } = useEcho()
@@ -27,6 +29,10 @@ export function TractianAssetHealthStudio() {
   const [viewMode, setViewMode] = useState<'asset_detail' | 'plant_overview'>('asset_detail')
   const [isLiveMode, setIsLiveMode] = useState(false)
   const [isWorkOrderModalOpen, setIsWorkOrderModalOpen] = useState(false)
+  const [iotNodes, setIotNodes] = useState<IoTNodeOption[]>([])
+  const [selectedRealNodeId, setSelectedRealNodeId] = useState<string>('')
+  const [liveSpectrum, setLiveSpectrum] = useState<NodeSpectrumApiResponse | null>(null)
+  const [isRefreshingLive, setIsRefreshingLive] = useState(false)
 
   // Dados do cenário ativo atual
   const [currentScenario, setCurrentScenario] = useState<ScenarioData>(
@@ -46,6 +52,47 @@ export function TractianAssetHealthStudio() {
     setSelectedScenarioKey(key)
     setCurrentScenario(SCENARIOS_DICTIONARY[key])
   }
+
+  useEffect(() => {
+    let active = true
+    apiClient
+      .get<any>('/iot-nodes')
+      .then((res) => {
+        if (!active) return
+        const rows: IoTNodeOption[] = Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : []
+        setIotNodes(rows)
+      })
+      .catch(() => {
+        // Fallback silencioso para o simulador local quando API/auth não estiver disponível
+      })
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const fetchNodeSpectrum = useCallback(async (nodeId: string) => {
+    if (!nodeId) {
+      setLiveSpectrum(null)
+      return
+    }
+    setIsRefreshingLive(true)
+    try {
+      const data = await apiClient.get<NodeSpectrumApiResponse>(`/iot-nodes/${nodeId}/spectrum`)
+      setLiveSpectrum(data)
+    } catch {
+      // Mantém fallback gracioso para o espectro simulado
+    } finally {
+      setIsRefreshingLive(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!selectedRealNodeId) {
+      setLiveSpectrum(null)
+      return
+    }
+    void fetchNodeSpectrum(selectedRealNodeId)
+  }, [selectedRealNodeId, fetchNodeSpectrum])
 
   // Efeito para conectar com WebSockets Reverb se o usuário ativar "Ao Vivo"
   useEffect(() => {
@@ -77,12 +124,19 @@ export function TractianAssetHealthStudio() {
         },
         isoZone: globalVel > 4.5 ? 'D' : globalVel > 2.8 ? 'C' : globalVel > 1.4 ? 'B' : 'A',
       }))
+
+      if (selectedRealNodeId) {
+        const selectedNode = iotNodes.find((n) => n.id === selectedRealNodeId)
+        if (!payload.node_id || payload.node_id === selectedNode?.node_id) {
+          void fetchNodeSpectrum(selectedRealNodeId)
+        }
+      }
     })
 
     return () => {
       channel.stopListening('.sensor.data')
     }
-  }, [isLiveMode, echo])
+  }, [isLiveMode, echo, selectedRealNodeId, iotNodes, fetchNodeSpectrum])
 
   return (
     <div className="space-y-5">
@@ -112,32 +166,54 @@ export function TractianAssetHealthStudio() {
           )}
         </div>
 
-        <div className="flex items-center gap-1 rounded-md border border-border bg-muted/40 p-0.5 text-xs">
-          <button
-            type="button"
-            onClick={() => setViewMode('asset_detail')}
-            className={`flex items-center gap-1.5 rounded px-2.5 py-1 font-medium transition-colors ${
-              viewMode === 'asset_detail'
-                ? 'bg-background text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Cpu className="h-3.5 w-3.5" />
-            <span>Cockpit do Ativo</span>
-          </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {iotNodes.length > 0 && (
+            <label className="flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-2 py-1 text-xs">
+              <Radio className={`h-3.5 w-3.5 ${selectedRealNodeId ? 'text-emerald-500' : 'text-muted-foreground'}`} />
+              <span className="text-muted-foreground">Espectro:</span>
+              <select
+                aria-label="Selecionar nó IoT para espectro real"
+                value={selectedRealNodeId}
+                onChange={(e) => setSelectedRealNodeId(e.target.value)}
+                className="bg-transparent font-medium text-foreground focus:outline-none"
+              >
+                <option value="">Simulador Local</option>
+                {iotNodes.map((node) => (
+                  <option key={node.id} value={node.id}>
+                    {node.name} ({node.node_id}){node.machine?.name ? ` — ${node.machine.name}` : ''}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
-          <button
-            type="button"
-            onClick={() => setViewMode('plant_overview')}
-            className={`flex items-center gap-1.5 rounded px-2.5 py-1 font-medium transition-colors ${
-              viewMode === 'plant_overview'
-                ? 'bg-background text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <LayoutGrid className="h-3.5 w-3.5" />
-            <span>Visão da Planta (4 Ativos)</span>
-          </button>
+          <div className="flex items-center gap-1 rounded-md border border-border bg-muted/40 p-0.5 text-xs">
+            <button
+              type="button"
+              onClick={() => setViewMode('asset_detail')}
+              className={`flex items-center gap-1.5 rounded px-2.5 py-1 font-medium transition-colors ${
+                viewMode === 'asset_detail'
+                  ? 'bg-background text-foreground shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Cpu className="h-3.5 w-3.5" />
+              <span>Cockpit do Ativo</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setViewMode('plant_overview')}
+              className={`flex items-center gap-1.5 rounded px-2.5 py-1 font-medium transition-colors ${
+                viewMode === 'plant_overview'
+                  ? 'bg-background text-foreground shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <LayoutGrid className="h-3.5 w-3.5" />
+              <span>Visão da Planta (4 Ativos)</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -169,7 +245,12 @@ export function TractianAssetHealthStudio() {
             {/* Coluna Esquerda: Severidade ISO 20816 + Spectrum Studio FFT */}
             <div className="space-y-5 lg:col-span-7">
               <VibrationSeverityCockpit scenario={currentScenario} />
-              <SpectrumStudio scenario={currentScenario} />
+              <SpectrumStudio
+                scenario={currentScenario}
+                liveSpectrum={liveSpectrum}
+                onRefreshLive={selectedRealNodeId ? () => void fetchNodeSpectrum(selectedRealNodeId) : undefined}
+                isRefreshingLive={isRefreshingLive}
+              />
             </div>
 
             {/* Coluna Direita: Motor de Diagnóstico Prescritivo IA + Tendência Térmica 30D */}

@@ -15,35 +15,46 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts'
-import { 
-  ScenarioData, 
-  generateSyntheticFFT, 
-  generateTimeWaveform, 
+import {
+  ScenarioData,
+  generateSyntheticFFT,
+  generateTimeWaveform,
   SKF_6204_KINEMATICS,
-  FFTPeak 
+  FFTPeak
 } from '@/features/iot/data/tractian-mock-data'
-import { 
-  BarChart2, 
-  Crosshair, 
-  Magnet, 
-  Maximize2, 
-  MoveHorizontal, 
-  RotateCcw, 
-  SlidersHorizontal, 
-  Sparkles, 
-  Tag, 
-  Target, 
+import {
+  buildSpectrumSeriesFromApi,
+  type NodeSpectrumApiResponse
+} from '@/features/iot/lib/spectrum-adapter'
+import {
+  BarChart2,
+  Crosshair,
+  Magnet,
+  MoveHorizontal,
+  RefreshCw,
+  RotateCcw,
+  Sparkles,
+  Tag,
+  Target,
   Waves,
   Zap
 } from 'lucide-react'
 
 interface SpectrumStudioProps {
   scenario: ScenarioData
+  liveSpectrum?: NodeSpectrumApiResponse | null
+  onRefreshLive?: () => void
+  isRefreshingLive?: boolean
 }
 
 type CursorToolMode = 'harmonics' | 'sidebands' | 'single'
 
-export function SpectrumStudio({ scenario }: SpectrumStudioProps) {
+export function SpectrumStudio({
+  scenario,
+  liveSpectrum = null,
+  onRefreshLive,
+  isRefreshingLive = false,
+}: SpectrumStudioProps) {
   // Modo de Domínio: Espectro FFT ou Forma de Onda no Tempo
   const [domainMode, setDomainMode] = useState<'fft' | 'time_waveform'>('fft')
 
@@ -60,23 +71,44 @@ export function SpectrumStudio({ scenario }: SpectrumStudioProps) {
 
   // Modos de sobreposição adicionais
   const [showBearingFrequencies, setShowBearingFrequencies] = useState(
-    scenario.id === 'bearing_defect'
+    scenario.id === 'bearing_defect' || Boolean(liveSpectrum?.bearing_kinematics)
   )
   const [amplitudeUnit, setAmplitudeUnit] = useState<'accel_g' | 'velocity_mms'>('accel_g')
 
+  const activeKinematics = liveSpectrum?.bearing_kinematics ?? null
+  const bearingName = activeKinematics?.bearing_name ?? 'SKF 6204'
+
   // Frequência Fundamental 1X (Arrastável / Interativa)
   const nominal1X = useMemo(() => {
+    if (activeKinematics && activeKinematics.shaft_frequency_hz > 0) {
+      return Number(activeKinematics.shaft_frequency_hz.toFixed(2))
+    }
     return Number((scenario.operatingRpm / 60).toFixed(2)) // ~29.17 Hz
-  }, [scenario.operatingRpm])
+  }, [activeKinematics, scenario.operatingRpm])
 
   const [fundamentalFreq, setFundamentalFreq] = useState<number>(nominal1X)
   const [harmonicCount, setHarmonicCount] = useState<number>(6) // Quantidade de linhas harmônicas
   const [isDraggingFundamental, setIsDraggingFundamental] = useState<boolean>(false)
   const [magneticSnap, setMagneticSnap] = useState<boolean>(true)
 
+  // Frequências de Falha do Rolamento (Dinâmicas via Backend ou Fallback SKF 6204)
+  const bpfo = activeKinematics?.bpfo_hz ?? SKF_6204_KINEMATICS.bpfo
+  const bpfi = activeKinematics?.bpfi_hz ?? SKF_6204_KINEMATICS.bpfi
+  const bsf = activeKinematics?.bsf_hz ?? SKF_6204_KINEMATICS.bsf
+  const ftf = activeKinematics?.ftf_hz ?? SKF_6204_KINEMATICS.ftf
+  const bpfiSidebands = useMemo(() => {
+    if (activeKinematics?.harmonics?.bpfi_sidebands?.length) {
+      return activeKinematics.harmonics.bpfi_sidebands
+    }
+    if (bpfi > nominal1X && nominal1X > 0) {
+      return [Number((bpfi - nominal1X).toFixed(2)), Number((bpfi + nominal1X).toFixed(2))]
+    }
+    return []
+  }, [activeKinematics, bpfi, nominal1X])
+
   // Ferramenta de Bandas Laterais (fc ± n*Δf)
-  const [sidebandCenter, setSidebandCenter] = useState<number>(SKF_6204_KINEMATICS.bpfo) // 104.2 Hz
-  const [sidebandDelta, setSidebandDelta] = useState<number>(nominal1X) // 29.17 Hz
+  const [sidebandCenter, setSidebandCenter] = useState<number>(bpfo)
+  const [sidebandDelta, setSidebandDelta] = useState<number>(nominal1X)
   const [isDraggingSideband, setIsDraggingSideband] = useState<boolean>(false)
 
   // Cursor Interativo de Pico Selecionado
@@ -85,20 +117,35 @@ export function SpectrumStudio({ scenario }: SpectrumStudioProps) {
   // Referência do container do gráfico para cálculo de coordenadas do mouse
   const chartWrapperRef = useRef<HTMLDivElement>(null)
 
-  // Quando o cenário ou a rotação mudar, reseta a fundamental para o novo nominal
+  // Quando o cenário, nó ou rotação mudar, sincroniza fundamental e bandas laterais
   useEffect(() => {
     setFundamentalFreq(nominal1X)
     setSidebandDelta(nominal1X)
-  }, [nominal1X])
+    setSidebandCenter(bpfo)
+  }, [nominal1X, bpfo])
 
-  // Frequências de Falha do Rolamento
-  const bpfo = SKF_6204_KINEMATICS.bpfo // 104.2 Hz
-  const bpfi = SKF_6204_KINEMATICS.bpfi // 149.8 Hz
+  const liveSeries = useMemo(() => {
+    return liveSpectrum ? buildSpectrumSeriesFromApi(liveSpectrum) : null
+  }, [liveSpectrum])
 
-  // Gera os 400 pontos de espectro sintético físico
+  const isShowingRealSpectrum = Boolean(
+    liveSpectrum && liveSpectrum.has_cached_spectrum && liveSeries && liveSeries.points.length > 0
+  )
+
+  const displayedPeaks = useMemo(() => {
+    if (liveSpectrum) {
+      return liveSeries?.dominantPeaks ?? []
+    }
+    return scenario.dominantPeaks
+  }, [liveSpectrum, liveSeries, scenario.dominantPeaks])
+
+  // Usa o espectro real da API quando disponível, senão mantém os 400 pontos sintéticos do simulador
   const rawSpectrumData = useMemo(() => {
+    if (isShowingRealSpectrum && liveSeries) {
+      return liveSeries.points
+    }
     return generateSyntheticFFT(scenario.id)
-  }, [scenario.id])
+  }, [isShowingRealSpectrum, liveSeries, scenario.id])
 
   // Filtra dados para a faixa de zoom selecionada
   const zoomedSpectrumData = useMemo(() => {
@@ -147,7 +194,7 @@ export function SpectrumStudio({ scenario }: SpectrumStudioProps) {
     // Snap Magnético: se estiver perto de um pico físico (limiar de 3.5 Hz), gruda nele!
     if (magneticSnap) {
       const snapThreshold = Math.max(2.5, zoomRange * 0.015)
-      for (const p of scenario.dominantPeaks) {
+      for (const p of displayedPeaks) {
         if (Math.abs(calculatedFreq - p.frequencyHz) <= snapThreshold) {
           return Number(p.frequencyHz.toFixed(2))
         }
@@ -162,7 +209,7 @@ export function SpectrumStudio({ scenario }: SpectrumStudioProps) {
     }
 
     return Number(calculatedFreq.toFixed(1))
-  }, [zoomRange, magneticSnap, fundamentalFreq, scenario.dominantPeaks, rawSpectrumData])
+  }, [zoomRange, magneticSnap, fundamentalFreq, displayedPeaks, rawSpectrumData])
 
   /**
    * Manipulador de arraste do cursor de fundamental 1X
@@ -275,6 +322,30 @@ export function SpectrumStudio({ scenario }: SpectrumStudioProps) {
               <Badge variant="outline" className="font-mono text-[10px] text-muted-foreground">
                 {domainMode === 'fft' ? `0 a ${zoomRange} Hz` : '0 a 120 ms'}
               </Badge>
+              {liveSpectrum && (
+                <Badge
+                  variant={isShowingRealSpectrum ? 'default' : 'secondary'}
+                  className="font-mono text-[10px]"
+                >
+                  {isShowingRealSpectrum
+                    ? `FFT Real (${liveSpectrum.node_id} · ${liveSpectrum.rpm_source ?? 'auto'})`
+                    : `Cinemática Teórica (${liveSpectrum.node_id} aguardando burst FFT)`}
+                </Badge>
+              )}
+              {liveSpectrum && onRefreshLive && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={onRefreshLive}
+                  disabled={isRefreshingLive}
+                  className="h-6 px-2 text-[10px] gap-1"
+                  title="Recarregar espectro do endpoint /spectrum"
+                >
+                  <RefreshCw className={`h-3 w-3 ${isRefreshingLive ? 'animate-spin' : ''}`} />
+                  <span>Atualizar FFT</span>
+                </Button>
+              )}
             </div>
             <CardDescription className="text-xs">
               Pente de harmônicos e bandas laterais arrastável com snap magnético idêntico à plataforma Tractian
@@ -626,7 +697,7 @@ export function SpectrumStudio({ scenario }: SpectrumStudioProps) {
                   />
                   <span className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[11px]">
                     <Target className="h-3 w-3 text-rose-500" />
-                    Rolamento SKF 6204
+                    Rolamento {bearingName}
                   </span>
                 </label>
               </div>
@@ -818,10 +889,10 @@ export function SpectrumStudio({ scenario }: SpectrumStudioProps) {
                   </>
                 )}
 
-                {/* Overlays de Defeitos de Rolamento Estáticos (BPFO / BPFI) */}
+                {/* Overlays de Indicação Cinemática do Rolamento (BPFO / BPFI / Bandas Laterais / BSF / FTF) */}
                 {showBearingFrequencies && (
                   <>
-                    {zoomRange >= bpfo && (
+                    {zoomRange >= bpfo && bpfo > 0 && (
                       <ReferenceLine
                         x={bpfo}
                         stroke="#e11d48"
@@ -830,22 +901,57 @@ export function SpectrumStudio({ scenario }: SpectrumStudioProps) {
                         label={{ value: `BPFO (${bpfo} Hz)`, position: 'insideTopRight', fill: '#e11d48', fontSize: 10, fontWeight: 800 }}
                       />
                     )}
-                    {zoomRange >= 2 * bpfo && (
+                    {zoomRange >= 2 * bpfo && bpfo > 0 && (
                       <ReferenceLine
-                        x={2 * bpfo}
+                        x={Number((2 * bpfo).toFixed(2))}
                         stroke="#e11d48"
                         strokeDasharray="3 3"
                         strokeWidth={1.5}
                         label={{ value: `2x BPFO (${(2 * bpfo).toFixed(1)} Hz)`, position: 'insideTopRight', fill: '#e11d48', fontSize: 10 }}
                       />
                     )}
-                    {zoomRange >= bpfi && (
+                    {zoomRange >= bpfi && bpfi > 0 && (
                       <ReferenceLine
                         x={bpfi}
                         stroke="#8b5cf6"
                         strokeDasharray="3 3"
-                        strokeWidth={1}
-                        label={{ value: `BPFI (${bpfi} Hz)`, position: 'insideTopRight', fill: '#8b5cf6', fontSize: 10 }}
+                        strokeWidth={1.75}
+                        label={{ value: `BPFI (${bpfi} Hz)`, position: 'insideTopRight', fill: '#8b5cf6', fontSize: 10, fontWeight: 700 }}
+                      />
+                    )}
+                    {bpfiSidebands.map((sbFreq, index) => (
+                      zoomRange >= sbFreq && sbFreq > 0 ? (
+                        <ReferenceLine
+                          key={`bpfi-sb-${index}`}
+                          x={sbFreq}
+                          stroke="#a78bfa"
+                          strokeDasharray="2 4"
+                          strokeWidth={1.25}
+                          label={{
+                            value: `${index === 0 ? 'BPFI-1X' : 'BPFI+1X'} (${sbFreq} Hz)`,
+                            position: 'insideBottomRight',
+                            fill: '#a78bfa',
+                            fontSize: 9,
+                          }}
+                        />
+                      ) : null
+                    ))}
+                    {zoomRange >= bsf && bsf > 0 && (
+                      <ReferenceLine
+                        x={bsf}
+                        stroke="#0ea5e9"
+                        strokeDasharray="4 4"
+                        strokeWidth={1.25}
+                        label={{ value: `BSF (${bsf} Hz)`, position: 'insideBottomLeft', fill: '#0ea5e9', fontSize: 9 }}
+                      />
+                    )}
+                    {zoomRange >= ftf && ftf > 0 && (
+                      <ReferenceLine
+                        x={ftf}
+                        stroke="#14b8a6"
+                        strokeDasharray="2 2"
+                        strokeWidth={1.25}
+                        label={{ value: `FTF (${ftf} Hz)`, position: 'insideBottomLeft', fill: '#14b8a6', fontSize: 9 }}
                       />
                     )}
                   </>
@@ -1014,7 +1120,11 @@ export function SpectrumStudio({ scenario }: SpectrumStudioProps) {
           </div>
 
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-            {scenario.dominantPeaks.map((peak, idx) => {
+            {displayedPeaks.length === 0 ? (
+              <div className="col-span-full rounded-md border border-dashed border-border/70 bg-muted/10 p-3 text-xs text-muted-foreground">
+                Nenhum pico espectral salvo em cache para este nó ainda. Assim que o gateway publicar um burst FFT, as indicações cinemáticas aparecerão aqui (sujeitas à confirmação por ML ou ISO 20816 C/D).
+              </div>
+            ) : displayedPeaks.map((peak, idx) => {
               const isPinned = pinnedPeak?.frequencyHz === peak.frequencyHz
               const isHarmonicMatch = Math.abs(fundamentalFreq - peak.frequencyHz) < 1.0
 
