@@ -43,6 +43,19 @@ interface TelemetryData {
   cloud_ml_confidence?: number
   velocity_rms?: number
   iso_zone?: string
+  iso_applicable?: boolean
+  iso_group?: string
+  iso_evaluation?: {
+    iso_applicable?: boolean
+    machine_group?: string
+    foundation?: string
+    thresholds?: {
+      zone_a_max: number
+      zone_b_max: number
+      zone_c_max: number
+    }
+    standard?: string
+  } | null
 }
 
 const chartConfig = {
@@ -118,6 +131,9 @@ export function RealTimeTelemetry({ tenantId }: { tenantId: string }) {
         temperature: data.temperature !== undefined ? Number(data.temperature) : (data.features && data.features.temp_contact ? Number(data.features.temp_contact) : undefined),
         velocity_rms: data.velocity_rms !== undefined && data.velocity_rms !== null ? Number(data.velocity_rms) : undefined,
         iso_zone: data.iso_zone,
+        iso_applicable: data.iso_applicable ?? data.iso_evaluation?.iso_applicable,
+        iso_group: data.iso_group ?? data.iso_evaluation?.machine_group,
+        iso_evaluation: data.iso_evaluation ?? null,
         ml_status: data.ml_status || 'saudavel',
         ml_confidence: Number(data.ml_confidence || 0.95),
         cloud_ml_status: data.cloud_ml_status,
@@ -229,26 +245,30 @@ export function RealTimeTelemetry({ tenantId }: { tenantId: string }) {
             <Gauge className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black font-mono tracking-tight text-foreground">
+            <div className="text-2xl font-black font-mono tabular-nums tracking-tight text-foreground">
               {typeof lastData?.rms_global === 'number' ? lastData.rms_global.toFixed(4) : "0.0000"}
             </div>
             <p className="text-[11px] text-muted-foreground mt-0.5">g (Aceleração pico)</p>
           </CardContent>
         </Card>
 
-        {/* Velocidade RMS ISO 20816 */}
+        {/* Velocidade RMS (sempre exibida em mm/s) */}
         <Card className="border-border/80 shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Velocidade RMS (ISO)
+              Velocidade RMS
             </CardTitle>
             <Sparkles className="h-4 w-4 text-purple-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black font-mono tracking-tight text-purple-600 dark:text-purple-400">
+            <div className="text-2xl font-black font-mono tabular-nums tracking-tight text-purple-600 dark:text-purple-400">
               {typeof lastData?.velocity_rms === 'number' ? lastData.velocity_rms.toFixed(2) : "--"}
             </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5">mm/s (ISO 20816-3)</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {lastData?.iso_applicable === false || lastData?.iso_group === 'baseline_only'
+                ? 'mm/s (RMS global)'
+                : 'mm/s (RMS · ISO)'}
+            </p>
           </CardContent>
         </Card>
 
@@ -261,7 +281,7 @@ export function RealTimeTelemetry({ tenantId }: { tenantId: string }) {
             <Flame className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black font-mono tracking-tight text-amber-500">
+            <div className="text-2xl font-black font-mono tabular-nums tracking-tight text-amber-500">
               {typeof lastData?.temperature === 'number' ? `${lastData.temperature.toFixed(1)}°C` : "38.2°C"}
             </div>
             <p className="text-[11px] text-muted-foreground mt-0.5">Sonda 1-Wire DS18B20</p>
@@ -303,11 +323,18 @@ export function RealTimeTelemetry({ tenantId }: { tenantId: string }) {
 
       </div>
 
-      {/* Régua de Severidade ISO 20816 */}
-      <ISO20816SeverityGauge 
-        velocityRms={lastData?.velocity_rms} 
-        zone={lastData?.iso_zone} 
-      />
+      {/* Régua de Severidade ISO (exibida somente para máquinas dentro do escopo normativo) */}
+      {lastData?.iso_applicable !== false && lastData?.iso_group !== 'baseline_only' && (
+        <ISO20816SeverityGauge
+          velocityRms={lastData?.velocity_rms}
+          zone={lastData?.iso_zone}
+          isoApplicable={lastData?.iso_applicable}
+          machineGroup={lastData?.iso_group}
+          foundationType={lastData?.iso_evaluation?.foundation}
+          thresholds={lastData?.iso_evaluation?.thresholds}
+          standardLabel={lastData?.iso_evaluation?.standard}
+        />
+      )}
 
       {/* Gráfico Contínuo de Linha com Recharts */}
       <Card className="border-border/80 shadow-sm">

@@ -30,10 +30,9 @@ export async function generateMetadata({
   return {
     title: {
       default: t('meta_title'),
-      template: `%s | MetroLab`,
+      template: `%s | Lean Tech`,
     },
     description: t('meta_description'),
-    generator: 'v0.app',
     icons: {
       icon: [
         {

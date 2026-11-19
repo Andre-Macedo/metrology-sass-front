@@ -17,6 +17,8 @@ import {
   CreditCard,
   MessageSquare,
   CheckCircle2,
+  BookOpen,
+  ExternalLink,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -184,17 +186,24 @@ export function AppSidebar({ className }: AppSidebarProps) {
       )}
     >
       {/* Logo */}
-      <div className="flex h-16 items-center border-b border-sidebar-border px-6">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <Gauge className="h-6 w-6 text-sidebar-primary" />
-          <span className="text-lg font-semibold text-sidebar-foreground">
-            MetroLab
-          </span>
+      <div className="flex h-16 items-center border-b border-sidebar-border px-5">
+        <Link href="/dashboard" className="flex items-center gap-3 group">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-sidebar-primary/35 bg-sidebar-primary/15 text-sidebar-primary transition-colors group-hover:bg-sidebar-primary/25">
+            <Gauge className="h-5 w-5" />
+          </div>
+          <div className="flex flex-col leading-none">
+            <span className="text-base font-bold tracking-tight text-sidebar-foreground">
+              Lean Tech
+            </span>
+            <span className="mt-1 font-mono text-[10px] uppercase tracking-widest text-sidebar-foreground/55">
+              Metrology · IIoT
+            </span>
+          </div>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-2 overflow-y-auto p-4">
+      <nav className="flex-1 space-y-2 overflow-y-auto p-3.5">
         {navigation.map((section) => (
           <NavSectionComponent 
             key={section.title} 
@@ -203,6 +212,22 @@ export function AppSidebar({ className }: AppSidebarProps) {
           />
         ))}
       </nav>
+
+      {/* Portal de Documentação Técnica */}
+      <div className="border-t border-sidebar-border p-3.5">
+        <a
+          href={process.env.NEXT_PUBLIC_DOCS_URL || 'https://leantech.andremacedo.dev.br/docs-portal/'}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between rounded-md border border-sidebar-border/80 bg-sidebar-accent/40 px-3 py-2 text-xs font-medium text-sidebar-foreground/85 transition-colors hover:border-sidebar-primary/40 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+        >
+          <span className="flex items-center gap-2">
+            <BookOpen className="h-3.5 w-3.5 text-sidebar-primary" />
+            <span>Documentação & Ajuda</span>
+          </span>
+          <ExternalLink className="h-3 w-3 opacity-60" />
+        </a>
+      </div>
     </aside>
   )
 }
@@ -266,7 +291,10 @@ function NavItemComponent({
   pathname: string
 }) {
   const [isOpen, setIsOpen] = useState(false)
-  const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+  const isActive =
+    item.href === '/dashboard'
+      ? pathname === item.href
+      : pathname === item.href || pathname.startsWith(item.href + '/')
   const Icon = item.icon
 
   useEffect(() => {
@@ -322,13 +350,13 @@ function NavItemComponent({
       <Link
         href={item.href}
         className={cn(
-          'flex items-center gap-3 rounded-md px-3 py-2 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+          'flex items-center gap-3 rounded-md border-l-2 border-transparent px-3 py-2 text-sm text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
           isActive &&
-          'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+            'border-sidebar-primary bg-sidebar-primary/15 text-sidebar-primary font-semibold hover:bg-sidebar-primary/20 hover:text-sidebar-primary'
         )}
       >
-        <Icon className="h-4 w-4" />
-        {item.title}
+        <Icon className="h-4 w-4 shrink-0" />
+        <span className="truncate">{item.title}</span>
       </Link>
     </li>
   )

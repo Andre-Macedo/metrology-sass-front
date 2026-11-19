@@ -569,10 +569,12 @@ export function IoTLogsDiagnostic() {
                       {renderStatusBadge(log.cloud_ml_status, log.cloud_ml_confidence)}
                     </TableCell>
                     <TableCell>
-                      <ISO20816SeverityGauge 
-                        compact 
-                        velocityRms={log.velocity_rms} 
-                        zone={log.iso_zone} 
+                      <ISO20816SeverityGauge
+                        compact
+                        velocityRms={log.velocity_rms}
+                        zone={log.iso_zone}
+                        isoApplicable={log.iso_evaluation?.iso_applicable}
+                        machineGroup={log.iso_evaluation?.machine_group}
                       />
                     </TableCell>
                     <TableCell>
@@ -673,10 +675,15 @@ export function IoTLogsDiagnostic() {
                 </Card>
               </div>
 
-              {/* Avaliação Metrológica Normativa ISO 20816-3 */}
-              <ISO20816SeverityGauge 
-                velocityRms={inspectedLog.velocity_rms} 
-                zone={inspectedLog.iso_zone} 
+              {/* Avaliação de Velocidade RMS / Normativa ISO 20816-3 */}
+              <ISO20816SeverityGauge
+                velocityRms={inspectedLog.velocity_rms}
+                zone={inspectedLog.iso_zone}
+                isoApplicable={inspectedLog.iso_evaluation?.iso_applicable}
+                machineGroup={inspectedLog.iso_evaluation?.machine_group}
+                foundationType={inspectedLog.iso_evaluation?.foundation}
+                thresholds={inspectedLog.iso_evaluation?.thresholds}
+                standardLabel={inspectedLog.iso_evaluation?.standard}
               />
 
               {/* Mensagem descritiva */}

@@ -5,26 +5,93 @@ import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { AlertTriangle, CheckCircle, ShieldAlert, Sparkles } from 'lucide-react'
 
+interface ISOThresholds {
+  zone_a_max: number
+  zone_b_max: number
+  zone_c_max: number
+}
+
 interface ISO20816SeverityGaugeProps {
   velocityRms?: number | null
   zone?: string | null
+  isoApplicable?: boolean | null
+  machineGroup?: string | null
+  foundationType?: string | null
+  thresholds?: ISOThresholds | null
+  standardLabel?: string | null
   showDetails?: boolean
   compact?: boolean
+}
+
+const ISO_PRESETS: Record<string, Record<string, ISOThresholds>> = {
+  small_machine: {
+    rigid: { zone_a_max: 0.71, zone_b_max: 1.8, zone_c_max: 4.5 },
+    flexible: { zone_a_max: 1.12, zone_b_max: 2.8, zone_c_max: 7.1 },
+  },
+  group_2: {
+    rigid: { zone_a_max: 1.4, zone_b_max: 2.8, zone_c_max: 4.5 },
+    flexible: { zone_a_max: 2.3, zone_b_max: 4.5, zone_c_max: 7.1 },
+  },
+  group_1: {
+    rigid: { zone_a_max: 2.3, zone_b_max: 4.5, zone_c_max: 7.1 },
+    flexible: { zone_a_max: 3.5, zone_b_max: 7.1, zone_c_max: 11.0 },
+  },
 }
 
 export function ISO20816SeverityGauge({
   velocityRms,
   zone,
+  isoApplicable,
+  machineGroup = 'group_2',
+  foundationType = 'rigid',
+  thresholds,
+  standardLabel,
   showDetails = true,
   compact = false,
 }: ISO20816SeverityGaugeProps) {
-  // Limites da ISO 20816-3 (Grupo 2: Motores de 15 a 300 kW, Base Rígida)
-  const limitA = 1.4
-  const limitB = 2.8
-  const limitC = 4.5
-  const maxScale = 6.0
-
   const val = typeof velocityRms === 'number' ? velocityRms : null
+  const isIsoApplicable = isoApplicable !== false && machineGroup !== 'baseline_only'
+
+  const resolvedGroup = machineGroup && ISO_PRESETS[machineGroup] ? machineGroup : 'group_2'
+  const resolvedFoundation = foundationType === 'flexible' ? 'flexible' : 'rigid'
+  const activeThresholds = thresholds ?? ISO_PRESETS[resolvedGroup][resolvedFoundation]
+
+  const limitA = activeThresholds.zone_a_max
+  const limitB = activeThresholds.zone_b_max
+  const limitC = activeThresholds.zone_c_max
+  const maxScale = Math.max(6.0, Number((limitC * 1.35).toFixed(1)))
+
+  if (!isIsoApplicable) {
+    if (compact) {
+      return (
+        <Badge
+          variant="outline"
+          className="font-mono text-[11px] font-semibold border-border text-foreground bg-muted/30 flex items-center gap-1 w-fit"
+        >
+          <span>{val !== null ? `${val.toFixed(2)} mm/s` : '—'}</span>
+        </Badge>
+      )
+    }
+
+    return (
+      <Card className="p-4 border border-border bg-muted/20 flex items-center justify-between gap-3">
+        <div className="space-y-0.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-foreground block">
+            Velocidade RMS Global (Sem Zonas ISO 20816-3)
+          </span>
+          <p className="text-[11px] text-muted-foreground">
+            {standardLabel || 'Ativo abaixo de 15 kW: avaliado por velocidade (mm/s), linha de base e IA.'}
+          </p>
+        </div>
+        <div className="text-right shrink-0">
+          <span className="text-[10px] uppercase font-bold text-muted-foreground block">Velocidade RMS</span>
+          <span className="text-base font-mono font-bold text-foreground">
+            {val !== null ? `${val.toFixed(2)} mm/s` : 'N/A'}
+          </span>
+        </div>
+      </Card>
+    )
+  }
 
   // Se a zona não veio explícita, calcula
   let currentZone = zone?.toUpperCase() || null
@@ -34,6 +101,12 @@ export function ISO20816SeverityGauge({
     else if (val <= limitC) currentZone = 'C'
     else currentZone = 'D'
   }
+
+  const headerTitle =
+    standardLabel ||
+    (resolvedGroup === 'small_machine'
+      ? `Severidade ISO 10816-1 Classe I (< 15 kW - ${resolvedFoundation === 'flexible' ? 'Base Flexível' : 'Base Rígida'})`
+      : `Severidade ISO 20816-3 (${resolvedGroup === 'group_1' ? 'Grupo 1' : 'Grupo 2'} - ${resolvedFoundation === 'flexible' ? 'Base Flexível' : 'Base Rígida'})`)
 
   // Posição percentual na régua (0 a 100%)
   const percentage = val !== null 
@@ -122,7 +195,7 @@ export function ISO20816SeverityGauge({
         <div className="flex items-center gap-2">
           <Icon className={`h-4 w-4 ${meta.textColor}`} />
           <span className="text-xs font-bold uppercase tracking-wider text-foreground">
-            Severidade ISO 20816-3 (Grupo 2 - Base Rígida)
+            {headerTitle}
           </span>
         </div>
         <Badge variant="outline" className={`font-mono font-bold ${meta.borderColor} ${meta.textColor} bg-background`}>
@@ -133,14 +206,14 @@ export function ISO20816SeverityGauge({
       {/* Régua de Gradiente com as 4 Zonas */}
       <div className="space-y-1.5 pt-1">
         <div className="relative w-full h-3 rounded-full overflow-hidden bg-muted flex border border-border/60">
-          {/* Zona A: 0 a 1.4 (23.3%) */}
-          <div style={{ width: '23.3%' }} className="bg-emerald-500 h-full opacity-90" title="Zona A: 0 a 1.4 mm/s" />
-          {/* Zona B: 1.4 a 2.8 (23.3%) */}
-          <div style={{ width: '23.3%' }} className="bg-blue-500 h-full opacity-90" title="Zona B: 1.4 a 2.8 mm/s" />
-          {/* Zona C: 2.8 a 4.5 (28.3%) */}
-          <div style={{ width: '28.3%' }} className="bg-amber-500 h-full opacity-90" title="Zona C: 2.8 a 4.5 mm/s" />
-          {/* Zona D: > 4.5 (25.1%) */}
-          <div style={{ width: '25.1%' }} className="bg-rose-500 h-full opacity-90" title="Zona D: > 4.5 mm/s" />
+          {/* Zona A */}
+          <div style={{ width: `${(limitA / maxScale) * 100}%` }} className="bg-emerald-500 h-full opacity-90" title={`Zona A: 0 a ${limitA} mm/s`} />
+          {/* Zona B */}
+          <div style={{ width: `${((limitB - limitA) / maxScale) * 100}%` }} className="bg-blue-500 h-full opacity-90" title={`Zona B: ${limitA} a ${limitB} mm/s`} />
+          {/* Zona C */}
+          <div style={{ width: `${((limitC - limitB) / maxScale) * 100}%` }} className="bg-amber-500 h-full opacity-90" title={`Zona C: ${limitB} a ${limitC} mm/s`} />
+          {/* Zona D */}
+          <div style={{ width: `${((maxScale - limitC) / maxScale) * 100}%` }} className="bg-rose-500 h-full opacity-90" title={`Zona D: > ${limitC} mm/s`} />
 
           {/* Marcador do Ponteiro Atual */}
           {percentage !== null && (
@@ -155,10 +228,10 @@ export function ISO20816SeverityGauge({
         {/* Legendas de Limites na Régua */}
         <div className="flex justify-between text-[10px] font-mono text-muted-foreground px-0.5">
           <span>0</span>
-          <span>1.4 (A)</span>
-          <span>2.8 (B)</span>
-          <span>4.5 (C)</span>
-          <span>6.0+ (D)</span>
+          <span>{limitA} (A)</span>
+          <span>{limitB} (B)</span>
+          <span>{limitC} (C)</span>
+          <span>{maxScale}+ (D)</span>
         </div>
       </div>
 

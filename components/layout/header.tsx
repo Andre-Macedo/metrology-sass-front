@@ -1,6 +1,6 @@
 'use client'
 
-import { Bell, Menu, LogOut, User, Settings, QrCode, ShieldAlert } from 'lucide-react'
+import { Bell, Menu, LogOut, User, Settings, QrCode, ShieldAlert, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -65,7 +65,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                     </button>
                 </div>
             )}
-            <header className="flex h-16 items-center justify-between border-b border-border bg-background px-6">
+            <header className="flex h-16 items-center justify-between border-b border-border bg-card/90 px-6 backdrop-blur-sm">
                 {/* Left side */}
                 <div className="flex items-center gap-4">
                     <Button
@@ -85,6 +85,23 @@ export function Header({ onMenuClick }: HeaderProps) {
 
                 {/* Right side */}
                 <div className="flex items-center gap-2">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        asChild
+                        className="text-muted-foreground hover:text-primary"
+                        title="Documentação & Ajuda"
+                    >
+                        <a
+                            href={process.env.NEXT_PUBLIC_DOCS_URL || 'https://leantech.andremacedo.dev.br/docs-portal/'}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <BookOpen className="h-5 w-5" />
+                            <span className="sr-only">Documentação & Ajuda</span>
+                        </a>
+                    </Button>
+
                     <Button 
                         variant="ghost" 
                         size="icon" 

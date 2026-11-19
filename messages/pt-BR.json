@@ -1,10 +1,10 @@
 {
   "Index": {
-    "title": "Bem-vindo ao Metrology SaaS",
+    "title": "Bem-vindo ao Lean Tech",
     "login": "Entrar",
     "dashboard": "Painel",
-    "meta_title": "MetroLab | Plataforma SaaS de Metrologia",
-    "meta_description": "Plataforma profissional de gestão de metrologia para calibração de instrumentos, rastreamento e conformidade."
+    "meta_title": "Lean Tech | Plataforma de Metrologia & IIoT",
+    "meta_description": "Plataforma profissional de metrologia industrial, calibração ISO 17025 e monitoramento preditivo IIoT."
   },
   "Common": {
     "save": "Salvar",
@@ -51,7 +51,7 @@
   },
   "Auth": {
     "welcome_back": "Bem-vindo de volta",
-    "sign_in_subtitle": "Entre na sua conta MetroLab para continuar",
+    "sign_in_subtitle": "Entre na sua conta Lean Tech para continuar",
     "invalid_credentials": "Credenciais inválidas. Tente novamente.",
     "email": "E-mail",
     "password": "Senha",
