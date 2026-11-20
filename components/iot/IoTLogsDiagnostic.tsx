@@ -380,40 +380,40 @@ export function IoTLogsDiagnostic() {
 
   return (
     <div className="space-y-6">
-      {/* Strip de Resumo Executivo */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-lg border border-border/70 bg-card p-3 shadow-xs">
-          <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
+      {/* Strip de Resumo Executivo (Hairline Grid) */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border rounded-md border border-border bg-card">
+        <div className="p-3.5">
+          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
             Eventos Auditados
           </span>
-          <span className="font-mono text-2xl font-black text-foreground">
+          <span className="mt-1 block font-mono text-2xl font-semibold text-foreground">
             {totalCount || logs.length}
           </span>
         </div>
 
-        <div className="rounded-lg border border-border/70 bg-card p-3 shadow-xs">
-          <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
+        <div className="p-3.5">
+          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
             Falhas Críticas (Zona D)
           </span>
-          <span className="font-mono text-2xl font-black text-rose-500">
+          <span className="mt-1 block font-mono text-2xl font-semibold text-rose-600 dark:text-rose-400">
             {criticalCount}
           </span>
         </div>
 
-        <div className="rounded-lg border border-border/70 bg-card p-3 shadow-xs">
-          <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
+        <div className="p-3.5">
+          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
             Alertas Preventivos (Zona C)
           </span>
-          <span className="font-mono text-2xl font-black text-amber-500">
+          <span className="mt-1 block font-mono text-2xl font-semibold text-amber-600 dark:text-amber-400">
             {warningCount}
           </span>
         </div>
 
-        <div className="rounded-lg border border-border/70 bg-card p-3 shadow-xs">
-          <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
+        <div className="p-3.5">
+          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
             Acurácia Média IA
           </span>
-          <span className="font-mono text-2xl font-black text-emerald-500">
+          <span className="mt-1 block font-mono text-2xl font-semibold text-emerald-600 dark:text-emerald-400">
             97.8%
           </span>
         </div>

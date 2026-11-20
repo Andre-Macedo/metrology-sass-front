@@ -52,118 +52,89 @@ export function AssetHealthHero({
   onToggleLiveMode,
   onOpenWorkOrderModal,
 }: AssetHealthHeroProps) {
-  // Cores dinâmicas para o Health Index Ring
+  // Cores semânticas para o Health Index
   const getHealthColor = (score: number) => {
-    if (score >= 80) return { stroke: '#10b981', text: 'text-emerald-500', bg: 'bg-emerald-500/10', label: 'Saudável' }
-    if (score >= 60) return { stroke: '#3b82f6', text: 'text-blue-500', bg: 'bg-blue-500/10', label: 'Aceitável' }
-    if (score >= 40) return { stroke: '#f59e0b', text: 'text-amber-500', bg: 'bg-amber-500/10', label: 'Atenção' }
-    return { stroke: '#ef4444', text: 'text-rose-500', bg: 'bg-rose-500/10', label: 'Crítico' }
+    if (score >= 80) return { bar: 'bg-emerald-500', borderL: 'border-l-emerald-500', text: 'text-emerald-600 dark:text-emerald-400', badge: 'border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10', label: 'Operação Normal' }
+    if (score >= 60) return { bar: 'bg-sky-500', borderL: 'border-l-sky-500', text: 'text-sky-600 dark:text-sky-400', badge: 'border-sky-500/30 text-sky-600 dark:text-sky-400 bg-sky-500/10', label: 'Aceitável' }
+    if (score >= 40) return { bar: 'bg-amber-500', borderL: 'border-l-amber-500', text: 'text-amber-600 dark:text-amber-400', badge: 'border-amber-500/30 text-amber-600 dark:text-amber-400 bg-amber-500/10', label: 'Alerta Preventivo' }
+    return { bar: 'bg-rose-500', borderL: 'border-l-rose-500', text: 'text-rose-600 dark:text-rose-400', badge: 'border-rose-500/30 text-rose-600 dark:text-rose-400 bg-rose-500/10', label: 'Parada Crítica Iminente' }
   }
 
   const healthMeta = getHealthColor(scenario.healthScore)
-  const radius = 38
-  const circumference = 2 * Math.PI * radius
-  const strokeDashoffset = circumference - (scenario.healthScore / 100) * circumference
 
   return (
-    <Card className="relative overflow-hidden border-border/80 shadow-sm bg-gradient-to-br from-card via-card to-muted/20">
-      <CardContent className="p-5 sm:p-6">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <Card className={`relative overflow-hidden border border-border border-l-4 ${healthMeta.borderL} bg-card shadow-none`}>
+      <CardContent className="p-5">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           
-          {/* Lado Esquerdo: Health Gauge Ring & Título */}
-          <div className="flex items-start sm:items-center gap-5">
-            {/* SVG Ring Gauge */}
-            <div className="relative flex shrink-0 items-center justify-center">
-              <svg className="h-24 w-24 -rotate-90 transform">
-                <circle
-                  cx="48"
-                  cy="48"
-                  r={radius}
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  className="text-muted/40"
-                  fill="transparent"
-                />
-                <circle
-                  cx="48"
-                  cy="48"
-                  r={radius}
-                  stroke={healthMeta.stroke}
-                  strokeWidth="8"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
-                  strokeLinecap="round"
-                  className="transition-all duration-700 ease-out"
-                  fill="transparent"
-                />
-              </svg>
-              <div className="absolute flex flex-col items-center justify-center text-center">
-                <span className="font-mono text-2xl font-black tracking-tight text-foreground">
-                  {scenario.healthScore}%
+          {/* Lado Esquerdo: Readout Técnico de Saúde & Identificação */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+            <div className="w-32 shrink-0 space-y-1.5 border-b sm:border-b-0 sm:border-r border-border pb-3 sm:pb-0 sm:pr-5">
+              <span className="block font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                Índice de Saúde
+              </span>
+              <div className="flex items-baseline gap-0.5">
+                <span className={`font-mono text-3xl font-semibold tracking-tight ${healthMeta.text}`}>
+                  {scenario.healthScore}
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Saúde
-                </span>
+                <span className="font-mono text-xs text-muted-foreground">%</span>
+              </div>
+              <div className="h-1 w-full overflow-hidden rounded-xs bg-muted">
+                <div
+                  className={`h-full transition-all duration-500 ${healthMeta.bar}`}
+                  style={{ width: `${Math.min(100, Math.max(0, scenario.healthScore))}%` }}
+                />
               </div>
             </div>
 
             {/* Informações Centrais do Ativo */}
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                <h1 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
                   {asset.name}
                 </h1>
                 
-                {/* Status Operacional */}
                 <Badge 
                   variant="outline" 
-                  className={`gap-1.5 px-2.5 py-0.5 font-medium ${
-                    scenario.healthScore >= 80 
-                      ? 'border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10' 
-                      : scenario.healthScore >= 40 
-                        ? 'border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10'
-                        : 'border-rose-500/40 text-rose-600 dark:text-rose-400 bg-rose-500/10'
-                  }`}
+                  className={`gap-1.5 px-2 py-0.5 text-[11px] font-medium ${healthMeta.badge}`}
                 >
-                  <span className="h-2 w-2 rounded-full bg-current animate-pulse" />
-                  <span>
-                    {scenario.healthScore >= 80 ? 'Operação Normal' : scenario.healthScore >= 40 ? 'Alerta Preventivo' : 'Parada Crítica Iminente'}
-                  </span>
+                  <span className={`h-1.5 w-1.5 rounded-full ${healthMeta.bar}`} />
+                  <span>{healthMeta.label}</span>
                 </Badge>
 
                 {isLiveMode && (
-                  <Badge variant="default" className="gap-1 bg-emerald-600 hover:bg-emerald-600">
-                    <Radio className="h-3 w-3 animate-ping" />
-                    <span>Ao Vivo (Reverb)</span>
+                  <Badge variant="default" className="gap-1 bg-emerald-600 hover:bg-emerald-600 text-[11px] font-mono">
+                    <Radio className="h-3 w-3 animate-pulse" />
+                    <span>LIVE</span>
                   </Badge>
                 )}
               </div>
 
-              <p className="text-sm text-muted-foreground line-clamp-1">
+              <p className="text-xs text-muted-foreground line-clamp-1">
                 {scenario.tagline}
               </p>
 
-              {/* Badges Técnicas de Especificação Industrial */}
-              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-                <div className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-0.5 text-muted-foreground">
-                  <RotateCw className="h-3 w-3 text-blue-500" />
-                  <span className="font-semibold text-foreground">{scenario.operatingRpm}</span> RPM
-                </div>
-                
-                <div className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-0.5 text-muted-foreground">
-                  <Zap className="h-3 w-3 text-amber-500" />
-                  <span className="font-semibold text-foreground">{asset.nominalPowerKw}</span> kW (3 CV)
-                </div>
-
-                <div className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-0.5 text-muted-foreground">
-                  <Gauge className="h-3 w-3 text-indigo-500" />
-                  <span className="font-semibold text-foreground">{asset.bearing.model}</span>
-                </div>
-
-                <div className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-0.5 text-muted-foreground">
-                  <Clock className="h-3 w-3 text-muted-foreground" />
-                  <span className="font-mono text-foreground font-semibold">{scenario.runningHours}h</span> horímetro
-                </div>
+              {/* Faixa Técnica de Especificação Industrial */}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-1 font-mono text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1">
+                  <RotateCw className="h-3 w-3" />
+                  <strong className="font-semibold text-foreground">{scenario.operatingRpm}</strong> RPM
+                </span>
+                <span className="text-border">|</span>
+                <span className="inline-flex items-center gap-1">
+                  <Zap className="h-3 w-3" />
+                  <strong className="font-semibold text-foreground">{asset.nominalPowerKw}</strong> kW
+                </span>
+                <span className="text-border">|</span>
+                <span className="inline-flex items-center gap-1">
+                  <Gauge className="h-3 w-3" />
+                  <strong className="font-semibold text-foreground">{asset.bearing.model}</strong>
+                </span>
+                <span className="text-border">|</span>
+                <span className="inline-flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  <strong className="font-semibold text-foreground">{scenario.runningHours}h</strong>
+                </span>
               </div>
             </div>
 

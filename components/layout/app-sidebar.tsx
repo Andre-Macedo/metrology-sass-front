@@ -181,29 +181,29 @@ export function AppSidebar({ className }: AppSidebarProps) {
   return (
     <aside
       className={cn(
-        'flex h-full w-64 flex-col border-r border-sidebar-border bg-sidebar',
+        'flex h-full w-60 flex-col border-r border-sidebar-border bg-sidebar',
         className
       )}
     >
       {/* Logo */}
-      <div className="flex h-16 items-center border-b border-sidebar-border px-5">
-        <Link href="/dashboard" className="flex items-center gap-3 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-sidebar-primary/35 bg-sidebar-primary/15 text-sidebar-primary transition-colors group-hover:bg-sidebar-primary/25">
-            <Gauge className="h-5 w-5" />
+      <div className="flex h-14 items-center border-b border-sidebar-border px-4">
+        <Link href="/dashboard" className="flex items-center gap-2.5 group">
+          <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-sidebar-primary font-mono text-xs font-semibold tracking-tight text-sidebar-primary-foreground transition-opacity group-hover:opacity-90">
+            LT
           </div>
           <div className="flex flex-col leading-none">
-            <span className="text-base font-bold tracking-tight text-sidebar-foreground">
+            <span className="text-sm font-semibold tracking-tight text-sidebar-foreground">
               Lean Tech
             </span>
-            <span className="mt-1 font-mono text-[10px] uppercase tracking-widest text-sidebar-foreground/55">
-              Metrology · IIoT
+            <span className="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-sidebar-foreground/50">
+              METROLOGY · IIoT
             </span>
           </div>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-2 overflow-y-auto p-3.5">
+      <nav className="flex-1 space-y-1.5 overflow-y-auto p-3">
         {navigation.map((section) => (
           <NavSectionComponent 
             key={section.title} 
@@ -214,12 +214,12 @@ export function AppSidebar({ className }: AppSidebarProps) {
       </nav>
 
       {/* Portal de Documentação Técnica */}
-      <div className="border-t border-sidebar-border p-3.5">
+      <div className="border-t border-sidebar-border p-3">
         <a
           href={process.env.NEXT_PUBLIC_DOCS_URL || 'https://leantech.andremacedo.dev.br/docs-portal/'}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between rounded-md border border-sidebar-border/80 bg-sidebar-accent/40 px-3 py-2 text-xs font-medium text-sidebar-foreground/85 transition-colors hover:border-sidebar-primary/40 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+          className="flex items-center justify-between rounded-sm border border-sidebar-border bg-sidebar-accent/35 px-2.5 py-2 text-xs font-medium text-sidebar-foreground/80 transition-colors hover:border-sidebar-primary/40 hover:bg-sidebar-accent hover:text-sidebar-foreground"
         >
           <span className="flex items-center gap-2">
             <BookOpen className="h-3.5 w-3.5 text-sidebar-primary" />
@@ -251,12 +251,12 @@ function NavSectionComponent({
   }, [pathname, section.items])
 
   return (
-    <div className="mb-2">
+    <div className="mb-1.5">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
-          <Button
-            variant="ghost"
-            className="w-full justify-between h-8 px-3 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/50 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+          <button
+            type="button"
+            className="flex w-full items-center justify-between rounded-sm px-2.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider text-sidebar-foreground/45 transition-colors hover:text-sidebar-foreground/80"
           >
             {section.title}
             <ChevronDown
@@ -265,10 +265,10 @@ function NavSectionComponent({
                 isOpen && 'rotate-180'
               )}
             />
-          </Button>
+          </button>
         </CollapsibleTrigger>
-        <CollapsibleContent className="space-y-1 mt-1">
-          <ul className="space-y-1">
+        <CollapsibleContent className="space-y-0.5 mt-0.5">
+          <ul className="space-y-0.5">
             {section.items.map((item) => (
               <NavItemComponent
                 key={item.href}
@@ -350,12 +350,12 @@ function NavItemComponent({
       <Link
         href={item.href}
         className={cn(
-          'flex items-center gap-3 rounded-md border-l-2 border-transparent px-3 py-2 text-sm text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+          'relative flex h-8 items-center gap-2.5 rounded-sm px-2.5 text-[13px] font-medium text-sidebar-foreground/75 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-foreground',
           isActive &&
-            'border-sidebar-primary bg-sidebar-primary/15 text-sidebar-primary font-semibold hover:bg-sidebar-primary/20 hover:text-sidebar-primary'
+            'bg-sidebar-accent text-sidebar-foreground before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:bg-sidebar-primary'
         )}
       >
-        <Icon className="h-4 w-4 shrink-0" />
+        <Icon className={cn('h-4 w-4 shrink-0', isActive ? 'text-sidebar-primary' : 'text-sidebar-foreground/60')} />
         <span className="truncate">{item.title}</span>
       </Link>
     </li>

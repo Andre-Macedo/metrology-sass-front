@@ -10,13 +10,10 @@ import { Button } from '@/components/ui/button'
 import { 
   Activity, 
   BrainCircuit, 
-  Flame, 
   Gauge, 
   Pause, 
   Play, 
   RotateCcw, 
-  Sliders, 
-  Sparkles, 
   Thermometer, 
   Wifi, 
   WifiOff 
@@ -61,27 +58,27 @@ interface TelemetryData {
 const chartConfig = {
   rms_global: {
     label: 'RMS Global (g)',
-    color: '#2563eb',
+    color: '#0F62FE',
   },
   rms_x: {
     label: 'Eixo Radial X (g)',
-    color: '#06b6d4',
+    color: '#0891B2',
   },
   rms_y: {
     label: 'Eixo Radial Y (g)',
-    color: '#10b981',
+    color: '#0D9488',
   },
   rms_z: {
     label: 'Eixo Axial Z (g)',
-    color: '#f59e0b',
+    color: '#D97706',
   },
   velocity_rms: {
     label: 'Velocidade RMS (mm/s)',
-    color: '#8b5cf6',
+    color: '#2563EB',
   },
   temperature: {
     label: 'Temperatura Mancal (°C)',
-    color: '#ef4444',
+    color: '#DC2626',
   },
 }
 
@@ -233,93 +230,101 @@ export function RealTimeTelemetry({ tenantId }: { tenantId: string }) {
         </div>
       </div>
 
-      {/* Grid de KPIs Instantâneos da Bancada */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+      {/* Grade Unificada de Instrumentação (Hairline Grid) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-border rounded-md border border-border bg-card">
         
         {/* RMS Global */}
-        <Card className="border-border/80 shadow-xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Aceleração RMS Global
-            </CardTitle>
-            <Gauge className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-black font-mono tabular-nums tracking-tight text-foreground">
+            </span>
+            <Gauge className="h-3.5 w-3.5 text-muted-foreground" />
+          </div>
+          <div className="mt-2 flex items-baseline gap-1">
+            <span className="font-mono text-2xl font-semibold tracking-tight text-foreground">
               {typeof lastData?.rms_global === 'number' ? lastData.rms_global.toFixed(4) : "0.0000"}
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5">g (Aceleração pico)</p>
-          </CardContent>
-        </Card>
+            </span>
+            <span className="font-mono text-xs text-muted-foreground">g</span>
+          </div>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">Aceleração pico</p>
+        </div>
 
         {/* Velocidade RMS (sempre exibida em mm/s) */}
-        <Card className="border-border/80 shadow-xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Velocidade RMS
-            </CardTitle>
-            <Sparkles className="h-4 w-4 text-purple-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-black font-mono tabular-nums tracking-tight text-purple-600 dark:text-purple-400">
+            </span>
+            <Activity className="h-3.5 w-3.5 text-muted-foreground" />
+          </div>
+          <div className="mt-2 flex items-baseline gap-1">
+            <span className="font-mono text-2xl font-semibold tracking-tight text-foreground">
               {typeof lastData?.velocity_rms === 'number' ? lastData.velocity_rms.toFixed(2) : "--"}
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
-              {lastData?.iso_applicable === false || lastData?.iso_group === 'baseline_only'
-                ? 'mm/s (RMS global)'
-                : 'mm/s (RMS · ISO)'}
-            </p>
-          </CardContent>
-        </Card>
+            </span>
+            <span className="font-mono text-xs text-muted-foreground">mm/s</span>
+          </div>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            {lastData?.iso_applicable === false || lastData?.iso_group === 'baseline_only'
+              ? 'RMS global'
+              : 'RMS · Norma ISO'}
+          </p>
+        </div>
 
         {/* Temperatura do Mancal */}
-        <Card className="border-border/80 shadow-xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Temperatura Mancal
-            </CardTitle>
-            <Flame className="h-4 w-4 text-amber-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-black font-mono tabular-nums tracking-tight text-amber-500">
-              {typeof lastData?.temperature === 'number' ? `${lastData.temperature.toFixed(1)}°C` : "38.2°C"}
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Sonda 1-Wire DS18B20</p>
-          </CardContent>
-        </Card>
+            </span>
+            <Thermometer className="h-3.5 w-3.5 text-muted-foreground" />
+          </div>
+          <div className="mt-2 flex items-baseline gap-1">
+            <span className={`font-mono text-2xl font-semibold tracking-tight ${
+              typeof lastData?.temperature === 'number' && lastData.temperature > 70
+                ? 'text-rose-600 dark:text-rose-400'
+                : typeof lastData?.temperature === 'number' && lastData.temperature > 55
+                  ? 'text-amber-600 dark:text-amber-400'
+                  : 'text-foreground'
+            }`}>
+              {typeof lastData?.temperature === 'number' ? lastData.temperature.toFixed(1) : "38.2"}
+            </span>
+            <span className="font-mono text-xs text-muted-foreground">°C</span>
+          </div>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">Sonda 1-Wire DS18B20</p>
+        </div>
 
         {/* Status IA & Predição */}
-        <Card className="border-border/80 shadow-xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Diagnóstico IA
-            </CardTitle>
-            <BrainCircuit className="h-4 w-4 text-emerald-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-1">
-              <Badge 
-                variant={lastData?.ml_status === 'normal' || lastData?.ml_status === 'saudavel' ? "default" : "destructive"} 
-                className="uppercase w-fit font-mono text-[10px] py-0.5"
-              >
-                {lastData?.ml_status || "Aguardando"}
+            </span>
+            <BrainCircuit className="h-3.5 w-3.5 text-muted-foreground" />
+          </div>
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            <Badge 
+              variant={lastData?.ml_status === 'normal' || lastData?.ml_status === 'saudavel' ? "outline" : "destructive"} 
+              className={`uppercase font-mono text-[10px] h-5 ${
+                lastData?.ml_status === 'normal' || lastData?.ml_status === 'saudavel'
+                  ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                  : ''
+              }`}
+            >
+              {lastData?.ml_status || "Aguardando"}
+            </Badge>
+            {lastData?.cloud_ml_status && (
+              <Badge variant="outline" className="h-5 font-mono text-[10px] border-border text-muted-foreground">
+                {lastData.cloud_ml_status}
               </Badge>
-              {lastData?.cloud_ml_status && (
-                <div className="flex items-center gap-1 mt-0.5">
-                  <span className="text-[10px] text-muted-foreground font-bold">Cloud:</span>
-                  <Badge variant="outline" className="text-[10px] py-0 h-4 border-primary text-primary font-mono">
-                    {lastData.cloud_ml_status}
-                  </Badge>
-                </div>
-              )}
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-1">
-              Confiança: <span className="font-mono font-semibold text-foreground">
-                {typeof lastData?.ml_confidence === 'number' ? (lastData.ml_confidence * 100).toFixed(1) : "95.0"}%
-              </span>
-            </p>
-          </CardContent>
-        </Card>
+            )}
+          </div>
+          <p className="mt-1.5 text-[11px] text-muted-foreground">
+            Confiança: <span className="font-mono font-medium text-foreground">
+              {typeof lastData?.ml_confidence === 'number' ? (lastData.ml_confidence * 100).toFixed(1) : "95.0"}%
+            </span>
+          </p>
+        </div>
 
       </div>
 

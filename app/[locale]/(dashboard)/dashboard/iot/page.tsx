@@ -10,7 +10,7 @@ import { HistoricalTelemetry } from '@/components/iot/HistoricalTelemetry'
 import { IoTLogsDiagnostic } from '@/components/iot/IoTLogsDiagnostic'
 import { IoTDatasetsManager } from '@/components/iot/IoTDatasetsManager'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Sparkles, Activity, History, Terminal, Database, Building2 } from 'lucide-react'
+import { Gauge, Activity, History, Terminal, Database } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 export default function IoTPage() {
@@ -29,30 +29,26 @@ export default function IoTPage() {
   }, [user])
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <PageHeader
           title="Monitoramento Preditivo de Ativos (IoT & IA)"
           description="Gestão de saúde de ativos, análise espectral FFT, severidade ISO 20816-3 e diagnóstico prescritivo em tempo real."
         />
 
-        <div className="flex items-center gap-2 self-start sm:self-auto bg-muted/60 border border-border px-3 py-1.5 rounded-lg text-xs shadow-xs">
-          <Building2 className="h-4 w-4 text-primary" />
-          <span className="text-muted-foreground font-medium">Tenant Ativo:</span>
-          <Badge variant="outline" className="font-mono text-primary font-bold uppercase tracking-wider bg-background">
-            {tenantSlug}
-          </Badge>
+        <div className="self-start sm:self-auto rounded-sm border border-border bg-card px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+          WORKSPACE // <span className="font-semibold text-foreground">{tenantSlug}</span>
         </div>
       </div>
 
       <Tabs defaultValue="tractian" className="space-y-4">
-        <TabsList className="flex flex-wrap h-auto p-1 bg-muted/60 border border-border/60">
+        <TabsList className="flex flex-wrap h-auto gap-1 rounded-md border border-border bg-muted/60 p-0.5">
           <TabsTrigger 
             value="tractian" 
-            className="gap-2 font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-xs"
+            className="h-7 gap-1.5 px-3 text-xs font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
           >
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span>Cockpit Preditivo (Tractian)</span>
+            <Gauge className="h-3.5 w-3.5 text-primary" />
+            <span>Diagnóstico de Ativos</span>
           </TabsTrigger>
           
           <TabsTrigger value="realtime" className="gap-1.5">

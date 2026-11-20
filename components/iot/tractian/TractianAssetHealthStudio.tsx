@@ -20,6 +20,13 @@ import { PlantAssetCockpit } from './PlantAssetCockpit'
 import { CreatePredictiveWorkOrderModal } from './CreatePredictiveWorkOrderModal'
 import { useEcho } from '@/lib/providers/echo-provider'
 import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { LayoutGrid, Cpu, ArrowLeft, Radio } from 'lucide-react'
 
 export function TractianAssetHealthStudio() {
@@ -168,23 +175,27 @@ export function TractianAssetHealthStudio() {
 
         <div className="flex flex-wrap items-center gap-2">
           {iotNodes.length > 0 && (
-            <label className="flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-2 py-1 text-xs">
+            <div className="flex items-center gap-1.5">
               <Radio className={`h-3.5 w-3.5 ${selectedRealNodeId ? 'text-emerald-500' : 'text-muted-foreground'}`} />
-              <span className="text-muted-foreground">Espectro:</span>
-              <select
-                aria-label="Selecionar nó IoT para espectro real"
-                value={selectedRealNodeId}
-                onChange={(e) => setSelectedRealNodeId(e.target.value)}
-                className="bg-transparent font-medium text-foreground focus:outline-none"
+              <Select
+                value={selectedRealNodeId || 'local-sim'}
+                onValueChange={(v) => setSelectedRealNodeId(v === 'local-sim' ? '' : v)}
               >
-                <option value="">Simulador Local</option>
-                {iotNodes.map((node) => (
-                  <option key={node.id} value={node.id}>
-                    {node.name} ({node.node_id}){node.machine?.name ? ` — ${node.machine.name}` : ''}
-                  </option>
-                ))}
-              </select>
-            </label>
+                <SelectTrigger aria-label="Selecionar nó IoT para espectro real" className="h-8 w-[240px] font-mono text-xs bg-card">
+                  <SelectValue placeholder="Simulador Local" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="local-sim" className="font-mono text-xs">
+                    Simulador Local
+                  </SelectItem>
+                  {iotNodes.map((node) => (
+                    <SelectItem key={node.id} value={node.id} className="font-mono text-xs">
+                      {node.name} ({node.node_id}){node.machine?.name ? ` — ${node.machine.name}` : ''}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
 
           <div className="flex items-center gap-1 rounded-md border border-border bg-muted/40 p-0.5 text-xs">

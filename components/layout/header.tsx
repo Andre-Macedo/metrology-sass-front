@@ -65,16 +65,16 @@ export function Header({ onMenuClick }: HeaderProps) {
                     </button>
                 </div>
             )}
-            <header className="flex h-16 items-center justify-between border-b border-border bg-card/90 px-6 backdrop-blur-sm">
+            <header className="flex h-14 items-center justify-between border-b border-border bg-card px-5">
                 {/* Left side */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="lg:hidden"
+                        className="h-8 w-8 lg:hidden"
                         onClick={onMenuClick}
                     >
-                        <Menu className="h-5 w-5" />
+                        <Menu className="h-4 w-4" />
                         <span className="sr-only">{t('toggle_menu')}</span>
                     </Button>
 
@@ -84,12 +84,12 @@ export function Header({ onMenuClick }: HeaderProps) {
                 </div>
 
                 {/* Right side */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                     <Button
                         variant="ghost"
                         size="icon"
                         asChild
-                        className="text-muted-foreground hover:text-primary"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
                         title="Documentação & Ajuda"
                     >
                         <a
@@ -97,7 +97,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <BookOpen className="h-5 w-5" />
+                            <BookOpen className="h-4 w-4" />
                             <span className="sr-only">Documentação & Ajuda</span>
                         </a>
                     </Button>
@@ -106,26 +106,28 @@ export function Header({ onMenuClick }: HeaderProps) {
                         variant="ghost" 
                         size="icon" 
                         onClick={() => setIsScannerOpen(true)}
-                        className="text-muted-foreground hover:text-primary"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
                         title="Scan QR Code"
                     >
-                        <QrCode className="h-5 w-5" />
+                        <QrCode className="h-4 w-4" />
                     </Button>
 
                     <LanguageSwitcher />
                     <NotificationCenter />
 
+                    <div className="mx-1 h-4 w-px bg-border" />
+
                     {/* User menu */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="gap-2 pl-2 pr-3">
-                                <Avatar className="h-8 w-8">
+                            <Button variant="ghost" className="h-8 gap-2 pl-1.5 pr-2.5">
+                                <Avatar className="h-6 w-6">
                                     <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.name || 'User'} />
-                                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                                    <AvatarFallback className="bg-primary text-primary-foreground font-mono text-[10px] font-medium">
                                         {initials}
                                     </AvatarFallback>
                                 </Avatar>
-                                <span className="hidden text-sm font-medium md:inline-block">
+                                <span className="hidden text-[13px] font-medium md:inline-block">
                                     {user?.name || 'User'}
                                 </span>
                             </Button>

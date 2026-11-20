@@ -3,7 +3,7 @@
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
-import { AlertTriangle, CheckCircle, ShieldAlert, Sparkles } from 'lucide-react'
+import { AlertTriangle, CheckCircle, ShieldAlert } from 'lucide-react'
 
 interface ISOThresholds {
   zone_a_max: number
@@ -124,7 +124,7 @@ export function ISO20816SeverityGauge({
           textColor: 'text-emerald-600 dark:text-emerald-400',
           borderColor: 'border-emerald-500/40',
           bgColor: 'bg-emerald-500/10',
-          icon: Sparkles,
+          icon: CheckCircle,
         }
       case 'B':
         return {
@@ -203,23 +203,23 @@ export function ISO20816SeverityGauge({
         </Badge>
       </div>
 
-      {/* Régua de Gradiente com as 4 Zonas */}
+      {/* Régua Técnica com as 4 Zonas */}
       <div className="space-y-1.5 pt-1">
-        <div className="relative w-full h-3 rounded-full overflow-hidden bg-muted flex border border-border/60">
+        <div className="relative flex h-2.5 w-full overflow-visible rounded-xs border border-border bg-muted">
           {/* Zona A */}
-          <div style={{ width: `${(limitA / maxScale) * 100}%` }} className="bg-emerald-500 h-full opacity-90" title={`Zona A: 0 a ${limitA} mm/s`} />
+          <div style={{ width: `${(limitA / maxScale) * 100}%` }} className="h-full border-r border-background/80 bg-emerald-500/90" title={`Zona A: 0 a ${limitA} mm/s`} />
           {/* Zona B */}
-          <div style={{ width: `${((limitB - limitA) / maxScale) * 100}%` }} className="bg-blue-500 h-full opacity-90" title={`Zona B: ${limitA} a ${limitB} mm/s`} />
+          <div style={{ width: `${((limitB - limitA) / maxScale) * 100}%` }} className="h-full border-r border-background/80 bg-sky-500/90" title={`Zona B: ${limitA} a ${limitB} mm/s`} />
           {/* Zona C */}
-          <div style={{ width: `${((limitC - limitB) / maxScale) * 100}%` }} className="bg-amber-500 h-full opacity-90" title={`Zona C: ${limitB} a ${limitC} mm/s`} />
+          <div style={{ width: `${((limitC - limitB) / maxScale) * 100}%` }} className="h-full border-r border-background/80 bg-amber-500/90" title={`Zona C: ${limitB} a ${limitC} mm/s`} />
           {/* Zona D */}
-          <div style={{ width: `${((maxScale - limitC) / maxScale) * 100}%` }} className="bg-rose-500 h-full opacity-90" title={`Zona D: > ${limitC} mm/s`} />
+          <div style={{ width: `${((maxScale - limitC) / maxScale) * 100}%` }} className="h-full bg-rose-500/90" title={`Zona D: > ${limitC} mm/s`} />
 
-          {/* Marcador do Ponteiro Atual */}
+          {/* Agulha Indicadora */}
           {percentage !== null && (
             <div 
               style={{ left: `${percentage}%` }}
-              className="absolute top-0 bottom-0 w-1.5 -ml-0.5 bg-white border border-black shadow-lg rounded-full animate-pulse"
+              className="absolute -top-1 -bottom-1 w-0.5 -ml-px bg-foreground ring-2 ring-background"
               title={`Valor Atual: ${val?.toFixed(2)} mm/s`}
             />
           )}

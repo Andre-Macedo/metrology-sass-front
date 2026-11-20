@@ -94,72 +94,68 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Activity */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('recent_calibrations')}</CardTitle>
+      <div className="grid gap-5 lg:grid-cols-2">
+        <Card className="shadow-none">
+          <CardHeader className="border-b border-border py-3.5 px-5">
+            <CardTitle className="text-sm font-semibold">{t('recent_calibrations')}</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentCalibrations.map((cal) => (
-                <div
-                  key={cal.id}
-                  className="flex items-center justify-between rounded-lg border border-border p-4"
-                >
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">{cal.instrument}</p>
-                    <p className="text-xs text-muted-foreground">{cal.id}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-muted-foreground">
-                      {cal.date}
-                    </span>
-                    <Badge
-                      variant="secondary"
-                      className={statusColors[cal.status]}
-                    >
-                      {t(`status.${cal.status}`)}
-                    </Badge>
-                  </div>
+          <CardContent className="p-0 divide-y divide-border">
+            {recentCalibrations.map((cal) => (
+              <div
+                key={cal.id}
+                className="flex items-center justify-between px-5 py-3 hover:bg-muted/40 transition-colors"
+              >
+                <div className="min-w-0 space-y-0.5">
+                  <p className="truncate text-sm font-medium text-foreground">{cal.instrument}</p>
+                  <p className="font-mono text-xs text-muted-foreground">{cal.id}</p>
                 </div>
-              ))}
-            </div>
+                <div className="flex shrink-0 items-center gap-3 pl-3">
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {cal.date}
+                  </span>
+                  <Badge
+                    variant="secondary"
+                    className={cn('h-5 px-2 text-[11px] font-medium', statusColors[cal.status])}
+                  >
+                    {t(`status.${cal.status}`)}
+                  </Badge>
+                </div>
+              </div>
+            ))}
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('upcoming_due_dates')}</CardTitle>
+        <Card className="shadow-none">
+          <CardHeader className="border-b border-border py-3.5 px-5">
+            <CardTitle className="text-sm font-semibold">{t('upcoming_due_dates')}</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { name: 'Torque Wrench TW-50', days: 3, priority: 'high' },
-                { name: 'Flow Meter FM-200', days: 7, priority: 'medium' },
-                { name: 'Balance Scale BS-1000', days: 14, priority: 'low' },
-                { name: 'Voltage Tester VT-110', days: 21, priority: 'low' },
-              ].map((item) => (
-                <div
-                  key={item.name}
-                  className="flex items-center justify-between rounded-lg border border-border p-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={cn(
-                        'h-2 w-2 rounded-full',
-                        item.priority === 'high' && 'bg-red-500',
-                        item.priority === 'medium' && 'bg-yellow-500',
-                        item.priority === 'low' && 'bg-green-500'
-                      )}
-                    />
-                    <span className="text-sm font-medium">{item.name}</span>
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    {item.days} {t('days')}
-                  </span>
+          <CardContent className="p-0 divide-y divide-border">
+            {[
+              { name: 'Torque Wrench TW-50', days: 3, priority: 'high' },
+              { name: 'Flow Meter FM-200', days: 7, priority: 'medium' },
+              { name: 'Balance Scale BS-1000', days: 14, priority: 'low' },
+              { name: 'Voltage Tester VT-110', days: 21, priority: 'low' },
+            ].map((item) => (
+              <div
+                key={item.name}
+                className="flex items-center justify-between px-5 py-3 hover:bg-muted/40 transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className={cn(
+                      'h-2 w-2 rounded-full',
+                      item.priority === 'high' && 'bg-rose-500',
+                      item.priority === 'medium' && 'bg-amber-500',
+                      item.priority === 'low' && 'bg-emerald-500'
+                    )}
+                  />
+                  <span className="text-sm font-medium text-foreground">{item.name}</span>
                 </div>
-              ))}
-            </div>
+                <span className="font-mono text-xs text-muted-foreground">
+                  {item.days} {t('days')}
+                </span>
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>

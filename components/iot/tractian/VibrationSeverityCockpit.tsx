@@ -4,7 +4,7 @@ import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ScenarioData } from '@/features/iot/data/tractian-mock-data'
-import { Activity, AlertTriangle, ArrowUpRight, Flame, Gauge, Info, ShieldAlert, Sparkles, Thermometer } from 'lucide-react'
+import { Activity, AlertTriangle, CheckCircle2, Gauge, Info, ShieldAlert, Thermometer } from 'lucide-react'
 
 interface VibrationSeverityCockpitProps {
   scenario: ScenarioData
@@ -34,7 +34,7 @@ export function VibrationSeverityCockpit({ scenario }: VibrationSeverityCockpitP
           desc: 'Operação irrestrita. Vibração de máquina nova ou recém-revisada.',
           variant: 'default',
           bg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
-          icon: Sparkles,
+          icon: CheckCircle2,
         }
       case 'B':
         return {
@@ -98,7 +98,7 @@ export function VibrationSeverityCockpit({ scenario }: VibrationSeverityCockpitP
               className="absolute top-0 -translate-x-1/2 flex flex-col items-center transition-all duration-500"
               style={{ left: `${currentPosPct}%` }}
             >
-              <span className="font-mono text-xs font-black px-1.5 py-0.5 rounded bg-foreground text-background shadow-md">
+              <span className="font-mono text-xs font-semibold px-1.5 py-0.5 rounded-xs bg-foreground text-background">
                 {globalVel.toFixed(2)} mm/s
               </span>
               <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-foreground" />
@@ -209,9 +209,9 @@ export function VibrationSeverityCockpit({ scenario }: VibrationSeverityCockpitP
           <div className="rounded-lg border border-border/80 bg-muted/20 p-3">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span className="font-semibold text-foreground">Temp. Mancal</span>
-              <Flame className={`h-3.5 w-3.5 ${
+              <Thermometer className={`h-3.5 w-3.5 ${
                 temp.bearingContactC >= temp.criticalThresholdC 
-                  ? 'text-rose-500 animate-bounce' 
+                  ? 'text-rose-500' 
                   : temp.bearingContactC >= temp.warningThresholdC 
                     ? 'text-amber-500' 
                     : 'text-emerald-500'

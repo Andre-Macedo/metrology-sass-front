@@ -33,7 +33,6 @@ import {
   MoveHorizontal,
   RefreshCw,
   RotateCcw,
-  Sparkles,
   Tag,
   Target,
   Waves,
@@ -722,7 +721,7 @@ export function SpectrumStudio({
               onPointerDown={handlePointerDownFundamental}
               onPointerMove={handlePointerMoveFundamental}
               onPointerUp={handlePointerUpFundamental}
-              className={`absolute top-0 -translate-x-1/2 z-20 flex items-center gap-1 cursor-ew-resize select-none px-2 py-0.5 rounded shadow-lg font-mono text-[11px] font-black border transition-shadow ${
+              className={`absolute top-0 -translate-x-1/2 z-20 flex items-center gap-1 cursor-ew-resize select-none px-2 py-0.5 rounded-sm shadow-xs font-mono text-[11px] font-semibold border transition-shadow ${
                 isDraggingFundamental 
                   ? 'bg-amber-400 text-slate-950 border-amber-200 ring-2 ring-amber-400/50 scale-105' 
                   : 'bg-amber-500 text-slate-950 border-amber-300 hover:scale-105'
@@ -743,7 +742,7 @@ export function SpectrumStudio({
               onPointerDown={handlePointerDownSideband}
               onPointerMove={handlePointerMoveSideband}
               onPointerUp={handlePointerUpSideband}
-              className={`absolute top-0 -translate-x-1/2 z-20 flex items-center gap-1 cursor-ew-resize select-none px-2 py-0.5 rounded shadow-lg font-mono text-[11px] font-black border transition-shadow ${
+              className={`absolute top-0 -translate-x-1/2 z-20 flex items-center gap-1 cursor-ew-resize select-none px-2 py-0.5 rounded-sm shadow-xs font-mono text-[11px] font-semibold border transition-shadow ${
                 isDraggingSideband 
                   ? 'bg-rose-400 text-white border-rose-200 ring-2 ring-rose-400/50 scale-105' 
                   : 'bg-rose-600 text-white border-rose-400 hover:scale-105'
@@ -1102,7 +1101,7 @@ export function SpectrumStudio({
         <div className="space-y-2 border-t border-border/60 pt-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-              <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+              <Crosshair className="h-3.5 w-3.5 text-primary" />
               <span>Picos Espectrais Dominantes Detectados (Clique para Ancorar o Cursor):</span>
             </div>
 
@@ -1158,7 +1157,7 @@ export function SpectrumStudio({
                     </div>
                   </div>
 
-                  <div className="font-mono text-right font-black text-foreground">
+                  <div className="font-mono text-right font-semibold text-foreground">
                     {peak.amplitudeG.toFixed(2)} g
                   </div>
                 </div>
