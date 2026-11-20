@@ -17,7 +17,6 @@ import {
   HelpCircle, 
   ListChecks, 
   ShieldAlert, 
-  Sparkles, 
   Wrench 
 } from 'lucide-react'
 

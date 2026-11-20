@@ -47,7 +47,7 @@ export default function AnomalyMonitor({ tenantId }: { tenantId: string }) {
         <div className="bg-red-500 px-4 py-2 flex items-center justify-between text-white">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-5 w-5 animate-pulse" />
-            <span className="font-black text-sm tracking-wider uppercase">Alerta Preditivo IA</span>
+            <span className="font-semibold text-sm tracking-wider uppercase">Alerta Preditivo IA</span>
           </div>
           <button 
             onClick={() => setShowAlert(false)}

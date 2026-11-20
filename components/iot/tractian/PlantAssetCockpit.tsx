@@ -152,7 +152,7 @@ export function PlantAssetCockpit({
 
                   {/* Health Score Mini Ring */}
                   <div className="flex flex-col items-center justify-center shrink-0">
-                    <span className={`font-mono text-base font-black ${
+                    <span className={`font-mono text-base font-semibold ${
                       asset.healthScore >= 80 ? 'text-emerald-500' : asset.healthScore >= 40 ? 'text-amber-500' : 'text-rose-500'
                     }`}>
                       {asset.healthScore}%

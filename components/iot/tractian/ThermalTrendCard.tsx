@@ -19,7 +19,7 @@ import {
   ScenarioData, 
   generate30DaysTrend 
 } from '@/features/iot/data/tractian-mock-data'
-import { Clock, Flame, History, Info, Sparkles, Thermometer, TrendingUp } from 'lucide-react'
+import { Clock, History, Info, Thermometer, TrendingUp } from 'lucide-react'
 
 interface ThermalTrendCardProps {
   scenario: ScenarioData
@@ -98,7 +98,7 @@ export function ThermalTrendCard({ scenario }: ThermalTrendCardProps) {
           <div className="rounded-lg border border-border/80 bg-muted/20 p-3">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span className="font-semibold text-foreground">Temp. Mancal</span>
-              <Flame className={`h-3.5 w-3.5 ${isTempCritical ? 'text-rose-500 animate-bounce' : isTempWarning ? 'text-amber-500' : 'text-emerald-500'}`} />
+              <Thermometer className={`h-3.5 w-3.5 ${isTempCritical ? 'text-rose-500' : isTempWarning ? 'text-amber-500' : 'text-emerald-500'}`} />
             </div>
             <div className="mt-1 flex items-baseline gap-1">
               <span

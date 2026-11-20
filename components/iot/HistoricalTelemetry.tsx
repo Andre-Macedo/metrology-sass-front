@@ -312,22 +312,22 @@ export function HistoricalTelemetry() {
 
         {/* Resumo Estatístico do Período */}
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-3 gap-3 rounded-lg border border-border/70 bg-muted/20 p-3 text-xs">
-            <div>
+          <div className="grid grid-cols-3 divide-x divide-border rounded-md border border-border bg-card text-xs">
+            <div className="p-3">
               <span className="text-[11px] text-muted-foreground block font-medium">Média do Período</span>
-              <span className="font-mono text-lg font-black text-foreground">
+              <span className="font-mono text-lg font-semibold text-foreground">
                 {stats.avg.toFixed(2)}
               </span>
             </div>
-            <div>
+            <div className="p-3">
               <span className="text-[11px] text-muted-foreground block font-medium">Pico Máximo</span>
-              <span className="font-mono text-lg font-black text-rose-500">
+              <span className="font-mono text-lg font-semibold text-rose-500">
                 {stats.max.toFixed(2)}
               </span>
             </div>
-            <div>
+            <div className="p-3">
               <span className="text-[11px] text-muted-foreground block font-medium">Mínimo Registrado</span>
-              <span className="font-mono text-lg font-black text-emerald-500">
+              <span className="font-mono text-lg font-semibold text-emerald-500">
                 {stats.min.toFixed(2)}
               </span>
             </div>

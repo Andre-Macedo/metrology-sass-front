@@ -41,7 +41,6 @@ import {
   RefreshCcw, 
   Rocket, 
   Sliders, 
-  Sparkles, 
   Zap 
 } from 'lucide-react'
 import { toast } from 'sonner'
